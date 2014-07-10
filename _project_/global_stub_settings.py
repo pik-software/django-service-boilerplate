@@ -1,9 +1,9 @@
 from os.path import dirname, join, basename
 
-ROOT_DIR = dirname(dirname(dirname(__file__)))
+ROOT_DIR = dirname(dirname(__file__))
 ROOT_DIR_NAME = basename(ROOT_DIR)
 
-PROJECT_DIR = dirname(dirname(__file__))
+PROJECT_DIR = dirname(__file__)
 PROJECT_DIR_NAME = basename(PROJECT_DIR)
 
 PATH_TO_PROJECT_VENV_DIR = join(ROOT_DIR, '__data__', 'venv')
