@@ -5,6 +5,7 @@ Conventions:
  * if project contain a cool app with may be uses in other projects (sites) you must move this app to special repository.
 And use this app as requirements.
  * support Django>=1.7b4
+ * use PyCharm IDE
 
 
  - [dir] `__data__` - project workflow data: `venv`, `media`, `db` (see: __data__/README.md)
