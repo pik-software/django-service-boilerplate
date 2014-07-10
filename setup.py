@@ -10,6 +10,7 @@ from os.path import dirname, join
 #  VARIABLES  #
 #             #
 ###############
+import stat
 
 __author__ = 'pahaz'
 BASE_DIR = dirname(__file__)
@@ -47,6 +48,13 @@ def _get_random_string(length=32,
     return ''.join([random.choice(allowed_chars) for i in range(length)])
 
 
+def _on_rm_error(func, path, exc_info):
+    # path contains the path of the file that couldn't be removed
+    # let's just assume that it's read-only and unlink it.
+    os.chmod(path, stat.S_IWRITE)
+    os.unlink(path)
+
+
 ###############
 #             #
 #    MAIN     #
@@ -76,7 +84,7 @@ if __name__ == "__main__":
     git_ignore_file.close()
 
     print("INIT NEW GIT REPOSITORY")
-    shutil.rmtree(join(BASE_DIR, '.git'))
+    shutil.rmtree(join(BASE_DIR, '.git'), onerror=_on_rm_error)
     os.system("git init")
     os.system("git add *")
     os.system('git commit -am "Init form pahaz/django-project-stub"')
