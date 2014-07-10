@@ -8,7 +8,7 @@ from django.views.generic import TemplateView
 
 admin.autodiscover()
 
-urlpatterns = i18n_patterns(
+urlpatterns = patterns(
     '',
     # url name `home` required for mezzanine
     url(r'^$', TemplateView.as_view(template_name="index.html"), name='home'),

@@ -92,8 +92,8 @@ if __name__ == "__main__":
         for x in reqs:
             dev_req.append(x)
 
-    print("common requirements:\n" + ''.join(common_req))
-    print("dev requirements:\n" + ''.join(dev_req))
+    print("# ! #\n# COMMON requirements:\n\n" + ''.join(common_req))
+    print("# ! #\n# DEV requirements:\n\n" + ''.join(dev_req))
 
     common = NamedTemporaryFile('w', delete=False)
     common.write(''.join(common_req))

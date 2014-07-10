@@ -153,7 +153,7 @@ class Installer(object):
     @staticmethod
     def update_urls(urlpatterns):
         from django.conf.urls import patterns, include
-
+        from django.conf import settings
         urlpatterns += patterns('',
 
             # We don't want to presume how your homepage works, so here are a
@@ -204,7 +204,7 @@ class Installer(object):
             # ``mezzanine.urls``, go right ahead and take the parts you want
             # from it, and use them directly below instead of using
             # ``mezzanine.urls``.
-            ("^", include("mezzanine.urls")),
+            # ("^", include("mezzanine.urls")),
 
             # MOUNTING MEZZANINE UNDER A PREFIX
             # ---------------------------------
@@ -219,7 +219,8 @@ class Installer(object):
             # of this file as well.
             # Note that for any of the various homepage patterns above, you'll
             # need to use the ``SITE_PREFIX`` setting as well.
+            # MEZZANINE_PAGE_PREFIX = "pages/"
 
-            # ("^%s/" % settings.SITE_PREFIX, include("mezzanine.urls"))
+            ("^%s" % getattr(settings, 'MEZZANINE_PAGE_PREFIX', ''), include("mezzanine.urls"))
 
         )

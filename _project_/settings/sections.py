@@ -3,8 +3,8 @@ import os
 _current_dir = os.path.dirname(__file__)
 
 SECTIONS = (
-    'mezzanine',
     'debug_toolbar',
+    'mezzanine',  # required be last (use `^` url)
 )
 
 
