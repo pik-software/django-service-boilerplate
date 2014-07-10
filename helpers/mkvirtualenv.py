@@ -36,7 +36,7 @@ sys.path.insert(1, BASE_DIR)
 
 def import_project_stub_settings(project_name):
     settings = __import__(project_name + ".settings.global_stub_settings")
-    return settings
+    return settings.settings.global_stub_settings
 
 
 def pip_file(settings):
