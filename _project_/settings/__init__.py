@@ -7,8 +7,8 @@ from .default_settings import *
 from .common_settings import *
 
 # section settings for complex apps
-from .sections import loader
-loader(globals())
+from .sections import update_settings
+update_settings(globals())
 
 try:
     # settings for you only, not for team (git ignored!)

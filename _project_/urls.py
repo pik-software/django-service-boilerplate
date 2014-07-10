@@ -17,6 +17,8 @@ urlpatterns = i18n_patterns(
     # use section urls if need!
 )
 
+
+
 if settings.DEBUG:
     from django.conf.urls.static import static
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
