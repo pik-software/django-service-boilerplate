@@ -90,7 +90,7 @@ if __name__ == "__main__":
     os.system('git commit -am "Init form pahaz/django-project-stub"')
 
     print("REMOVE SELF")
-    os.remove(__path__)
+    os.remove(__file__)
 
     print("""INITED.
     NOW WE CAN ... TODO THIS!
