@@ -2,31 +2,31 @@
 # Build paths inside the project like this: join(BASE_DIR, ...)
 from os.path import join
 
-from ..global_stub_settings import PROJECT_ROOT, PATH_TO_VENV_DIR, \
-    PATH_TO_COLLECT_STATIC_DIR, PATH_TO_MEDIA_DIR, \
-    PATH_TO_SQLITE_FILE, PROJECT_DIRNAME
+from ..global_stub_settings import ROOT_DIR, PATH_TO_PROJECT_VENV_DIR, \
+    PATH_TO_PROJECT_COLLECT_STATIC_DIR, PATH_TO_PROJECT_MEDIA_DIR, \
+    PATH_TO_PROJECT_SQLITE_FILE, ROOT_DIR_NAME
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
-CACHE_MIDDLEWARE_KEY_PREFIX = PROJECT_DIRNAME
+CACHE_MIDDLEWARE_KEY_PREFIX = ROOT_DIR_NAME
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'p+a4h0a7z-q0@wq#pw#n6+^a#j70kjgibj7h_33e^2@z4ve@%&'
 
 TEMPLATE_DIRS = (
-    join(PROJECT_ROOT, "_project_", "templates"),
+    join(ROOT_DIR, "_project_", "templates"),
 )
 
 STATICFILES_DIRS = (
-    join(PROJECT_ROOT, "_project_", u'static'),
+    join(ROOT_DIR, "_project_", u'static'),
     # Put strings here, like "/home/html/static" or "C:/www/django/static".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
 )
 
 FIXTURE_DIRS = (
-    join(PROJECT_ROOT, "_project_", u'fixtures'),
+    join(ROOT_DIR, "_project_", u'fixtures'),
 )
 
 ALLOWED_HOSTS = []
@@ -76,7 +76,7 @@ WSGI_APPLICATION = '_project_.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': PATH_TO_SQLITE_FILE,
+        'NAME': PATH_TO_PROJECT_SQLITE_FILE,
     }
 }
 
@@ -98,7 +98,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = PATH_TO_COLLECT_STATIC_DIR
+STATIC_ROOT = PATH_TO_PROJECT_COLLECT_STATIC_DIR
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = join(PROJECT_ROOT, '__data__', 'media')
+MEDIA_ROOT = PATH_TO_PROJECT_MEDIA_DIR
