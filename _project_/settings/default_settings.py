@@ -10,6 +10,7 @@ from ..global_stub_settings import ROOT_DIR, PATH_TO_PROJECT_VENV_DIR, \
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 CACHE_MIDDLEWARE_KEY_PREFIX = ROOT_DIR_NAME
+SITE_ID = 1
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'p+a4h0a7z-q0@wq#pw#n6+^a#j70kjgibj7h_33e^2@z4ve@%&'

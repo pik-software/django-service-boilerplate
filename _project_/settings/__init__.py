@@ -14,10 +14,8 @@ try:
     # settings for you only, not for team (git ignored!)
     from .local_settings import *
 except ImportError:
-    pass
-
-try:
-    # settings for production env may be auto generated
-    from .production_settings import *
-except ImportError:
-    pass
+    try:
+        # settings for production env may be auto generated
+        from .production_settings import *
+    except ImportError:
+        pass

@@ -7,10 +7,10 @@ SECTIONS = (
 )
 
 
-class SectionInterface:
+class SectionInstallerInterface(object):
     @staticmethod
-    def make_urls():
-        raise NotImplemented
+    def update_urls(urlpatterns):
+        pass
 
     @staticmethod
     def update_settings(settings):
