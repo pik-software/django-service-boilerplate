@@ -66,6 +66,10 @@ if __name__ == "__main__":
     print("MAKE VIRTUALENV")
     subprocess.call(['virtualenv', settings.PATH_TO_VENV_DIR])
 
+    print("INSTALL PIL [hotfix for windows]")
+    easy_install = venv_script_file(settings, 'easy_install')
+    subprocess.call([easy_install, 'pillow'])
+
     print("INSTALL REQUIREMENTS")
     req_dir = join(_project_root, '_project_', 'requirements')
     req_common = join(req_dir, 'common_requirements.txt')

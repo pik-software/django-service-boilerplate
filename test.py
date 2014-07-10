@@ -3,7 +3,6 @@ from os.path import join, dirname
 __author__ = 'pahaz'
 
 import os
-import shutil
 import subprocess
 
 if not os.path.exists('.test'):
@@ -17,7 +16,6 @@ pushd "%~dp0"
 rm -rf project-name
 git clone https://github.com/pahaz/django-project-stub.git project-name
 cd project-name
-__data__\\venv\\Scripts\\easy_install.exe pillow
 python setup.py
 python helpers/mkvirtualenv.py
 popd
