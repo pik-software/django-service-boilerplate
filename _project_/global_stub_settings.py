@@ -1,9 +1,16 @@
 from os.path import dirname, join, basename
 
-PROJECT_ROOT = dirname(dirname(dirname(__file__)))
-PROJECT_DIRNAME = basename(PROJECT_ROOT)
+ROOT_DIR = dirname(dirname(dirname(__file__)))
+ROOT_DIR_NAME = basename(ROOT_DIR)
 
-PATH_TO_VENV_DIR = join(PROJECT_ROOT, '__data__', 'venv')
-PATH_TO_COLLECT_STATIC_DIR = join(PROJECT_ROOT, '__data__', 'collected_static')
-PATH_TO_MEDIA_DIR = join(PROJECT_ROOT, '__data__', 'media')
-PATH_TO_SQLITE_FILE = join(PROJECT_ROOT, '__data__', 'db.sqlite')
+PROJECT_DIR = dirname(dirname(__file__))
+PROJECT_DIR_NAME = basename(PROJECT_DIR)
+
+PATH_TO_PROJECT_VENV_DIR = join(ROOT_DIR, '__data__', 'venv')
+PATH_TO_PROJECT_COLLECT_STATIC_DIR = join(ROOT_DIR, '__data__', 'collected_static')
+PATH_TO_PROJECT_MEDIA_DIR = join(ROOT_DIR, '__data__', 'media')
+PATH_TO_PROJECT_TMP_DIR = join(ROOT_DIR, '__data__', 'tmp')
+PATH_TO_PROJECT_SQLITE_FILE = join(ROOT_DIR, '__data__', 'db.sqlite')
+PATH_TO_PROJECT_REQUIREMENTS_FILE = join(PROJECT_DIR, 'requirements.txt')
+
+PATH_TO_PROJECT_DATA_DIR = join(ROOT_DIR, '__data__')

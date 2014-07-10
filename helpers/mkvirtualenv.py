@@ -5,16 +5,11 @@ from __future__ import print_function
 import subprocess
 import sys
 from os.path import dirname, join
+from tempfile import NamedTemporaryFile
 
-
-###############
-#             #
-#  VARIABLES  #
-#             #
-###############
 
 __author__ = 'pahaz'
-_project_root = dirname(dirname(__file__))
+_root = dirname(dirname(__file__))
 
 
 ###############
@@ -27,7 +22,7 @@ def fix_sys_paths():
     if hasattr(fix_sys_paths, "path_fixed"):
         return
     # insert stub root for import paths
-    sys.path.insert(1, _project_root)
+    sys.path.insert(1, _root)
     setattr(fix_sys_paths, "path_fixed", True)
 
 
@@ -50,6 +45,17 @@ def help_activate_venv_command(settings):
     active = active if sys.platform == 'win32' else 'source ' + active
     return active
 
+
+def pip_install(requirements_file, use_cache=True, cache_dir=None):
+    command = [pip_file(settings), 'install']
+    if use_cache:
+        if not cache_dir:
+            cache_dir = join(_root, '..', '.pip_cache')
+        command.append('--download-cache={0}'.format(cache_dir))
+    command.extend(['-r', requirements_file])
+    subprocess.call(command)
+
+
 ###############
 #             #
 #    MAIN     #
@@ -59,6 +65,7 @@ def help_activate_venv_command(settings):
 if __name__ == "__main__":
     PROJECT_DIR_NAME = "_project_"
     PRODUCTION_MODE = False
+    USE_PIP_CACHE = True
 
     fix_sys_paths()
     settings = import_project_stub_settings(PROJECT_DIR_NAME)
@@ -71,18 +78,35 @@ if __name__ == "__main__":
     subprocess.call([easy_install, 'pillow'])
 
     print("INSTALL REQUIREMENTS")
-    req_dir = join(_project_root, '_project_', 'requirements')
-    req_common = join(req_dir, 'common_requirements.txt')
-    req_dev = join(req_dir, 'development_requirements.txt')
-    req_prod = join(req_dir, 'production_requirements.txt')
+    req_file = settings.PATH_TO_PROJECT_REQUIREMENTS_FILE
+    common_req = []
+    dev_req = []
+    with open(req_file, 'r') as f:
+        reqs = iter(f.readlines())
+        for x in reqs:
+            if x.upper().startswith("# DEV"):
+                break
+            common_req.append(x)
+
+        for x in reqs:
+            dev_req.append(x)
+
+    print("common requirements:\n" + ''.join(common_req))
+    print("dev requirements:\n" + ''.join(dev_req))
+
+    common = NamedTemporaryFile('w', delete=False)
+    common.write(''.join(common_req))
+    common.close()
+
+    dev = NamedTemporaryFile('w', delete=False)
+    dev.write(''.join(dev_req))
+    dev.close()
+
     print(" * common ")
-    subprocess.call([pip_file(settings), 'install', '-r', req_common])
-    if PRODUCTION_MODE:
-        print(" * production ")
-        subprocess.call([pip_file(settings), 'install', '-r', req_prod])
-    else:
-        print(" * development ")
-        subprocess.call([pip_file(settings), 'install', '-r', req_dev])
+    pip_install(common.name, USE_PIP_CACHE)
+    if not PRODUCTION_MODE:
+        print(" * dev ")
+        pip_install(dev.name, USE_PIP_CACHE)
 
     active = help_activate_venv_command(settings)
     print("""NOW ACTIVATE:

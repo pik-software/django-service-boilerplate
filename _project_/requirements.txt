@@ -1,0 +1,8 @@
+# PRODUCTION (required for work) #
+django
+pillow
+mezzanine
+
+# DEVELOPMENT/TESTING (required for development/testing) #
+# This comment uses as delimiter for install production requirements
+# Puts requirement here ...

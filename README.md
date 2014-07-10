@@ -11,12 +11,13 @@ And use this app as requirements.
 
  - [dir] `__data__` - project workflow data: `venv`, `media`, `db` (see: __data__/README.md)
  - [dir] `_project_` - project level settings and files
-    - [dir] `/requirements` - project requirements (production, common, development)
     - [dir] `/templates` - project level templates (and for override templates)
     - [dir] `/settings` - project `settings.py` with sections support (see: _project_/settings/__init__.py)
     - [dir] `/fixtures` - project level fixtures
     - [dir] `/static` - project level static files (JS, CSS, IMAGES, ...)
     - [file] `/urls.py` - project level routs
+    - [file] `/requirements.txt` - project level requirements (production, development); file contain two sections: 1) only production requirements 2) additional packages for development/testing
+    - [file] `/global_stub_settings.py` - project workflow data settings
  - [file] `manage.py` - django manage commands
  - [file] `setup.py` - set up new project
 
