@@ -14,7 +14,7 @@ from os.path import dirname, join
 ###############
 
 __author__ = 'pahaz'
-BASE_DIR = dirname(dirname(__file__))
+_project_root = dirname(dirname(__file__))
 
 
 ###############
@@ -27,7 +27,7 @@ def fix_sys_paths():
     if hasattr(fix_sys_paths, "path_fixed"):
         return
     # insert stub root for import paths
-    sys.path.insert(1, BASE_DIR)
+    sys.path.insert(1, _project_root)
     setattr(fix_sys_paths, "path_fixed", True)
 
 
@@ -44,6 +44,11 @@ def venv_script_file(settings, filename):
     bin = 'Scripts' if sys.platform == 'win32' else 'bin'
     return join(settings.PATH_TO_VENV_DIR, bin, filename)
 
+
+def help_activate_venv_command(settings):
+    active = venv_script_file(settings, "activate")
+    active = active if sys.platform == 'win32' else 'source ' + active
+    return active
 
 ###############
 #             #
@@ -62,7 +67,7 @@ if __name__ == "__main__":
     subprocess.call(['virtualenv', settings.PATH_TO_VENV_DIR])
 
     print("INSTALL REQUIREMENTS")
-    req_dir = join(BASE_DIR, '_project_', 'requirements')
+    req_dir = join(_project_root, '_project_', 'requirements')
     req_common = join(req_dir, 'common_requirements.txt')
     req_dev = join(req_dir, 'development_requirements.txt')
     req_prod = join(req_dir, 'production_requirements.txt')
@@ -75,8 +80,7 @@ if __name__ == "__main__":
         print(" * development ")
         subprocess.call([pip_file(settings), 'install', '-r', req_dev])
 
-    active = venv_script_file(settings, "activate")
-    active = active if sys.platform == 'win32' else 'source ' + active
+    active = help_activate_venv_command(settings)
     print("""NOW ACTIVATE:
      * {0}
     """.format(active))
