@@ -16,4 +16,11 @@ And use this app as requirements.
     - [dir] `/static` - project level static files (JS, CSS, IMAGES, ...)
     - [file] `/urls.py` - project level routs
  - [file] `manage.py` - django manage commands
- - [file] `setup.py` - set up new project file (init git
+ - [file] `setup.py` - set up new project
+
+# HowTo Use #
+
+    git clone https://github.com/pahaz/django-project-stub.git project-name
+    cd project-name
+    python setup.py
+
