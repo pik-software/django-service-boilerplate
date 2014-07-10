@@ -85,6 +85,7 @@ if __name__ == "__main__":
         reqs = iter(f.readlines())
         for x in reqs:
             if x.upper().startswith("# DEV"):
+                dev_req.append(x)
                 break
             common_req.append(x)
 
@@ -102,10 +103,14 @@ if __name__ == "__main__":
     dev.write(''.join(dev_req))
     dev.close()
 
-    print(" * common ")
+    print("""
+     # COMMON #
+     """)
     pip_install(common.name, USE_PIP_CACHE)
     if not PRODUCTION_MODE:
-        print(" * dev ")
+        print("""
+     # DEV #
+     """)
         pip_install(dev.name, USE_PIP_CACHE)
 
     active = help_activate_venv_command(settings)
