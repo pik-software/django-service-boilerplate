@@ -93,5 +93,7 @@ if __name__ == "__main__":
     os.remove(__file__)
 
     print("""INITED.
-    NOW WE CAN ... TODO THIS!
+    NOW WE CAN USE:
+     * python helpers/mkvirtualenv.py
+     * python helpers/activevirtualenv.py
 """)
