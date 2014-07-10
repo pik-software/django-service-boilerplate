@@ -37,7 +37,7 @@ def pip_file(settings):
 
 def venv_script_file(settings, filename):
     bin = 'Scripts' if sys.platform == 'win32' else 'bin'
-    return join(settings.PATH_TO_VENV_DIR, bin, filename)
+    return join(settings.PATH_TO_PROJECT_VENV_DIR, bin, filename)
 
 
 def help_activate_venv_command(settings):
@@ -71,7 +71,7 @@ if __name__ == "__main__":
     settings = import_project_stub_settings(PROJECT_DIR_NAME)
 
     print("MAKE VIRTUALENV")
-    subprocess.call(['virtualenv', settings.PATH_TO_VENV_DIR])
+    subprocess.call(['virtualenv', settings.PATH_TO_PROJECT_VENV_DIR])
 
     print("INSTALL PIL [hotfix for windows]")
     easy_install = venv_script_file(settings, 'easy_install')
