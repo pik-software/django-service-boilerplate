@@ -1,1 +1,1 @@
-django>=1.7b4
+-e git+https://github.com/django/django.git@1.7.x#egg=django
