@@ -4,14 +4,12 @@ __author__ = 'pahaz'
 class Installer(object):
     @staticmethod
     def update_settings(g):
-        g.AUTHENTICATION_BACKENDS = (
-            "mezzanine.core.auth_backends.MezzanineBackend",)
 
         # The numeric mode to set newly-uploaded files to. The value should be
         # a mode you'd pass directly to os.chmod.
-        g.FILE_UPLOAD_PERMISSIONS = 0o644
+        g['FILE_UPLOAD_PERMISSIONS'] = 0o644
 
-        g.INSTALLED_APPS += (
+        g['INSTALLED_APPS'] += (
             "mezzanine.boot",
             "mezzanine.conf",
             "mezzanine.core",
@@ -25,20 +23,22 @@ class Installer(object):
             # "mezzanine.mobile",
         )
 
+        print(g['INSTALLED_APPS'])
+
         def append_if_not_exist(name, value):
-            d = tuple(getattr(g, name))
+            d = tuple(g[name])
             if value not in d:
                 d += (value, )
-            setattr(g, name, d)
+            g[name] = d
 
         def prepend_if_not_exist(name, value):
-            d = tuple(getattr(g, name))
+            d = tuple(g[name])
             if value not in d:
                 d = (value, ) + d
-            setattr(g, name, d)
+            g[name] = d
 
         def insert_after_if_not_exist(name, value, insert_after):
-            d = tuple(getattr(g, name))
+            d = tuple(g[name])
             if value not in d:
                 if insert_after not in d:
                     raise Exception(
@@ -47,8 +47,10 @@ class Installer(object):
                             name, value, insert_after))
                 i = d.index(insert_after)
                 d = d[:i] + (d[i], value) + d[i + 1:]
-            setattr(g, name, d)
+            g[name] = d
 
+        g['AUTHENTICATION_BACKENDS'] = (
+            "mezzanine.core.auth_backends.MezzanineBackend",)
 
         # --------------------------------------------
         # TEMPLATE_CONTEXT_PROCESSORS
@@ -107,16 +109,16 @@ class Installer(object):
 
         # Store these package names here as they may change in the future since
         # at the moment we are using custom forks of them.
-        g.PACKAGE_NAME_FILEBROWSER = "filebrowser_safe"
-        g.PACKAGE_NAME_GRAPPELLI = "grappelli_safe"
+        g['PACKAGE_NAME_FILEBROWSER'] = "filebrowser_safe"
+        g['PACKAGE_NAME_GRAPPELLI'] = "grappelli_safe"
 
         # These will be added to ``INSTALLED_APPS``, only if available.
-        g.OPTIONAL_APPS = (
+        g['OPTIONAL_APPS'] = (
             "debug_toolbar",
             "django_extensions",
             "compressor",
-            g.PACKAGE_NAME_FILEBROWSER,
-            g.PACKAGE_NAME_GRAPPELLI,
+            g['PACKAGE_NAME_FILEBROWSER'],
+            g['PACKAGE_NAME_GRAPPELLI'],
         )
 
         ####################

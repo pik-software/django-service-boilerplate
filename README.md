@@ -6,6 +6,7 @@ Conventions:
 And use this app as requirements.
  * support Django>=1.7b4
  * use PyCharm IDE
+ * use Python 2.7.x
 
 
  - [dir] `__data__` - project workflow data: `venv`, `media`, `db` (see: __data__/README.md)
