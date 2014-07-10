@@ -17,21 +17,18 @@ __author__ = 'pahaz'
 BASE_DIR = dirname(dirname(__file__))
 
 
-#################
-#               #
-#  PYTHON PATH  #
-#               #
-#################
-
-# insert stub root for import paths
-sys.path.insert(1, BASE_DIR)
-
-
 ###############
 #             #
 #  HELPERS    #
 #             #
 ###############
+
+def fix_sys_paths():
+    if hasattr(fix_sys_paths, "path_fixed"):
+        return
+    # insert stub root for import paths
+    sys.path.insert(1, BASE_DIR)
+    setattr(fix_sys_paths, "path_fixed", True)
 
 
 def import_project_stub_settings(project_name):
@@ -58,6 +55,7 @@ if __name__ == "__main__":
     PROJECT_DIR_NAME = "_project_"
     PRODUCTION_MODE = False
 
+    fix_sys_paths()
     settings = import_project_stub_settings(PROJECT_DIR_NAME)
 
     print("MAKE VIRTUALENV")
@@ -76,3 +74,9 @@ if __name__ == "__main__":
     else:
         print(" * development ")
         subprocess.call([pip_file(settings), 'install', '-r', req_dev])
+
+    active = venv_script_file(settings, "activate")
+    active = active if sys.platform == 'win32' else 'source ' + active
+    print("""NOW ACTIVATE:
+     * {0}
+    """.format(active))
