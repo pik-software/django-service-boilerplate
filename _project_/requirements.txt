@@ -1,8 +1,11 @@
 # PRODUCTION (required for work) #
-django
+# please use >= or == for goods!
+
 pillow
-mezzanine
+django>=1.6.5
+mezzanine>=3.1.8
 
 # DEVELOPMENT/TESTING (required for development/testing) #
 # This comment uses as delimiter for install production requirements
-# Puts requirement here ...
+
+django-debug-toolbar>=1.2.1

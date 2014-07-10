@@ -4,6 +4,7 @@ _current_dir = os.path.dirname(__file__)
 
 SECTIONS = (
     'mezzanine',
+    'debug_toolbar',
 )
 
 
