@@ -1,0 +1,6 @@
+DEBUG = True
+TEMPLATE_DEBUG = True
+LANGUAGE_CODE = 'ru'
+
+# AUTH_USER_MODEL = 'customauth.User'
+# LOGIN_REDIRECT_URL = '/'
