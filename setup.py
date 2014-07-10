@@ -85,10 +85,10 @@ if __name__ == "__main__":
 
     print("INIT DATA DIRS (__data__, tmp, media, collect_static)")
     from _project_.global_stub_settings import PATH_TO_PROJECT_MEDIA_DIR, PATH_TO_PROJECT_TMP_DIR, PATH_TO_PROJECT_COLLECT_STATIC_DIR, PATH_TO_PROJECT_DATA_DIR
-    os.mkdir(PATH_TO_PROJECT_DATA_DIR)
-    os.mkdir(PATH_TO_PROJECT_MEDIA_DIR)
-    os.mkdir(PATH_TO_PROJECT_TMP_DIR)
-    os.mkdir(PATH_TO_PROJECT_COLLECT_STATIC_DIR)
+    if not os.path.exists(PATH_TO_PROJECT_DATA_DIR): os.mkdir(PATH_TO_PROJECT_DATA_DIR)
+    if not os.path.exists(PATH_TO_PROJECT_MEDIA_DIR): os.mkdir(PATH_TO_PROJECT_MEDIA_DIR)
+    if not os.path.exists(PATH_TO_PROJECT_TMP_DIR): os.mkdir(PATH_TO_PROJECT_TMP_DIR)
+    if not os.path.exists(PATH_TO_PROJECT_COLLECT_STATIC_DIR): os.mkdir(PATH_TO_PROJECT_COLLECT_STATIC_DIR)
 
     print("INIT NEW GIT REPOSITORY")
     shutil.rmtree(join(BASE_DIR, '.git'), onerror=_on_rm_error)
