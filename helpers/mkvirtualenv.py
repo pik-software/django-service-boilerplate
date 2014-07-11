@@ -27,8 +27,8 @@ def fix_sys_paths():
 
 
 def import_project_stub_settings(project_name):
-    settings = __import__(project_name + ".global_stub_settings")
-    return settings.global_stub_settings
+    settings = __import__(project_name + ".stub_settings")
+    return settings.stub_settings
 
 
 def pip_file(settings):

@@ -2,7 +2,7 @@
 # Build paths inside the project like this: join(BASE_DIR, ...)
 from os.path import join
 
-from ..global_stub_settings import ROOT_DIR, PATH_TO_PROJECT_VENV_DIR, \
+from ..stub_settings import ROOT_DIR, PATH_TO_PROJECT_VENV_DIR, \
     PATH_TO_PROJECT_COLLECT_STATIC_DIR, PATH_TO_PROJECT_MEDIA_DIR, \
     PATH_TO_PROJECT_SQLITE_FILE, ROOT_DIR_NAME
 
