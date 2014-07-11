@@ -66,6 +66,7 @@ if __name__ == "__main__":
     PROJECT_DIR_NAME = "_project_"
     PRODUCTION_MODE = False
     USE_PIP_CACHE = True
+    USE_FIXES = True
 
     fix_sys_paths()
     settings = import_project_stub_settings(PROJECT_DIR_NAME)
@@ -73,9 +74,10 @@ if __name__ == "__main__":
     print("MAKE VIRTUALENV")
     subprocess.call(['virtualenv', settings.PATH_TO_PROJECT_VENV_DIR])
 
-    print("INSTALL PIL [hotfix for windows]")
-    easy_install = venv_script_file(settings, 'easy_install')
-    subprocess.call([easy_install, 'pillow'])
+    if USE_FIXES and sys.platform == 'win32':
+        print("INSTALL PIL [hotfix for windows]")
+        easy_install = venv_script_file(settings, 'easy_install')
+        subprocess.call([easy_install, 'PIL'])
 
     print("INSTALL REQUIREMENTS")
     req_file = settings.PATH_TO_PROJECT_REQUIREMENTS_FILE

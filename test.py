@@ -18,6 +18,9 @@ git clone https://github.com/pahaz/django-project-stub.git project-name
 cd project-name
 python setup.py
 python helpers/mkvirtualenv.py
+__data__\\venv\\Scripts\\activate
+python manage.py syncdb --noinput
+python manage.py runserver
 popd
 """)
 f.close()
