@@ -1,4 +1,4 @@
-from os.path import join, dirname
+from os.path import join, dirname, abspath
 import sys
 import os
 import subprocess
@@ -9,18 +9,18 @@ _root = dirname(__file__)
 
 
 def test_stub_root():
-    return join(_root, '.test', 'project-name')
+    return abspath(join(_root, '.test', 'project-name'))
 
 
 def venv_activate_command():
     bin = 'Scripts' if sys.platform == 'win32' else 'bin'
-    active = join(test_stub_root(), '__data__', 'venv', bin, 'activate')
+    active = abspath(join(test_stub_root(), '__data__', 'venv', bin, 'activate'))
     return active if sys.platform == 'win32' else 'source ' + active
 
 
 def vpython_bin():
     bin = 'Scripts' if sys.platform == 'win32' else 'bin'
-    py = join(test_stub_root(), '__data__', 'venv', bin, 'python')
+    py = abspath(join(test_stub_root(), '__data__', 'venv', bin, 'python'))
     return py
 
 
@@ -28,6 +28,7 @@ tests_dir = join(_root, '.test')
 if not os.path.exists(tests_dir):
     print("#!# os.mkdir! .test")
     os.mkdir(tests_dir)
+
 
 exec_file = join(_root, '.test', 'go.sh.cmd')
 f = open(exec_file, 'w')
