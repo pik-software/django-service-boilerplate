@@ -36,8 +36,8 @@ def pip_file(settings):
 
 
 def venv_script_file(settings, filename):
-    bin = 'Scripts' if sys.platform == 'win32' else 'bin'
-    return join(settings.PATH_TO_PROJECT_VENV_DIR, bin, filename)
+    bin_ = 'Scripts' if sys.platform == 'win32' else 'bin'
+    return join(settings.PATH_TO_PROJECT_VENV_DIR, bin_, filename)
 
 
 def help_activate_venv_command(settings):
@@ -47,7 +47,7 @@ def help_activate_venv_command(settings):
 
 
 def pip_install(requirements_file, use_cache=True, cache_dir=None):
-    command = [pip_file(settings), 'install']
+    command = [pip_file(s), 'install']
     if use_cache:
         if not cache_dir:
             cache_dir = join(_root, '..', '.pip_cache')
@@ -69,18 +69,18 @@ if __name__ == "__main__":
     USE_FIXES = True
 
     fix_sys_paths()
-    settings = import_project_stub_settings(PROJECT_DIR_NAME)
+    s = import_project_stub_settings(PROJECT_DIR_NAME)
 
     print("\nMAKE VIRTUALENV\n")
-    subprocess.call(['virtualenv', settings.PATH_TO_PROJECT_VENV_DIR])
+    subprocess.call(['virtualenv', s.PATH_TO_PROJECT_VENV_DIR])
 
     if USE_FIXES and sys.platform == 'win32':
         print("\nINSTALL PIL [hotfix for windows]\n")
-        easy_install = venv_script_file(settings, 'easy_install')
+        easy_install = venv_script_file(s, 'easy_install')
         subprocess.call([easy_install, 'PIL'])
 
     print("\nINSTALL REQUIREMENTS\n")
-    req_file = settings.PATH_TO_PROJECT_REQUIREMENTS_FILE
+    req_file = s.PATH_TO_PROJECT_REQUIREMENTS_FILE
     common_req = []
     dev_req = []
     with open(req_file, 'r') as f:
@@ -115,7 +115,6 @@ if __name__ == "__main__":
      """)
         pip_install(dev.name, USE_PIP_CACHE)
 
-    active = help_activate_venv_command(settings)
     print("""NOW ACTIVATE:
      * {0}
-    """.format(active))
+    """.format(help_activate_venv=help_activate_venv_command(s)))

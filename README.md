@@ -17,8 +17,8 @@ And use this app as requirements.
     - [dir] `/fixtures` - project level fixtures
     - [dir] `/static` - project level static files (JS, CSS, IMAGES, ...)
     - [file] `/urls.py` - project level routs
-    - [file] `/requirements.txt` - project level requirements (production, development); file contain two sections: 1) only production requirements 2) additional packages for development/testing
     - [file] `/global_stub_settings.py` - project workflow data settings
+ - [file] `requirements.txt` - project level requirements (production, development); file contain two sections: 1) only production requirements 2) additional packages for development/testing
  - [file] `manage.py` - django manage commands
  - [file] `setup.py` - set up new project
 

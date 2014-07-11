@@ -2,9 +2,6 @@
 
 from __future__ import unicode_literals
 from __future__ import print_function
-import subprocess
-import sys
-from os.path import dirname, join
 
 from mkvirtualenv import help_activate_venv_command, fix_sys_paths, \
     import_project_stub_settings
