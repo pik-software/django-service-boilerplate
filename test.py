@@ -7,21 +7,22 @@ import stat
 
 __author__ = 'pahaz'
 _root = abspath(dirname(__file__))
+_git_url = "https://github.com/pahaz/django-project-stub.git"
 
 
-def test_stub_root():
+def stub_dir_for_tests():
     return (join(_root, '.test', 'project-name'))
 
 
 def venv_activate_command():
     bin = 'Scripts' if sys.platform == 'win32' else 'bin'
-    active = (join(test_stub_root(), '__data__', 'venv', bin, 'activate'))
+    active = (join(stub_dir_for_tests(), '__data__', 'venv', bin, 'activate'))
     return active if sys.platform == 'win32' else 'source ' + active
 
 
-def vpython_bin():
+def venv_python_bin():
     bin = 'Scripts' if sys.platform == 'win32' else 'bin'
-    py = (join(test_stub_root(), '__data__', 'venv', bin, 'python'))
+    py = (join(stub_dir_for_tests(), '__data__', 'venv', bin, 'python'))
     return py
 
 
@@ -57,12 +58,11 @@ def system(cmd):
 os.chdir(tests_dir)
 
 rm_rf('project-name')
-system(
-    'git clone https://github.com/pahaz/django-project-stub.git project-name')
+system('git clone {0} project-name'.format(_git_url))
 os.chdir('project-name')
 system('python setup.py')
 system('python helpers/mkvirtualenv.py')
-system('{py} manage.py syncdb --noinput'.format(py=vpython_bin()))
+system('{py} manage.py syncdb --noinput'.format(py=venv_python_bin()))
 
 print("OK!")
 

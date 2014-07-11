@@ -1,7 +1,7 @@
 import os
 
 _current_dir = os.path.dirname(__file__)
-
+Installer = NotImplemented
 SECTIONS = (
     'debug_toolbar',
     'mezzanine',  # required be last (use `^` url)
