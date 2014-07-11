@@ -6,26 +6,26 @@ import shutil
 import stat
 
 __author__ = 'pahaz'
-_root = dirname(__file__)
+_root = abspath(dirname(__file__))
 
 
 def test_stub_root():
-    return abspath(join(_root, '.test', 'project-name'))
+    return (join(_root, '.test', 'project-name'))
 
 
 def venv_activate_command():
     bin = 'Scripts' if sys.platform == 'win32' else 'bin'
-    active = abspath(
-        join(test_stub_root(), '__data__', 'venv', bin, 'activate'))
+    active = (join(test_stub_root(), '__data__', 'venv', bin, 'activate'))
     return active if sys.platform == 'win32' else 'source ' + active
 
 
 def vpython_bin():
     bin = 'Scripts' if sys.platform == 'win32' else 'bin'
-    py = abspath(join(test_stub_root(), '__data__', 'venv', bin, 'python'))
+    py = (join(test_stub_root(), '__data__', 'venv', bin, 'python'))
     return py
 
 
+print("CWD: " + _root)
 os.chdir(_root)
 tests_dir = join(_root, '.test')
 if not os.path.exists(tests_dir):
