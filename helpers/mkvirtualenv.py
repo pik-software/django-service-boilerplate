@@ -116,5 +116,5 @@ if __name__ == "__main__":
         pip_install(dev.name, USE_PIP_CACHE)
 
     print("""NOW ACTIVATE:
-     * {0}
+     * {help_activate_venv}
     """.format(help_activate_venv=help_activate_venv_command(s)))
