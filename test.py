@@ -2,6 +2,7 @@ from os.path import join, dirname
 import sys
 import os
 import subprocess
+import stat   
 
 __author__ = 'pahaz'
 _root = dirname(__file__)
@@ -47,4 +48,9 @@ popd
 f.close()
 
 print(exec_file)
+
+# mk executable
+st = os.stat(exec_file)
+os.chmod(exec_file, st.st_mode | stat.S_IEXEC)
+# execute
 subprocess.call([exec_file])
