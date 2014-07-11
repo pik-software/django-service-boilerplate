@@ -1,7 +1,6 @@
 # PRODUCTION (required for work) #
 # please use >= or == for goods!
 
-pillow
 django>=1.6.5
 mezzanine>=3.1.8
 

@@ -23,6 +23,11 @@ And use this app as requirements.
 
 # HowTo Use #
 
+    # require!
+    easy_install -U pip
+    easy_install -U virtualenv
+
+    # create project-name!
     git clone https://github.com/pahaz/django-project-stub.git project-name
     cd project-name
     python setup.py
