@@ -33,6 +33,9 @@ And use this app as requirements.
     cd project-name
     python setup.py
 
+    # create virtualenv!
+    python helpers/mkvirtualenv.py
+
 # Test #
 
 OS: Windows/Linux
