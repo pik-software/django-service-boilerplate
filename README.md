@@ -6,9 +6,8 @@ Conventions:
  * only one project (site) for this stab. (if you can use many sites, see `EXT1` or report issue)
  * if project contain a cool app with may be uses in other projects (sites) you must move this app to special repository.
 And use this app as requirements.
- * support Django>=1.7b4
+ * support Django>=1.6.5
  * use PyCharm IDE
- * use Python 2.7.x
 
 
  - [dir] `__data__` - project workflow data: `venv`, `media`, `db` (see: __data__/README.md)
@@ -34,3 +33,7 @@ And use this app as requirements.
     cd project-name
     python setup.py
 
+# Test #
+
+OS: Windows/Linux
+Python: 2.7/3.3

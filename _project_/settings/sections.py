@@ -1,7 +1,6 @@
 import os
 
 _current_dir = os.path.dirname(__file__)
-Installer = NotImplemented
 SECTIONS = (
     'debug_toolbar',
     'mezzanine',  # required be last (use `^` url)
@@ -26,7 +25,7 @@ def update_settings(g):
 
         exec(section_code)
 
-        Installer.update_settings(g)
+        locals()['Installer'].update_settings(g)
 
 
 def update_urls(urlpatterns):
@@ -37,4 +36,4 @@ def update_urls(urlpatterns):
 
         exec(section_code)
 
-        Installer.update_urls(urlpatterns)
+        locals()['Installer'].update_urls(urlpatterns)
