@@ -1,4 +1,4 @@
-![build](https://travis-ci.org/pahaz/django-project-stub.svg)
+![build](https://travis-ci.org/pahaz/django-project-stub.svg?branch=master)
 
 # Project structure #
 
