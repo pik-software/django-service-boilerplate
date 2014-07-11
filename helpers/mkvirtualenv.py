@@ -71,15 +71,15 @@ if __name__ == "__main__":
     fix_sys_paths()
     settings = import_project_stub_settings(PROJECT_DIR_NAME)
 
-    print("MAKE VIRTUALENV")
+    print("\nMAKE VIRTUALENV\n")
     subprocess.call(['virtualenv', settings.PATH_TO_PROJECT_VENV_DIR])
 
     if USE_FIXES and sys.platform == 'win32':
-        print("INSTALL PIL [hotfix for windows]")
+        print("\nINSTALL PIL [hotfix for windows]\n")
         easy_install = venv_script_file(settings, 'easy_install')
         subprocess.call([easy_install, 'PIL'])
 
-    print("INSTALL REQUIREMENTS")
+    print("\nINSTALL REQUIREMENTS\n")
     req_file = settings.PATH_TO_PROJECT_REQUIREMENTS_FILE
     common_req = []
     dev_req = []
@@ -94,8 +94,8 @@ if __name__ == "__main__":
         for x in reqs:
             dev_req.append(x)
 
-    print("# ! #\n# COMMON requirements:\n\n" + ''.join(common_req))
-    print("# ! #\n# DEV requirements:\n\n" + ''.join(dev_req))
+    print("\n# ! #\n# COMMON requirements:\n\n\n" + ''.join(common_req))
+    print("\n# ! #\n# DEV requirements:\n\n\n" + ''.join(dev_req))
 
     common = NamedTemporaryFile('w', delete=False)
     common.write(''.join(common_req))

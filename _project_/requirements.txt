@@ -1,6 +1,8 @@
 # PRODUCTION (required for work) #
 # please use >= or == for goods!
 
+# https://github.com/python-pillow/Pillow/issues/793
+Pillow==2.5.0
 django>=1.6.5
 mezzanine>=3.1.8
 
