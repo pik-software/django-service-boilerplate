@@ -7,15 +7,19 @@ __author__ = 'pahaz'
 _root = dirname(__file__)
 
 
+def test_stub_root():
+    return join(_root, '.test', 'project-name')
+
+
 def venv_activate_command():
     bin = 'Scripts' if sys.platform == 'win32' else 'bin'
-    active = join(_root, '__data__', 'venv', bin, 'activate')
+    active = join(test_stub_root(), '__data__', 'venv', bin, 'activate')
     return active if sys.platform == 'win32' else 'source ' + active
 
 
 def vpython_bin():
     bin = 'Scripts' if sys.platform == 'win32' else 'bin'
-    py = join(_root, '__data__', 'venv', bin, 'python')
+    py = join(test_stub_root(), '__data__', 'venv', bin, 'python')
     return py
 
 

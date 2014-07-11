@@ -1,3 +1,4 @@
 .idea
 .test
 *.py[cod]
+__data__/*

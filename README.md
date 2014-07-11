@@ -1,3 +1,5 @@
+![build](https://travis-ci.org/pahaz/django-project-stub.svg)
+
 # Project structure #
 
 Conventions: 
