@@ -84,13 +84,13 @@ if __name__ == "__main__":
 
     print("RECREATE `.GITIGNORE` FILE")
     _path = join(_root, ".gitignore")
-    git_ignore_file = open(_path, 'w')
+    git_ignore_file = open(_path, 'wb')
     git_ignore_file.write(GIT_IGNORE_FILE)
     git_ignore_file.close()
 
     print("RECREATE `README.md` FILE")
     _path = join(_root, "README.md")
-    git_ignore_file = open(_path, 'w')
+    git_ignore_file = open(_path, 'wb')
     git_ignore_file.write(README_FILE)
     git_ignore_file.close()
 
