@@ -166,7 +166,8 @@ class Installer(object):
             # one homepage pattern, so if you use a different one, comment this
             # one out.
 
-            #url("^$", direct_to_template, {"template": "index.html"}, name="home"),
+            #url("^$", direct_to_template, {"template": "index.html"},
+            # name="home"),
 
             # HOMEPAGE AS AN EDITABLE PAGE IN THE PAGE TREE
             # ---------------------------------------------
@@ -181,7 +182,8 @@ class Installer(object):
             # "/.html" - so for this case, the template "pages/index.html"
             # should be used if you want to customize the homepage's template.
 
-            # url("^$", "mezzanine.pages.views.page", {"slug": "/"}, name="home"),
+            # url("^$", "mezzanine.pages.views.page", {"slug": "/"},
+            # name="home"),
 
             # HOMEPAGE FOR A BLOG-ONLY SITE
             # -----------------------------
@@ -213,7 +215,8 @@ class Installer(object):
             # ``SITE_PREFIX`` setting, which will contain the prefix. Eg:
             # SITE_PREFIX = "my/site/prefix"
             # For convenience, and to avoid repeating the prefix, use the
-            # commented out pattern below (commenting out the one above of course)
+            # commented out pattern below (commenting out the one above of
+            # course)
             # which will make use of the ``SITE_PREFIX`` setting. Make sure to
             # add the import ``from django.conf import settings`` to the top
             # of this file as well.
@@ -221,5 +224,5 @@ class Installer(object):
             # need to use the ``SITE_PREFIX`` setting as well.
             # MEZZANINE_PAGE_PREFIX = "pages/"
 
-            ("^%s" % getattr(settings, 'MEZZANINE_PAGE_PREFIX', ''), include("mezzanine.urls"))
+            ("^", include("mezzanine.urls")),
         )
