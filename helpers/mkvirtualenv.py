@@ -4,12 +4,13 @@ from __future__ import unicode_literals
 from __future__ import print_function
 import subprocess
 import sys
-from os.path import dirname, join
 from tempfile import NamedTemporaryFile
+
+from os.path import dirname, join, abspath
 
 
 __author__ = 'pahaz'
-_root = dirname(dirname(__file__))
+_root = abspath(dirname(dirname(__file__)))
 
 
 ###############
@@ -56,6 +57,9 @@ def pip_install(requirements_file, use_cache=True, cache_dir=None):
     subprocess.call(command)
 
 
+def root_join(*args):
+    return join(_root, *args)
+
 ###############
 #             #
 #    MAIN     #
@@ -67,6 +71,13 @@ if __name__ == "__main__":
     PRODUCTION_MODE = False
     USE_PIP_CACHE = True
     USE_FIXES = True
+
+    if '--production' in sys.argv:
+        PRODUCTION_MODE = True
+    if '--no-use-pip-cache' in sys.argv:
+        USE_PIP_CACHE = False
+    if '--no-use-fixes' in sys.argv:
+        USE_FIXES = False
 
     fix_sys_paths()
     s = import_project_stub_settings(PROJECT_DIR_NAME)
