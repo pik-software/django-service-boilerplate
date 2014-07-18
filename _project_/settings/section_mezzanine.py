@@ -222,5 +222,4 @@ class Installer(object):
             # MEZZANINE_PAGE_PREFIX = "pages/"
 
             ("^%s" % getattr(settings, 'MEZZANINE_PAGE_PREFIX', ''), include("mezzanine.urls"))
-
         )

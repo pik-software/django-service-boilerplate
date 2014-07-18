@@ -32,7 +32,6 @@ class Installer(object):
         for x in MIDDLEWARE_CLASSES:
             append_if_not_exist("MIDDLEWARE_CLASSES", x)
 
-
     @staticmethod
     def update_urls(urlpatterns):
         from django.conf.urls import patterns, include, url
