@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
-from mkvirtualenv import help_activate_venv_command, fix_sys_paths, \
+from mkvirtualenv import venv_activate_command, fix_sys_paths, \
     import_project_stub_settings
 
 __author__ = 'pahaz'
@@ -14,7 +14,7 @@ if __name__ == "__main__":
     fix_sys_paths()
     settings = import_project_stub_settings(PROJECT_DIR_NAME)
 
-    how_to_active = help_activate_venv_command(settings)
+    how_to_active = venv_activate_command(settings)
 
     print("""HELPER
 

@@ -7,7 +7,7 @@ import subprocess
 
 import os
 from os.path import join, dirname
-from mkvirtualenv import pip_file, fix_sys_paths, \
+from mkvirtualenv import venv_pip_file, fix_sys_paths, \
     import_project_stub_settings
 
 
@@ -29,6 +29,6 @@ if __name__ == "__main__":
         if x.endswith("content-type"):
             continue
         file_ = join(PACKAGES_DIR, x)
-        cmd = [pip_file(settings), "install", "--no-deps", file_]
+        cmd = [venv_pip_file(settings), "install", "--no-deps", file_]
         print(' '.join(cmd))
         subprocess.call(cmd)
