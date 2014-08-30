@@ -7,7 +7,7 @@ from __future__ import print_function
 import subprocess
 import sys
 
-from .lib import fix_sys_paths, import_project_stub_settings, \
+from lib import fix_sys_paths, import_project_stub_settings, \
     venv_script_file, separate_requirements, make_temp_file, venv_pip_file, \
     pip_install, venv_activate_command
 

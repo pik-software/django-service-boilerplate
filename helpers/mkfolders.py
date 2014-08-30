@@ -6,7 +6,7 @@ from __future__ import print_function
 
 import os
 
-from .lib import fix_sys_paths, import_project_stub_settings, \
+from lib import fix_sys_paths, import_project_stub_settings, \
     make_dir_if_not_exists
 
 __author__ = 'pahaz'

@@ -6,7 +6,7 @@ from __future__ import print_function
 
 import subprocess
 
-from .lib import fix_sys_paths, import_project_stub_settings, \
+from lib import fix_sys_paths, import_project_stub_settings, \
     root_join, venv_python_file, is_venv_exists
 
 __author__ = 'pahaz'

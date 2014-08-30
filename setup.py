@@ -5,11 +5,8 @@ from __future__ import unicode_literals
 from __future__ import print_function
 
 import os
-
-from helpers.lib import rm_file, rm_dir, fix_sys_paths, \
-    import_project_stub_settings, root_join
-from helpers.mkfolders import make_all_required_dirs
-
+import sys
+from os.path import dirname, abspath, join
 
 __author__ = 'pahaz'
 
@@ -46,6 +43,15 @@ def _get_random_string(length=32,
     return ''.join([random.choice(allowed_chars) for _ in range(length)])
 
 
+def _add_helpers_paths():
+    if hasattr(_add_helpers_paths, "path_fixed"):
+        return
+    # insert stub root for import paths
+    _path = join(abspath(dirname(__file__)), 'helpers')
+    sys.path.insert(1, _path)
+    setattr(_add_helpers_paths, "path_fixed", True)
+
+
 ###############
 #             #
 #    MAIN     #
@@ -53,9 +59,14 @@ def _get_random_string(length=32,
 ###############
 
 if __name__ == "__main__":
-    _PROJECT_STUB_SETTINGS_ = "_project_.stub_settings"
+    _add_helpers_paths()
 
-    fix_sys_paths()
+    from lib import rm_file, rm_dir, fix_sys_paths, \
+        import_project_stub_settings, root_join
+    from mkfolders import make_all_required_dirs
+
+
+    _PROJECT_STUB_SETTINGS_ = "_project_.stub_settings"
     settings = import_project_stub_settings(_PROJECT_STUB_SETTINGS_)
 
     print("INITIALIZING PROJECT")
