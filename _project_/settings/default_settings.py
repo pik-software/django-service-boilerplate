@@ -48,6 +48,7 @@ INSTALLED_APPS = (
 
     # 'debug_toolbar',
     # 'south',
+    '_project_',
 )
 
 MIDDLEWARE_CLASSES = (

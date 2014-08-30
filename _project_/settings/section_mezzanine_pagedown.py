@@ -44,3 +44,4 @@ class Installer(object):
             urlpatterns += patterns('',
                 ("^pagedown/", include(mezzanine_pagedown.urls)),
             )
+        return urlpatterns

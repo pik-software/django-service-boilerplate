@@ -6,12 +6,14 @@ SECTIONS = (
     'mezzanine',  # required be last (use `^` url)
     'mezzanine_pagedown',
     #'mezzanine_translation',
+    'smuggler', # add
 )
 
 
 class SectionInstallerInterface(object):
     @staticmethod
     def update_urls(urlpatterns):
+        # return new urlpatterns
         pass
 
     @staticmethod
@@ -38,4 +40,5 @@ def update_urls(urlpatterns):
 
         exec(section_code)
 
-        locals()['Installer'].update_urls(urlpatterns)
+        urlpatterns = locals()['Installer'].update_urls(urlpatterns)
+    return urlpatterns

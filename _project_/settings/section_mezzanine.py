@@ -225,3 +225,4 @@ class Installer(object):
 
             ("^", include("mezzanine.urls")),
         )
+        return urlpatterns

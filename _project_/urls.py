@@ -20,7 +20,7 @@ urlpatterns = patterns(
 )
 
 from .settings.sections import update_urls
-update_urls(urlpatterns)
+urlpatterns = update_urls(urlpatterns)
 
 if settings.DEBUG:
     from django.conf.urls.static import static
