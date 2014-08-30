@@ -6,7 +6,7 @@ SECTIONS = (
     'mezzanine',  # required be last (use `^` url)
     'mezzanine_pagedown',
     #'mezzanine_translation',
-    'smuggler', # add
+    #'smuggler', # add
 )
 
 
