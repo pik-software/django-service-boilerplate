@@ -35,7 +35,6 @@
 
 {% block extra_head %}{% endblock %}
 </head>
-
 <body id="{% block body_id %}body{% endblock %}">
 
 <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -47,7 +46,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
     </button>
-    {% if settings.SITE_TITLE %}<a class="navbar-brand" href="/">KVKT<span style="opacity: 0.2;">.IMKN.URFU.RU</span></a>{% endif %}
+    {% if settings.SITE_TITLE %}<a class="navbar-brand" href="/">KVKT<span style="opacity: 0.2;">.imkn.urfu.ru</span></a>{% endif %}
 {#    {% if settings.SITE_TITLE %}<a class="navbar-brand" href="/">{{ settings.SITE_TITLE }}</a>{% endif %}#}
 {#    {% if settings.SITE_TAGLINE %}<p class="navbar-text visible-lg">{{ settings.SITE_TAGLINE }}</p>{% endif %}#}
 </div>
@@ -58,10 +57,6 @@
 </div>
 </div>
 
-<div class="container">
-<div class="row">
-
-<div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1">
 {% nevercache %}
 {% if messages %}
 <div class="messages">
@@ -74,7 +69,6 @@
 </div>
 {% endif %}
 {% endnevercache %}
-</div>
 
 {#<div class="col-xs-12 col-sm-12 col-md-10 col-md-offset-1 col-lg-10 col-lg-offset-1">#}
 <ul class="breadcrumb">
@@ -83,9 +77,6 @@
 {% endspaceless %}
 </ul>
 {#</div>#}
-
-</div>
-</div>
 
 <div class="container">
 <div class="row">
