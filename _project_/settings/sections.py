@@ -5,6 +5,7 @@ SECTIONS = (
     'debug_toolbar',
     'mezzanine',  # required be last (use `^` url)
     'mezzanine_pagedown',
+    #'mezzanine_translation',
 )
 
 
