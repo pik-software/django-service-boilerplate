@@ -900,3 +900,8 @@ input[type="color"]:focus,
 .media-library {
     z-index: 10000 !important;
 }
+
+/* Fix large images size */
+.middle img {
+  max-width: 100%;
+}
