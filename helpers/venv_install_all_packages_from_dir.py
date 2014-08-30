@@ -1,29 +1,30 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# coding=utf-8
 
 from __future__ import unicode_literals
 from __future__ import print_function
+
 import sys
 import subprocess
-
 import os
 from os.path import join, dirname
-from mkvirtualenv import venv_pip_file, fix_sys_paths, \
-    import_project_stub_settings
+
+from lib import venv_pip_file, fix_sys_paths, \
+    import_project_stub_settings, root_join
 
 
 __author__ = 'pahaz'
-_root = dirname(dirname(__file__))
-
 
 if __name__ == "__main__":
-    PROJECT_DIR_NAME = "_project_"
-    PACKAGES_DIR = join(_root, '..', ".pip_cache")
+    PACKAGES_DIR = root_join('..', ".pip_cache")
 
     if len(sys.argv) >= 2:
         PACKAGES_DIR = sys.argv[1]
 
+    _PROJECT_STUB_SETTINGS_ = "_project_.stub_settings"
+
     fix_sys_paths()
-    settings = import_project_stub_settings(PROJECT_DIR_NAME)
+    settings = import_project_stub_settings(_PROJECT_STUB_SETTINGS_)
 
     for x in os.listdir(PACKAGES_DIR):
         if x.endswith("content-type"):
