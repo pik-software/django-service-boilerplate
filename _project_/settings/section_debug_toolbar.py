@@ -11,6 +11,7 @@ class Installer(object):
             g[name] = d
 
         g['DEBUG_TOOLBAR_PATCH_SETTINGS'] = False
+        g['INTERNAL_IPS'] = ['127.0.0.1']
 
         INSTALLED_APPS = (
             # ...
