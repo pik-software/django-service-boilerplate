@@ -9,9 +9,8 @@ import subprocess
 import os
 from os.path import join, dirname
 
-from lib import venv_pip_file, fix_sys_paths, \
+from .lib import venv_pip_file, fix_sys_paths, \
     import_project_stub_settings, root_join
-
 
 __author__ = 'pahaz'
 

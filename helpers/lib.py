@@ -1,15 +1,14 @@
 # coding=utf-8
 from __future__ import unicode_literals
 from __future__ import print_function
-import stat
+
 import subprocess
-import sys
-from tempfile import NamedTemporaryFile
-import os
-
-from os.path import dirname, join, abspath, basename
 import shutil
-
+import stat
+import sys
+import os
+from tempfile import NamedTemporaryFile
+from os.path import dirname, join, abspath, basename
 
 __author__ = 'pahaz'
 # located in <project_root>/<some_dir-aka-helpers>/lib.py

@@ -4,9 +4,8 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
-from lib import fix_sys_paths, import_project_stub_settings, \
+from .lib import fix_sys_paths, import_project_stub_settings, \
     pip_install, separate_requirements_as_files, is_venv_exists, venv_pip_file
-
 
 __author__ = 'pahaz'
 

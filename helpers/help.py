@@ -4,9 +4,8 @@
 from __future__ import unicode_literals
 from __future__ import print_function
 
-from lib import venv_activate_command, fix_sys_paths, \
+from .lib import venv_activate_command, fix_sys_paths, \
     import_project_stub_settings
-
 
 __author__ = 'pahaz'
 
