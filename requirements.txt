@@ -5,7 +5,7 @@
 Pillow==2.5.0
 django>=1.6.5
 mezzanine>=3.1.9
-mezzanine_pagedown
+mezzanine_pagedown>=0.6
 
 # DEVELOPMENT/TESTING (required for development/testing) #
 # This comment uses as delimiter for install production requirements
