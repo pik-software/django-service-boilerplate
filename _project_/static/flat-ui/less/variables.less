@@ -16,6 +16,8 @@
 @peter-river:               #3498db;
 @belize-hole:               #2980b9;
 
+@imkn-main:                 #0263A7;
+
 @amethyst:                  #9b59b6;
 @wisteria:                  #8e44ad;
 
@@ -44,11 +46,11 @@
 
 // Brand colors
 @brand-primary:             @wet-asphalt;
-@brand-secondary:           @turquoise;
-@brand-success:             @emerald;
+@brand-secondary:           @belize-hole; //@turquoise;
+@brand-success:             @peter-river; //@emerald;
 @brand-warning:             @sun-flower;
 @brand-danger:              @alizarin;
-@brand-info:                @peter-river;
+@brand-info:                @turquoise;
 
 
 //== Scaffolding
@@ -59,8 +61,8 @@
 @text-color:                @brand-primary;
 
 //** Global textual link color.
-@link-color:                @green-sea;
-@link-hover-color:          @turquoise;
+@link-color:                @belize-hole;
+@link-hover-color:          @peter-river;
 
 
 //== Typography
@@ -442,13 +444,13 @@
 //
 //## Define colors for form feedback states and, by default, alerts.
 
-@state-success-text:          @brand-success;
-@state-success-bg:            #dff0d8;
-@state-success-border:        darken(spin(@state-success-bg, -10), 5%);
+@state-info-text:          @brand-success;
+@state-info-bg:            #dff0d8;
+@state-info-border:        darken(spin(@state-info-bg, -10), 5%);
 
-@state-info-text:             @brand-info;
-@state-info-bg:               #d9edf7;
-@state-info-border:           darken(spin(@state-info-bg, -10), 7%);
+@state-success-text:             @brand-info;
+@state-success-bg:               #d9edf7;
+@state-success-border:           darken(spin(@state-success-bg, -10), 7%);
 
 @state-warning-text:          @brand-warning;
 @state-warning-bg:            #fcf8e3;
