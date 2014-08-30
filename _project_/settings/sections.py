@@ -4,6 +4,7 @@ _current_dir = os.path.dirname(__file__)
 SECTIONS = (
     'debug_toolbar',
     'mezzanine',  # required be last (use `^` url)
+    'mezzanine_pagedown',
 )
 
 

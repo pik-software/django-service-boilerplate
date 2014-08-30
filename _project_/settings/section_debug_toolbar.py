@@ -10,6 +10,8 @@ class Installer(object):
                 d += (value, )
             g[name] = d
 
+        g['DEBUG_TOOLBAR_PATCH_SETTINGS'] = False
+
         INSTALLED_APPS = (
             # ...
             'django.contrib.staticfiles',

@@ -10,8 +10,9 @@ admin.autodiscover()
 
 urlpatterns = patterns(
     '',
-    # url name `home` required for mezzanine
-    url(r'^$', TemplateView.as_view(template_name="index.html"), name='home'),
+    # url name `home` required for mezzanine.
+    # use page with slug='/' for home page.
+    #url(r'^$', TemplateView.as_view(template_name="index.html"), name='home'),
     url(r'^admin/', include(admin.site.urls)),
 
     # url(r'^app/', include("app.urls", namespace="app")),
