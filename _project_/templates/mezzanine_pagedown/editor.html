@@ -1,0 +1,56 @@
+<div class="wmd-wrapper">
+  <div class="wmd-panel">
+    <div id="wmd-button-bar-{{ id }}"></div>
+    <textarea id="wmd-input-{{ id }}" class="wmd-input" {{ final_attrs|safe }}>{{ value }}</textarea>
+  </div>
+  {% if server_side_preview %}
+  <div id="server-preview-{{ id }}" class="wmd-preview"></div>
+  {% else %}
+  <div id="wmd-preview-{{ id }}" class="wmd-panel wmd-preview"></div>
+  {% endif %}
+  <script type="text/javascript">
+  (function ($) {
+    $(document).ready(function() {
+      var converter_ = Markdown.getSanitizingConverter();
+      var editor_ = new Markdown.Editor(converter_, "-{{ id }}");
+      editor_.hooks.set("insertImageDialog", browseMediaLibrary);
+      editor_.run();
+
+      {% if server_side_preview %}
+      var preview_ = '#server-preview-{{ id }}';
+      {% else %}
+      var preview_ = '#wmd-preview-{{ id }}';
+      {% endif %}
+
+      // resize preview along with textarea
+      $('#wmd-input-{{ id }}').on('mouseup', function() {
+        $(preview_).outerHeight($('#wmd-input-{{ id }}').outerHeight());
+      });
+
+      // scroll preview along with textarea
+      $('#wmd-input-{{ id }}').on('scroll', function() {
+        $(preview_).scrollTop(
+          $('#wmd-input-{{ id }}').scrollTop() / $('#wmd-input-{{ id }}')[0].scrollHeight *
+            $(preview_)[0].scrollHeight);
+      });
+
+      {% if server_side_preview %}
+      // server-side preview
+      preview = function() {
+        $.post('{% url 'preview' %}',
+          {text:$('#wmd-input-{{ id }}').val()},
+          function(data,status) {
+            $('#server-preview-{{ id }}').html(data);
+        });
+      };
+      // update the preview on textarea input
+      $('#wmd-input-{{ id }}').on('input onpropertychange', $.debounce(250,preview));
+      // update the preview on pagedown editor button clicks
+      $('#wmd-button-bar-{{ id }}').on('click', preview);
+      // initial preview on loading the page
+      $(document).ready(preview);
+      {% endif %}
+    });
+  })(jQuery);
+  </script>
+</div>
