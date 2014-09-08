@@ -13,10 +13,22 @@ from lib import fix_sys_paths, import_project_stub_settings, \
 
 __author__ = 'pahaz'
 
+
+def python_version(number):
+    if number not in [2, 3]:
+        raise RuntimeError('Only 2 or 3 python version support.')
+
+    if sys.platform == 'win32':
+        return 'python3.exe' if number == 3 else 'python.exe'
+    else:
+        return 'python3' if number == 3 else 'python2'
+
+
 if __name__ == "__main__":
     PRODUCTION_MODE = False
     USE_PIP_CACHE = True
     USE_FIXES = False
+    PY_VERSION = 3
 
     if '--production' in sys.argv:
         PRODUCTION_MODE = True
@@ -31,7 +43,8 @@ if __name__ == "__main__":
     s = import_project_stub_settings(_PROJECT_STUB_SETTINGS_)
 
     print("\nMAKE VIRTUALENV\n")
-    subprocess.call(['virtualenv', s.PATH_TO_PROJECT_VENV_DIR])
+    subprocess.call(['virtualenv', '--python=' + python_version(PY_VERSION),
+                     '--no-site-packages', s.PATH_TO_PROJECT_VENV_DIR])
 
     if USE_FIXES and sys.platform == 'win32':
         print("\nINSTALL PIL [hotfix for windows]\n")
