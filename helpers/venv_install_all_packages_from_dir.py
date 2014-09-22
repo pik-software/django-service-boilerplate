@@ -11,6 +11,7 @@ from os.path import join, dirname
 
 from lib import venv_pip_file, fix_sys_paths, \
     import_project_stub_settings, root_join
+from lib2 import conf_from_pyfile
 
 __author__ = 'pahaz'
 
@@ -20,10 +21,10 @@ if __name__ == "__main__":
     if len(sys.argv) >= 2:
         PACKAGES_DIR = sys.argv[1]
 
-    _PROJECT_STUB_SETTINGS_ = "_project_.stub_settings"
+    _PROJECT_STUB_SETTINGS_ = os.path.join("_project_", "stub_settings.py")
 
     fix_sys_paths()
-    settings = import_project_stub_settings(_PROJECT_STUB_SETTINGS_)
+    settings = conf_from_pyfile(_PROJECT_STUB_SETTINGS_)
 
     for x in os.listdir(PACKAGES_DIR):
         if x.endswith("content-type"):

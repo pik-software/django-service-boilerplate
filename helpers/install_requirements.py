@@ -3,19 +3,21 @@
 
 from __future__ import unicode_literals
 from __future__ import print_function
+import os
 
 from lib import fix_sys_paths, import_project_stub_settings, \
     pip_install, separate_requirements_as_files, is_venv_exists, venv_pip_file
+from lib2 import conf_from_pyfile
 
 __author__ = 'pahaz'
 
 if __name__ == "__main__":
     PRODUCTION_MODE = False
     USE_PIP_CACHE = True
-    _PROJECT_STUB_SETTINGS_ = "_project_.stub_settings"
+    _PROJECT_STUB_SETTINGS_ = os.path.join("_project_", "stub_settings.py")
 
     fix_sys_paths()
-    settings = import_project_stub_settings(_PROJECT_STUB_SETTINGS_)
+    settings = conf_from_pyfile(_PROJECT_STUB_SETTINGS_)
 
     req = separate_requirements_as_files(settings)
 

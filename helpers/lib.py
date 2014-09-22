@@ -7,12 +7,13 @@ import shutil
 import stat
 import sys
 import os
-from tempfile import NamedTemporaryFile
 from os.path import dirname, join, abspath, basename
+from tempfile import NamedTemporaryFile
 
 __author__ = 'pahaz'
 # located in <project_root>/<some_dir-aka-helpers>/lib.py
 _root = abspath(dirname(dirname(__file__)))
+_py2 = sys.version_info[0] == 2
 
 
 def fix_sys_paths():
@@ -28,6 +29,7 @@ def root_join(*args):
 
 
 def import_project_stub_settings(path):
+    # DEPRICATED
     __import__(path)
     return sys.modules[path]
 

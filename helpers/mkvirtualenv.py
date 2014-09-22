@@ -3,6 +3,7 @@
 
 from __future__ import unicode_literals
 from __future__ import print_function
+import os
 
 import subprocess
 import sys
@@ -10,6 +11,7 @@ import sys
 from lib import fix_sys_paths, import_project_stub_settings, \
     venv_script_file, separate_requirements, make_temp_file, venv_pip_file, \
     pip_install, venv_activate_command
+from lib2 import conf_from_pyfile
 
 __author__ = 'pahaz'
 
@@ -37,10 +39,10 @@ if __name__ == "__main__":
     if '--no-use-fixes' in sys.argv:
         USE_FIXES = False
 
-    _PROJECT_STUB_SETTINGS_ = "_project_.stub_settings"
+    _PROJECT_STUB_SETTINGS_ = os.path.join("_project_", "stub_settings.py")
 
     fix_sys_paths()
-    s = import_project_stub_settings(_PROJECT_STUB_SETTINGS_)
+    settings = conf_from_pyfile(_PROJECT_STUB_SETTINGS_)
 
     print("\nMAKE VIRTUALENV\n")
     subprocess.call(['virtualenv', '--python=' + python_version(PY_VERSION),
