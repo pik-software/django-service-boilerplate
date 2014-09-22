@@ -85,7 +85,6 @@ def conf_from_object(obj, silent=False):
 
     conf = Config()
     for key in keys:
-        print(key)
         if key.isupper():
             val = keygetter(obj, key)
             setattr(conf, key, val)

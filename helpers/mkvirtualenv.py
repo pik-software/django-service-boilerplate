@@ -42,7 +42,7 @@ if __name__ == "__main__":
     _PROJECT_STUB_SETTINGS_ = os.path.join("_project_", "stub_settings.py")
 
     fix_sys_paths()
-    settings = conf_from_pyfile(_PROJECT_STUB_SETTINGS_)
+    s = conf_from_pyfile(_PROJECT_STUB_SETTINGS_)
 
     print("\nMAKE VIRTUALENV\n")
     subprocess.call(['virtualenv', '--python=' + python_version(PY_VERSION),
