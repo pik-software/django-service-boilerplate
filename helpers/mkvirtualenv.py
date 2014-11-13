@@ -46,7 +46,9 @@ if __name__ == "__main__":
 
     print("\nMAKE VIRTUALENV\n")
     subprocess.call(['virtualenv', '--python=' + python_version(PY_VERSION),
-                     '--no-site-packages', s.PATH_TO_PROJECT_VENV_DIR])
+                     '--no-site-packages', 
+                     '--always-copy', 
+                     s.PATH_TO_PROJECT_VENV_DIR])
 
     if USE_FIXES and sys.platform == 'win32':
         print("\nINSTALL PIL [hotfix for windows]\n")
