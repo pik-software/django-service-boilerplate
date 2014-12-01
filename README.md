@@ -31,7 +31,7 @@ And use this app as requirements.
     # create project-name!
     git clone https://github.com/pahaz/django-project-stub.git project-name
     cd project-name
-    python setup.py
+    python init_project_stub.py
 
     # create virtualenv!
     python helpers/mkvirtualenv.py
