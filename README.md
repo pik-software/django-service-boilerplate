@@ -40,3 +40,10 @@ And use this app as requirements.
 
 OS: Windows/Linux
 Python: 2.7/3.3
+
+# HowTo Use by hands #
+
+    git clone https://github.com/pahaz/django-project-stub.git project-name
+    cd project-name
+    python helpers/mkfolders.py
+    python helpers/mkvirtualenv.py

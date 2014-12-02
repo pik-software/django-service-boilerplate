@@ -9,6 +9,8 @@ from ..stub_settings import ROOT_DIR, PATH_TO_PROJECT_VENV_DIR, \
 
 DEBUG = TEMPLATE_DEBUG = False if os.environ.get('PRODUCTION') else True
 
+ALLOWED_HOSTS = []
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
@@ -33,8 +35,6 @@ FIXTURE_DIRS = (
     join(ROOT_DIR, "_project_", u'fixtures'),
 )
 
-ALLOWED_HOSTS = []
-
 
 # Application definition
 INSTALLED_APPS = (
@@ -46,8 +46,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.webdesign',
 
-    # 'debug_toolbar',
-    # 'south',
     '_project_',
 )
 
@@ -88,7 +86,7 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
-LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
 
