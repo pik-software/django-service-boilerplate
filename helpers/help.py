@@ -21,8 +21,12 @@ if __name__ == "__main__":
 
     print("""HELPER
 
+    Make folders structure: python helpers/mkfolders.py
     Make virtualenv: python helpers/mkvirtualenv.py
     Active virtualenv: {0}
 
+    Synchronize db: python helpers/syncdb.py
+    Run test: python helpers/test.py
+    Run dev server: python helpers/runserver.py
 
     """.format(how_to_active))

@@ -11,3 +11,15 @@ mezzanine_pagedown>=0.8
 # This comment uses as delimiter for install production requirements
 
 django-debug-toolbar>=1.2.1
+
+# mock objects
+mock
+
+# test runners
+nose
+nose-timer
+
+# style checkers
+pep8
+pyflakes
+flake8
