@@ -9,7 +9,8 @@ import sys
 from tempfile import NamedTemporaryFile
 
 from _settings import settings
-from lib import venv_script_file, venv_pip_install, venv_activate_command
+from lib import venv_script_file, venv_pip_install, venv_activate_command, \
+    separate_requirements, rm_file
 
 
 __author__ = 'pahaz'
@@ -62,16 +63,22 @@ if __name__ == "__main__":
     print("\n# ! #\n# COMMON requirements:\n\n\n" + common_text)
     print("\n# ! #\n# DEV requirements:\n\n\n" + dev_text)
 
-    with NamedTemporaryFile('w') as common, NamedTemporaryFile('w') as dev:
-        common.write(common_text)
-        dev.write(dev_text)
+    common = NamedTemporaryFile('w', delete=False)
+    dev = NamedTemporaryFile('w', delete=False)
+    common.write(common_text)
+    dev.write(dev_text)
+    common.close()
+    dev.close()
 
-        print("\nINSTALL COMMON\n")
-        venv_pip_install(settings, common.name, USE_PIP_CACHE)
-        if not PRODUCTION_MODE:
-            print("\nINSTALL DEV\n")
-            venv_pip_install(settings, dev.name, USE_PIP_CACHE)
+    print("\nINSTALL COMMON\n")
+    venv_pip_install(settings, common.name, USE_PIP_CACHE)
+    if not PRODUCTION_MODE:
+        print("\nINSTALL DEV\n")
+        venv_pip_install(settings, dev.name, USE_PIP_CACHE)
 
-        print("""NOW ACTIVATE:
-         * {help_activate_venv}
-        """.format(help_activate_venv=venv_activate_command(settings)))
+    print("""NOW ACTIVATE:
+     * {help_activate_venv}
+    """.format(help_activate_venv=venv_activate_command(settings)))
+
+    rm_file(common.name)
+    rm_file(dev.name)
