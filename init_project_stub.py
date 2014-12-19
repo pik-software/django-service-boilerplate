@@ -61,13 +61,9 @@ def _add_helpers_paths():
 if __name__ == "__main__":
     _add_helpers_paths()
 
-    from lib import rm_file, rm_dir, fix_sys_paths, \
-        import_project_stub_settings, root_join
+    from _settings import settings, root_join
+    from lib import rm_file, rm_dir
     from mkfolders import make_all_required_dirs
-
-
-    _PROJECT_STUB_SETTINGS_ = "_project_.stub_settings"
-    settings = import_project_stub_settings(_PROJECT_STUB_SETTINGS_)
 
     print("INITIALIZING PROJECT")
 
@@ -79,7 +75,7 @@ if __name__ == "__main__":
     production_settings_file.close()
 
     print("CLEANING STUB")
-    rm_file('test.py')
+    rm_file(root_join('test.py'))
 
     print("RECREATE `.GITIGNORE` FILE")
     _path = root_join(".gitignore")
@@ -97,7 +93,7 @@ if __name__ == "__main__":
     make_all_required_dirs(settings)
 
     print("INIT NEW GIT REPOSITORY")
-    rm_dir('.git')
+    rm_dir(root_join('.git'))
     os.system("git init")
     os.system("git add *")
     os.system('git commit -am "Init form pahaz/django-project-stub"')
@@ -109,4 +105,4 @@ if __name__ == "__main__":
 
     NOW WE CAN USE:
      * python helpers/mkvirtualenv.py
-""")
+    """)
