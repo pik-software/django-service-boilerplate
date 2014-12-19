@@ -7,4 +7,4 @@ install:
     pip install virtualenv; pip install fabric;
 # command to run tests, e.g. python setup.py test
 script: 
-    python test.py
+    python init_project_stub.py
