@@ -22,9 +22,10 @@ if __name__ == "__main__":
 
     is_venv_exists = is_venv_exists(settings)
     python = venv_python_file(settings) if is_venv_exists else 'python'
-    print("CALL `migrate` (python={0})".format(python))
+    print("CALL `syncdb` (python={0})".format(python))
     subprocess.call([
         python,
         root_join('manage.py'),
-        'migrate',
+        'syncdb',
+        '--migrate',
         '--noinput'])
