@@ -3,15 +3,14 @@
 
 from __future__ import unicode_literals
 from __future__ import print_function
-import os
 
 import subprocess
 import sys
+from tempfile import NamedTemporaryFile
 
-from lib import fix_sys_paths, import_project_stub_settings, \
-    venv_script_file, separate_requirements, make_temp_file, venv_pip_file, \
-    pip_install, venv_activate_command
-from lib2 import conf_from_pyfile
+from _settings import settings
+from lib import venv_script_file, venv_pip_install, venv_activate_command
+
 
 __author__ = 'pahaz'
 
@@ -39,44 +38,39 @@ if __name__ == "__main__":
     if '--no-use-fixes' in sys.argv:
         USE_FIXES = False
 
-    _PROJECT_STUB_SETTINGS_ = os.path.join("_project_", "stub_settings.py")
-
-    fix_sys_paths()
-    s = conf_from_pyfile(_PROJECT_STUB_SETTINGS_)
-
     print("\nMAKE VIRTUALENV\n")
     subprocess.call(['virtualenv', '--python=' + python_version(PY_VERSION),
                      '--no-site-packages', 
                      '--always-copy', 
-                     s.PATH_TO_PROJECT_VENV_DIR])
+                     settings.PATH_TO_PROJECT_VENV_DIR])
 
     if USE_FIXES and sys.platform == 'win32':
         print("\nINSTALL PIL [hotfix for windows]\n")
-        easy_install = venv_script_file(s, 'easy_install')
+        easy_install = venv_script_file(settings, 'easy_install')
         subprocess.call([easy_install, 'PIL'])
 
     print("\nINSTALL REQUIREMENTS\n")
-    req = separate_requirements(s)
+
+    req = separate_requirements(settings)
+
     common_req = req['common']
+    common_text = ''.join(common_req)
     dev_req = req['dev']
+    dev_text = ''.join(dev_req)
 
-    print("\n# ! #\n# COMMON requirements:\n\n\n" + ''.join(common_req))
-    print("\n# ! #\n# DEV requirements:\n\n\n" + ''.join(dev_req))
+    print("\n# ! #\n# COMMON requirements:\n\n\n" + common_text)
+    print("\n# ! #\n# DEV requirements:\n\n\n" + dev_text)
 
-    common = make_temp_file(''.join(common_req))
-    dev = make_temp_file(''.join(dev_req))
+    with NamedTemporaryFile('w') as common, NamedTemporaryFile('w') as dev:
+        common.write(common_text)
+        dev.write(dev_text)
 
-    pip = venv_pip_file(s)
-    print("""
-     # COMMON #
-     """)
-    pip_install(pip, common, USE_PIP_CACHE)
-    if not PRODUCTION_MODE:
-        print("""
-     # DEV #
-     """)
-        pip_install(pip, dev, USE_PIP_CACHE)
+        print("\nINSTALL COMMON\n")
+        venv_pip_install(settings, common.name, USE_PIP_CACHE)
+        if not PRODUCTION_MODE:
+            print("\nINSTALL DEV\n")
+            venv_pip_install(settings, dev.name, USE_PIP_CACHE)
 
-    print("""NOW ACTIVATE:
-     * {help_activate_venv}
-    """.format(help_activate_venv=venv_activate_command(s)))
+        print("""NOW ACTIVATE:
+         * {help_activate_venv}
+        """.format(help_activate_venv=venv_activate_command(settings)))

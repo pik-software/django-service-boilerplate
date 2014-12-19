@@ -1,9 +1,7 @@
+# coding=utf-8
 import errno
-import os
 import sys
-from os.path import abspath, dirname
 
-_root = abspath(dirname(dirname(__file__)))
 _py2 = sys.version_info[0] == 2
 if _py2:
     string_types = (str, unicode)
@@ -103,7 +101,6 @@ def conf_from_pyfile(filename, silent=False):
                    files.
 
     """
-    filename = os.path.join(_root, filename)
     globals_ = {"__file__": filename}
     locals_ = {}
     try:

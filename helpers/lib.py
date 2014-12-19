@@ -7,37 +7,19 @@ import shutil
 import stat
 import sys
 import os
-from os.path import dirname, join, abspath, basename
-from tempfile import NamedTemporaryFile
+from os.path import join, basename, abspath
 
 __author__ = 'pahaz'
-# located in <project_root>/<some_dir-aka-helpers>/lib.py
-_root = abspath(dirname(dirname(__file__)))
 _py2 = sys.version_info[0] == 2
 
 
-def fix_sys_paths():
-    if hasattr(fix_sys_paths, "path_fixed"):
-        return
-    # insert stub root for import paths
-    sys.path.insert(1, _root)
-    setattr(fix_sys_paths, "path_fixed", True)
+class _Settings(object):
+    pass
 
 
-def root_join(*args):
-    return join(_root, *args)
-
-
-def import_project_stub_settings(path):
-    # DEPRICATED
-    __import__(path)
-    return sys.modules[path]
-
-
-def fake_project_stub_settings(PROJECT_DIR_NAME="_project_"):
-    ROOT_DIR = _root
+def fake_project_stub_settings(ROOT_DIR=".", PROJECT_DIR_NAME="_project_"):
+    ROOT_DIR = abspath(ROOT_DIR)
     ROOT_DIR_NAME = basename(ROOT_DIR)
-
     PROJECT_DIR = join(ROOT_DIR, PROJECT_DIR_NAME)
     PROJECT_DIR_NAME = basename(PROJECT_DIR)
 
@@ -52,7 +34,7 @@ def fake_project_stub_settings(PROJECT_DIR_NAME="_project_"):
 
     PATH_TO_PROJECT_DATA_DIR = join(ROOT_DIR, '__data__')
 
-    settings = object()
+    settings = _Settings()
     settings.ROOT_DIR = ROOT_DIR
     settings.ROOT_DIR_NAME = ROOT_DIR_NAME
     settings.PROJECT_DIR = PROJECT_DIR
@@ -69,6 +51,7 @@ def fake_project_stub_settings(PROJECT_DIR_NAME="_project_"):
     settings.PATH_TO_PROJECT_DATA_DIR = PATH_TO_PROJECT_DATA_DIR
     settings._stub_settings_version_ = '0.0.1'
     return settings
+
 
 def is_venv_exists(settings):
     active_file = venv_script_file(settings, "activate")
@@ -94,11 +77,16 @@ def venv_activate_command(settings):
     return active
 
 
-def pip_install(pip, requirements_file, use_cache=True, cache_dir=None):
+def venv_pip_install(settings, requirements_file, cache_dir=None):
+    pip = venv_script_file(settings, 'pip')
+    _pip_install(pip, requirements_file, cache_dir=cache_dir)
+
+
+def _pip_install(pip, requirements_file, cache_dir=None):
     command = [pip, 'install']
-    if use_cache:
-        if not cache_dir:
-            cache_dir = join(_root, '..', '.pip_cache')
+    if cache_dir:
+        if not os.path.exists(cache_dir):
+            raise RuntimeError("Cache dir not exists")
         command.append('--download-cache={0}'.format(cache_dir))
     command.extend(['-r', requirements_file])
     subprocess.call(command)
@@ -121,35 +109,18 @@ def separate_requirements(settings):
     return {'common': common_req, 'dev': dev_req}
 
 
-def separate_requirements_as_files(settings):
-    req = separate_requirements(settings)
-    req_common = ''.join(req['common'])
-    req_dev = ''.join(req['dev'])
-    req_common_file = make_temp_file(req_common)
-    req_dev_file = make_temp_file(req_dev)
-    return {'common': req_common_file, 'dev': req_dev_file,
-            'common_content': req_common, 'dev_content': req_dev}
-
-
-def make_temp_file(content):
-    common = NamedTemporaryFile('w', delete=False)
-    common.write(content)
-    common.close()
-    return common.name
-
-
-def make_dir_if_not_exists(path):
+def mkdir_if_not_exists(path):
     path = path.rstrip('/')
     if not os.path.exists(path):
         base = os.path.dirname(path)
-        make_dir_if_not_exists(base)
+        mkdir_if_not_exists(base)
         os.mkdir(path)
         return True
     return False
 
 
 def rm_file(*paths):
-    f_path = root_join(*paths)
+    f_path = join(*paths)
     if os.path.exists(f_path) and os.path.isfile(f_path):
         os.remove(f_path)
 
@@ -161,6 +132,6 @@ def rm_dir(*paths):
         os.chmod(path, stat.S_IWRITE)
         os.unlink(path)
 
-    f_path = root_join(*paths)
+    f_path = join(*paths)
     if os.path.exists(f_path) and os.path.isdir(f_path):
         shutil.rmtree(f_path, onerror=_on_rm_error)
