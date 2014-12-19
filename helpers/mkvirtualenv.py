@@ -20,7 +20,8 @@ def python_version(number):
         raise RuntimeError('Only 2 or 3 python version support.')
 
     if sys.platform == 'win32':
-        return 'python3.exe' if number == 3 else 'python.exe'
+        return 'C:\Python34\python.exe' if number == 3 else \
+            'C:\Python27\python.exe'
     else:
         return 'python3' if number == 3 else 'python2'
 
