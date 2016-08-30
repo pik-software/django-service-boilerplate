@@ -9,6 +9,7 @@ python:
 install:
   - pip install virtualenv
   - pip install virtualenvwrapper
+  - npm install -g bower
 
 script:
   - mkvirtualenv project-name
