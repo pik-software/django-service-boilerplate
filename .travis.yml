@@ -12,5 +12,6 @@ install:
   - npm install -g bower
 
 script:
+  - ". virtualenvwrapper.sh"
   - mkvirtualenv project-name
   - inv init
