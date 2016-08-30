@@ -23,6 +23,8 @@ def init(ctx):
     if os.path.exists(FRONTEND_BOWER_JSON):
         run('bower install')
 
+    print("Use: `workon '%s'` for venv activation" % _get_venv_name())
+
 
 @task
 def runserver(ctx):
@@ -65,11 +67,16 @@ def _mkvenv():
         _mkfile(venv_name_path, venv_name)
 
 
-def _venv_activate_wrap(cmd):
+def _get_venv_name():
     venv_name_path = os.path.join(BASE_DIR, '.venv')
     if not os.path.exists(venv_name_path):
+        return None
+    return _cat(venv_name_path).strip()
+
+
+def _venv_activate_wrap(cmd):
+    venv_name = _get_venv_name()
+    if not venv_name:
         raise RuntimeError('Invalid virtualenv name. Make sure that .venv '
                            'file exists and contains virtualenv name')
-
-    venv_name = _cat(venv_name_path).strip()
     return ". virtualenvwrapper.sh && workon '%s' && (%s)" % (venv_name, cmd)
