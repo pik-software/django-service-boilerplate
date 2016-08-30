@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.org/pahaz/django-project-stub.svg?branch=master)](https://travis-ci.org/pahaz/django-project-stub)
 
+![index](./docs/img/index.png)
+
 # HowTo Use #
 
   1. install `pip` -- https://pip.pypa.io/en/stable/installing/#installation
