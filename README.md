@@ -1,49 +1,40 @@
 [![Build Status](https://travis-ci.org/pahaz/django-project-stub.svg?branch=master)](https://travis-ci.org/pahaz/django-project-stub)
 
-# Project structure #
-
-Conventions: 
- * only one project (site) for this stab. (if you can use many sites, see `EXT1` or report issue)
- * if project contain a cool app with may be uses in other projects (sites) you must move this app to special repository.
-And use this app as requirements.
- * support Django>=1.6.5
- * use PyCharm IDE
-
-
- - [dir] `__data__` - project workflow data: `venv`, `media`, `db` (see: __data__/README.md)
- - [dir] `_project_` - project level settings and files
-    - [dir] `/templates` - project level templates (and for override templates)
-    - [dir] `/settings` - project `settings.py` with sections support (see: _project_/settings/__init__.py)
-    - [dir] `/fixtures` - project level fixtures
-    - [dir] `/static` - project level static files (JS, CSS, IMAGES, ...)
-    - [file] `/urls.py` - project level routs
-    - [file] `/global_stub_settings.py` - project workflow data settings
- - [file] `requirements.txt` - project level requirements (production, development); file contain two sections: 1) only production requirements 2) additional packages for development/testing
- - [file] `manage.py` - django manage commands
- - [file] `setup.py` - set up new project
-
 # HowTo Use #
 
-    # require!
-    easy_install -U pip
-    easy_install -U virtualenv
+  1. install `pip` -- https://pip.pypa.io/en/stable/installing/#installation
+  1. install `virtualenv` -- https://virtualenv.pypa.io/en/stable/installation/#installation
+  1. install `virtualenvwrapper` -- https://virtualenvwrapper.readthedocs.io/en/latest/install.html#installation
+  1. install `invoke` -- http://www.pyinvoke.org/installing.html#installing
 
-    # create project-name!
-    git clone https://github.com/pahaz/django-project-stub.git project-name
-    cd project-name
-    python init_project_stub.py
+Frontend requirements:
 
-    # create virtualenv!
-    python helpers/mkvirtualenv.py
+  1. install `bower` -- https://bower.io/#install-bower
 
-# Test #
+Create new virtual environment (if required):
 
-OS: Windows/Linux
-Python: 2.7/3.3
+    mkvirtualenv --python=python3.5 project-name
 
-# HowTo Use by hands #
+Create new project:
 
     git clone https://github.com/pahaz/django-project-stub.git project-name
     cd project-name
-    python helpers/mkfolders.py
-    python helpers/mkvirtualenv.py
+    inv init
+
+
+# Project structure #
+
+ - [dir] `__data__` - project media data (`venv`, `media` files, `db` files, `cache`, etc)
+ - [dir] `_project_` - project level files
+    - [dir] `./templates` - project common templates
+    - [dir] `./static` - project common static files (js, css, img, etc)
+    - [file] `./settings.py` - project settings
+    - [file] `./urls.py` - project routs
+ - [file] `requirements.txt` - project requirements
+ - [file] `manage.py` - django manage file
+ - [file] `tasks.py` - invoke manage file
+
+# Tested #
+
+OS: Windows/MacOS/Linux
+Python: 3.5

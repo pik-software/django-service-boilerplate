@@ -1,25 +1,11 @@
-# PRODUCTION (required for work) #
-# please use >= or == for goods!
+invoke>=0.13.0
+Django>=1.7.1
+Pillow>=3.3.1
+django_debug_toolbar>=1.5
+django_widget_tweaks>=1.4.1
+django_extensions>=1.7.3
+werkzeug>=0.11.10
+markdown>=2.6.6
 
-# https://github.com/python-pillow/Pillow/issues/793
-Pillow==2.5.0
-django>=1.7.1
-mezzanine>=3.1.10
-mezzanine_pagedown>=0.8
-
-# DEVELOPMENT/TESTING (required for development/testing) #
-# This comment uses as delimiter for install production requirements
-
-django-debug-toolbar>=1.2.1
-
-# mock objects
-mock
-
-# test runners
-nose
-nose-timer
-
-# style checkers
-pep8
-pyflakes
-flake8
+prospector
+pytest

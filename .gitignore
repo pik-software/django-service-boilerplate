@@ -1,4 +1,7 @@
 .idea
-.test
+.venv
 *.py[cod]
+
 __data__/*
+_project_/settings_local.py
+_project_/static/bower_components

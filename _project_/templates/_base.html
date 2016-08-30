@@ -1,0 +1,164 @@
+{% load static %}
+<!doctype html>
+<html lang="{{ LANGUAGE_CODE }}"{% if LANGUAGE_BIDI %} dir="rtl"{% endif %}>
+<head>
+    <meta charset="utf-8">
+    <title>{% block meta_title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="{% block meta_keywords %}{% endblock %}">
+    <meta name="description" content="{% block meta_description %}{% endblock %}">
+
+    <!-- Loading Bootstrap -->
+    <link href="{% static "bower_components/flat-ui/dist/css/vendor/bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
+
+    <!-- Loading Flat UI -->
+    <link href="{% static "bower_components/flat-ui/dist/css/flat-ui.css" %}" rel="stylesheet">
+
+    <link rel="shortcut icon" href="{% static "favicon.ico" %}">
+
+    {% block css %}
+        <link rel="stylesheet" href="{% static "main.css" %}">
+        {% block extra_css %}{% endblock %}
+    {% endblock %}
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
+    <!--[if lt IE 9]>
+      <script src="{% static "bower_components/flat-ui/dist/js/vendor/html5shiv.js" %}"></script>
+      <script src="{% static "bower_components/flat-ui/dist/js/vendor/respond.min.js" %}"></script>
+    <![endif]-->
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+        <div class="container">
+            {% block content %}
+                <h1>Hello, world!</h1>
+            {% endblock %}
+        </div>
+        <!-- /.container -->
+
+    {% block js %}
+        <!-- jQuery (necessary for Flat UI's JavaScript plugins) -->
+        <script src="{% static "bower_components/flat-ui/dist/js/vendor/jquery.min.js" %}"></script>
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <script src="{% static "bower_components/flat-ui/dist/js/vendor/video.js" %}"></script>
+        <script src="{% static "bower_components/flat-ui/dist/js/flat-ui.min.js" %}"></script>
+        <script src="{% static "main.js" %}"></script>
+        {% block extra_js %}{% endblock %}
+    {% endblock %}
+
+    {% block extra_body %}{% endblock %}
+</body>
+
+{#<div class="navbar navbar-default navbar-no-fixed-top" role="navigation">#}
+{#    <div class="container">#}
+{#        <div class="navbar-header">#}
+{#            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">#}
+{#                <span class="sr-only">{% trans "Toggle Navigation" %}</span>#}
+{#                <span class="icon-bar"></span>#}
+{#                <span class="icon-bar"></span>#}
+{#                <span class="icon-bar"></span>#}
+{#            </button>#}
+{#            {% if settings.SITE_TITLE %}<a class="navbar-brand" href="/">#}
+{#                secret<span style="opacity: 0.2; font-size: 18px;">.imkn.urfu.ru</span>#}
+{#                </a>{% endif %}#}
+            {#    {% if settings.SITE_TITLE %}<a class="navbar-brand" href="/">{{ settings.SITE_TITLE }}</a>{% endif %}#}
+            {#    {% if settings.SITE_TAGLINE %}<p class="navbar-text visible-lg">{{ settings.SITE_TAGLINE }}</p>{% endif %}#}
+{#        </div>#}
+{#        <div class="navbar-collapse collapse">#}
+{#            {% search_form "all" %}#}
+{#            {% page_menu "pages/menus/dropdown.html" %}#}
+{#        </div>#}
+{#    </div>#}
+{#</div>#}
+{##}
+{#    {% if messages %}#}
+{#        <div class="messages">#}
+{#            {% for message in messages %}#}
+{#                <div class="alert alert-dismissable alert-{{ message.tags }}" data-alert="alert">#}
+{#                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>#}
+{#                    {{ message }}#}
+{#                </div>#}
+{#            {% endfor %}#}
+{#        </div>#}
+{#    {% endif %}#}
+{##}
+{#<section class="header-sub bg-midnight-blue">#}
+{#    <div class="background" style="background-image: url('{% static "i/bg_hpc.jpg" %}');">&nbsp;</div>#}
+{#    <div class="container">#}
+{#        <div class="row">#}
+{#            <div class="col-sm-5">#}
+{#                <img class="logo" src="{% static "i/imkn.png" %}" alt="ИМКН УрФУ Логотип" style="width: 100%" />#}
+{#            </div>#}
+{#            <div class="col-sm-7">#}
+{#                <h2>Заголовок</h2>#}
+{#                <h3>Важный подзаголовок</h3>#}
+{##}
+{#                <p>Параграф, который содержит мотивирующую информацию. Дальше, могут быть написаны общие слова, их редко читают, они обычно размера этого предложения.</p>#}
+{#                <p>Что-то о работе с большими объемами данных, очень высокими нагрузками, кластерными вычислениями и науке. Возможно, интересные факты.</p>#}
+{##}
+{#                <div class="additional-links">Пожалуйста, <a href="/about">посмотрите подробную информацию</a> или <a href="/question">задайте вопрос</a>.</div>#}
+{#            </div>#}
+{##}
+{#        </div>#}
+{#    </div>#}
+{#</section>#}
+{##}
+{#<section class="header-breadcrumb">#}
+{#<div class="container">#}
+{#    <ul class="breadcrumb">#}
+{#        {% spaceless %}#}
+{#            {% block breadcrumb_menu %}#}
+{#                {% page_menu "pages/menus/breadcrumb.html" %}{% endblock %}#}
+{#        {% endspaceless %}#}
+{#    </ul>#}
+{#</div>#}
+{#</section>#}
+{##}
+{#<div class="container">#}
+{#    <div class="row">#}
+{##}
+{#        <div class="col-xs-12 col-sm-8 col-md-9 middle">#}
+{#            <h1>{% block title %}{% endblock %}</h1>#}
+{#            {% block main %}{% endblock %}#}
+{#        </div>#}
+{##}
+{#        <div class="col-xs-12 col-sm-4 col-md-3 right">#}
+{#            {% block right_panel %}#}
+{#            {% endblock %}#}
+{#        </div>#}
+{##}
+{#    </div>#}
+{#</div>#}
+{##}
+{#<footer>#}
+{#    <div class="container">#}
+{#        <div class="row">#}
+{#            <p class="site-info text-center">#}
+{#                {% trans "Powered by" %}#}
+{#                <a href="http://mezzanine.jupo.org">Mezzanine</a>#}
+{#                {% ifinstalled cartridge.shop %},#}
+{#                    <a href="http://cartridge.jupo.org">Cartridge</a>{% endifinstalled %}#}
+{#                {% trans "and" %}#}
+{#                <a href="http://www.djangoproject.com">Django</a>#}
+{#                <span class="separator">|</span>#}
+{#                {% trans "Theme by" %} <a target="_blank"#}
+{#                                          href="http://getbootstrap.com">Bootstrap</a>#}
+{#                {% ifinstalled mezzanine.mobile %}#}
+{#                    <span class="separator">|</span>#}
+{#                    <a href="{% url "set_device" "mobile" %}?next={{ request.path }}">{% trans "View Mobile Site" %}</a>#}
+{#                {% endifinstalled %}#}
+{#            </p>#}
+{#        </div>#}
+{#    </div>#}
+{#</footer>#}
+{##}
+{#{% compress js %}#}
+{#    <script src="{% static "flat-ui/js/bootstrap.min.js" %}"></script>#}
+    {#<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.js"></script>#}
+{#    <script src="{% static "animations/page-transitions.js" %}"></script>#}
+{#    {% block extra_js %}{% endblock %}#}
+{#{% endcompress %}#}
+{##}
+{#{% include "includes/footer_scripts.html" %}#}
+{#</body>#}
+{#</html>#}

@@ -1,23 +1,20 @@
-{% extends "base.html" %}
+{% extends "_base.html" %}
 {% load i18n %}
 
 {% block meta_title %}{% trans "Home" %}{% endblock %}
-{% block title %}{% trans "Home" %}{% endblock %}
 
-{% block breadcrumb_menu %}
-<li class="active">{% trans "Home" %}</li>
-{% endblock %}
-
-{% block main %}
-{% blocktrans %}
-<h2>Congratulations!</h2>
-<p>
-    Welcome to your new website.
-    Here are some quick links to get you started:
-</p>
-<ul>
-    <li><a href="/admin/">Log in to the admin interface</a></li>
-    <li><a href="https://github.com/pahaz/django-project-stub">Django project stub</a></li>
-</ul>
-{% endblocktrans %}
+{% block content %}
+    {% blocktrans %}
+    <h1>Congratulations!</h1>
+    <p>
+        Welcome to your new website.
+        Here are some quick links to get you started:
+    </p>
+    <ul>
+        <li><a href="/admin/">Log in to the admin interface</a></li>
+        <li><a href="/static/bower_components/flat-ui/docs/getting-started.html">Flat-UI getting-started.html</a></li>
+        <li><a href="/static/bower_components/flat-ui/docs/components.html">Flat-UI components.html</a></li>
+        <li><a href="https://github.com/pahaz/django-project-stub">Django project stub</a></li>
+    </ul>
+    {% endblocktrans %}
 {% endblock %}

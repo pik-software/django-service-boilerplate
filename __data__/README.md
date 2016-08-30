@@ -1,8 +1,8 @@
-# Directory for project worflow data #
+# project data directory #
 
- - [dir] venv (PATH_TO_VENV_DIR)
- - [dir] collected_static (PATH_TO_COLLECT_STATIC_DIR)
- - [dir] media (PATH_TO_MEDIA_DIR)
- - [file] db.sqlite (PATH_TO_SQLITE_FILE)
- 
-settings.py must contain variables for this directories
+ - [dir] venv -- local viretualenv
+ - [dir] static -- collected static
+ - [dir] media -- project media
+ - [dir] db -- project db
+
+`_project_.settings` contains variables for this directories
