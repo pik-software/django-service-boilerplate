@@ -7,6 +7,7 @@ python:
   - "3.5"
 
 install:
+  - pip install invoke
   - pip install virtualenv
   - pip install virtualenvwrapper
   - npm install -g bower
