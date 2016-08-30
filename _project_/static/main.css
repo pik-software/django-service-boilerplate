@@ -1,3 +1,141 @@
 body {
     padding-top: 70px;
 }
+
+.demo-row {
+  margin-bottom: 20px;
+}
+.demo-row .demo-heading-note,
+.demo-row .demo-text-note {
+  display: block;
+  width: 260px;
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  font-size: 13px;
+  line-height: 13px;
+  color: #c0c1c2;
+  font-weight: 400;
+}
+.demo-row .demo-text-note {
+  bottom: auto;
+  top: 10px;
+}
+.demo-row.typography-row .demo-content {
+  float: none;
+  width: auto;
+  clear: both;
+}
+.demo-row.typography-row .demo-type-example {
+  padding-left: 25%;
+  margin-bottom: 40px;
+  position: relative;
+}
+.demo-section-title {
+  font: 900 32px/40px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: 10px 0;
+}
+.demo-panel-title {
+  padding-top: 20px;
+  margin: 2px 0 20px;
+  font: bold 23px/40px "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.demo-panel-title small {
+  color: #798795;
+  font-size: inherit;
+  font-weight: 400;
+}
+.demo-navigation {
+  margin-bottom: -4px;
+  margin-top: -10px;
+}
+.demo-pager {
+  margin-top: -20px;
+}
+.demo-tooltips {
+  height: 126px;
+}
+.demo-tooltips .tooltip {
+  left: -8px !important;
+  position: relative !important;
+  top: -8px !important;
+}
+.demo-headings {
+  margin-bottom: 12px;
+}
+.demo-tiles {
+  margin-bottom: 46px;
+}
+.demo-icons {
+  font-size: 32px;
+  margin-left: -20px;
+  padding-left: 20px;
+}
+.demo-icons .demo-content {
+  margin: 0 0 0 -35px;
+}
+.demo-icons .demo-content > span {
+  display: inline-block;
+  margin: 0 0 32px 35px;
+  width: 24px;
+  font-size: 24px;
+}
+.demo-icons-tooltip {
+  bottom: 0;
+  color: #c2c8cf;
+  font-size: 12px;
+  left: 100%;
+  margin-left: 0 !important;
+  position: absolute;
+  width: 80px;
+}
+.demo-illustrations .demo-content {
+  margin: 0 0 0 -40px;
+  padding-top: 20px;
+}
+.demo-illustrations .demo-content:before,
+.demo-illustrations .demo-content:after {
+  content: " ";
+  /* 1 */
+
+  display: table;
+  /* 2 */
+
+}
+.demo-illustrations .demo-content:after {
+  clear: both;
+}
+.demo-illustrations .demo-content > div {
+  float: left;
+  width: 100px;
+  height: 100px;
+  line-height: 100px;
+  margin: 0 0 40px 40px;
+  text-align: center;
+}
+.demo-illustrations img {
+  display: inline-block;
+  max-height: 100px;
+  max-width: 100px;
+  vertical-align: middle;
+}
+.demo-samples {
+  margin-bottom: 46px;
+}
+.demo-video {
+  padding-top: 95px;
+  border-radius: 6px;
+}
+
+.demo-swatches-row [class*="col"] {
+  float: left;
+  min-height: 1px;
+}
+.demo-swatches-row .swatches-col {
+  width: 800px;
+  margin-left: -5px;
+}
+.demo-swatches-row .swatches-desc-col {
+  width: 140px;
+  margin-left: 20px;
+}
