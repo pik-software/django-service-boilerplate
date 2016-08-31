@@ -63,7 +63,8 @@ def _mkvenv():
     venv_name_path = os.path.join(BASE_DIR, '.venv')
     if not os.path.exists(venv_name_path):
         venv_name = os.path.basename(BASE_DIR)
-        run('mkvirtualenv --python=python3.5 "%s"' % venv_name)
+        run('. virtualenvwrapper.sh && '
+            'mkvirtualenv --python=python3.5 "%s"' % venv_name)
         _mkfile(venv_name_path, venv_name)
 
 
