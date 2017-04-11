@@ -12,3 +12,5 @@ werkzeug>=0.12.1
 prospector
 pytest
 pytest-django
+pytest-selenium
+pytest-base-url
