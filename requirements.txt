@@ -11,3 +11,4 @@ werkzeug>=0.12.1
 # tests
 prospector
 pytest
+pytest-django

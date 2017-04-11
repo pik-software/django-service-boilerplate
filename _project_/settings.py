@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # DEV
     'debug_toolbar',
     'django_extensions',
 ]
@@ -51,6 +52,9 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    # DEV
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 WSGI_APPLICATION = '_project_.wsgi.application'
