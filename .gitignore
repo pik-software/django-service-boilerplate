@@ -1,5 +1,6 @@
 .idea
 .venv
+.cache
 *.py[cod]
 
 __data__/*
