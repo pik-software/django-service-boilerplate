@@ -7,10 +7,10 @@ python:
   - "3.5"
 
 install:
-  - pip install invoke
-  - pip install virtualenv
-  - pip install virtualenvwrapper
-  - npm install -g bower
+  - pip install -r requirements.txt
 
 script:
-  - inv init
+  - python manage.py migrate
+  - python manage.py collectstatic
+  - python manage.py check
+

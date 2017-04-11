@@ -1,11 +1,13 @@
-invoke>=0.13.0
-Django>=1.7.1
-Pillow>=3.3.1
-django_debug_toolbar>=1.5
+Django>=1.11
+Pillow>=4.1.0
 django_widget_tweaks>=1.4.1
-django_extensions>=1.7.3
-werkzeug>=0.11.10
-markdown>=2.6.6
+markdown>=2.6.8
 
+# dev
+django_debug_toolbar>=1.7
+django_extensions>=1.7.8
+werkzeug>=0.12.1
+
+# tests
 prospector
 pytest

@@ -1,8 +1,7 @@
 # project data directory #
 
- - [dir] venv -- local viretualenv
  - [dir] static -- collected static
  - [dir] media -- project media
- - [dir] db -- project db
+ - [file] db.sqlite3 -- project sqlite3 db
 
 `_project_.settings` contains variables for this directories
