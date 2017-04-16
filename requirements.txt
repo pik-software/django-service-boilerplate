@@ -3,6 +3,17 @@ Pillow>=4.1.0
 django_widget_tweaks>=1.4.1
 markdown>=2.6.8
 
+# db
+redis==2.10.5
+psycopg2==2.7.1
+
+# celery
+celery==4.0.2
+django_celery_results==1.0.1
+
+# prod
+uwsgi
+
 # dev
 django_debug_toolbar>=1.7
 django_extensions>=1.7.8

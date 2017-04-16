@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # CELERY
+    'django_celery_results',
+
     # DEV
     'debug_toolbar',
     'django_extensions',
@@ -131,6 +134,17 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
+
+# Celery
+CELERY_RESULT_BACKEND = 'django-cache'
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json']  # Ignore other content
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_RESULT_EXPIRES = 3600
+CELERYBEAT_SCHEDULE_FILENAME = os.path.join(DATA_DIR, 'celerybeat.db')
+CELERYBEAT_SCHEDULE = {}
 
 try:
     from .settings_local import *
