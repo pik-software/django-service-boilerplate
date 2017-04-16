@@ -2,6 +2,7 @@
 .venv
 .cache
 *.py[cod]
+*.log
 
 __data__/*
 _project_/settings_local.py
