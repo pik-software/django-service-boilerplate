@@ -1,6 +1,9 @@
 #!/bin/bash
 
-nprocessors=$(($(nproc) * 2))
+NPROCESSORS="${NPROCESSORS:-$(($(nproc) * 2))}"
+PORT="${PORT:-5000}"
+UWSGI_EXTRA_ARGS="${UWSGI_EXTRA_ARGS:-}"
+#UWSGI_EXTRA_ARGS="--wsgi-disable-file-wrapper"
 
 #python manage.py migrate
-exec uwsgi --module _project_.wsgi --processes $nprocessors --http :8000 --master --die-on-term --enable-threads --single-interpreter --wsgi-disable-file-wrapper --limit-post 4294967296
+exec uwsgi --module _project_.wsgi --processes $NPROCESSORS --http :8000 --master --die-on-term --enable-threads --single-interpreter --limit-post 4294967296 $UWSGI_EXTRA_ARGS

@@ -17,6 +17,5 @@ ENV DATA_DIR /cache
 COPY . /app
 RUN chmod +x /app/docker-prepare.sh && chmod +x /docker-entrypoint.sh && /app/docker-prepare.sh
 
-EXPOSE 8000
 VOLUME ["/static", "/app"]
 ENTRYPOINT ["/docker-entrypoint.sh"]
