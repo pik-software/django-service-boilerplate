@@ -5,6 +5,10 @@ os:
 python:
   - "3.5"
 
+services:
+  - redis-server
+  - postgresql
+
 install:
   - pip install -r requirements.txt
 
