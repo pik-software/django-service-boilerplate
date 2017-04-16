@@ -31,7 +31,6 @@ def celery_session_worker(request,
                           celery_session_app,
                           celery_worker_pool,
                           celery_worker_parameters):
-    # type: (Any, Celery, Sequence[str], str) -> WorkController
     """Session Fixture: Start worker that lives throughout test suite."""
     with worker.start_worker(celery_session_app,
                              pool=celery_worker_pool,
@@ -43,7 +42,7 @@ def celery_session_worker(request,
 
 @pytest.fixture
 def driver_class(request):
-    return webdriver.Firefox
+    return webdriver.PhantomJS
 
 
 @pytest.fixture
