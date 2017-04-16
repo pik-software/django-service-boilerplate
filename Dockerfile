@@ -5,7 +5,7 @@ ENV PYTHONUNBUFFERED 1
 RUN mkdir -p /app /static /media /cache && chown -R unprivileged:unprivileged /media /cache
 WORKDIR /app
 
-COPY reuirements.txt /requirements.txt
+COPY ./requirements.txt /requirements.txt
 RUN pip install --no-cache-dir -r /requirements.txt
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
