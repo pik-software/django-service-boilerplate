@@ -3,6 +3,9 @@ import os
 from selenium import webdriver
 import pytest
 import django
+from celery.contrib.testing import worker, tasks
+
+from _project_ import celery_app as django_celery_app
 
 
 def pytest_configure():
@@ -15,14 +18,37 @@ def base_url(live_server):
     return live_server.url
 
 
+# CELERY
+
+@pytest.fixture(scope='session')
+def celery_session_app(request):
+    """Session Fixture: Return app for session fixtures."""
+    yield django_celery_app
+
+
+@pytest.fixture(scope='session')
+def celery_session_worker(request,
+                          celery_session_app,
+                          celery_worker_pool,
+                          celery_worker_parameters):
+    # type: (Any, Celery, Sequence[str], str) -> WorkController
+    """Session Fixture: Start worker that lives throughout test suite."""
+    with worker.start_worker(celery_session_app,
+                             pool=celery_worker_pool,
+                             **celery_worker_parameters) as w:
+        yield w
+
+
+# CELENIUM
+
 @pytest.fixture
 def driver_class(request):
-	return webdriver.Firefox
+    return webdriver.Firefox
 
 
 @pytest.fixture
 def driver_kwargs():
-	return {}
+    return {}
 
 
 @pytest.yield_fixture
@@ -35,4 +61,4 @@ def driver(request, driver_class, driver_kwargs):
 
 @pytest.fixture(scope='function', autouse=True)
 def _skip_sensitive(request):
-    """Don't Skip destructive tests"""
+    """Pytest-selenium patch: don't Skip destructive tests"""
