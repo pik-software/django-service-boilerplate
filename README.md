@@ -9,6 +9,7 @@ Backend requirements:
   1. install `pip` -- https://pip.pypa.io/en/stable/installing/#installation
   1. install `virtualenv` -- https://virtualenv.pypa.io/en/stable/installation/#installation
   1. install `virtualenvwrapper` -- https://virtualenvwrapper.readthedocs.io/en/latest/install.html#installation (`pip install virtualenvwrapper`)
+  1. install and run `PostgreSQL` and `Redis`
 
 Frontend requirements:
 
@@ -21,10 +22,11 @@ Create new project:
     mkvirtualenv --python=python3.5 project-name  # create virtualenv
     pip install -r requirements.txt  # install python requirements
     bower install  # install frontend requirements
+    createdb project-name  # create postgres database
 
 # Project structure #
 
- - [dir] `__data__` - project media data (`venv`, `media` files, `db` files, `cache`, etc)
+ - [dir] `__data__` - project media data (`media` files, `db` files, `cache`, etc)
  - [dir] `_project_` - project level files
     - [dir] `./templates` - project common templates
     - [dir] `./static` - project common static files (js, css, img, etc)
@@ -32,7 +34,6 @@ Create new project:
     - [file] `./urls.py` - project routs
  - [file] `requirements.txt` - project requirements
  - [file] `manage.py` - django manage file
- - [file] `tasks.py` - invoke manage file
 
 # Tested #
 
