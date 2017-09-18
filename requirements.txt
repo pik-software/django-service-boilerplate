@@ -1,6 +1,7 @@
 Django==1.11.5
 Pillow==4.2.1
 django_widget_tweaks==1.4.1
+django-reversion==2.0.10
 
 # rest
 djangorestframework==3.6.4

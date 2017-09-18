@@ -69,6 +69,9 @@ INSTALLED_APPS = [
     # SENTRY
     'raven.contrib.django.raven_compat',
 
+    # history
+    'reversion',
+
     # DEV
     'debug_toolbar',
     'django_extensions',
