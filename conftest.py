@@ -3,7 +3,7 @@ import os
 from selenium import webdriver
 import pytest
 import django
-from celery.contrib.testing import worker
+from celery.contrib.testing import worker, tasks  # noqa: pylint: unused-import
 
 from _project_ import celery_app as django_celery_app
 
@@ -53,9 +53,9 @@ def driver_kwargs():
 @pytest.yield_fixture
 def driver(request, driver_class, driver_kwargs):  # noqa: pylint: redefined-outer-name
     """Returns a WebDriver instance based on options and capabilities"""
-    driver_context = driver_class(**driver_kwargs)
-    yield driver_context
-    driver_context.quit()
+    driver_instance = driver_class(**driver_kwargs)
+    yield driver_instance
+    driver_instance.quit()
 
 
 @pytest.fixture(scope='function', autouse=True)
