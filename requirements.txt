@@ -1,23 +1,27 @@
-Django>=1.11
-Pillow>=4.1.0
-django_widget_tweaks>=1.4.1
-markdown>=2.6.8
+Django==1.11.5
+Pillow==4.2.1
+django_widget_tweaks==1.4.1
+
+# rest
+djangorestframework==3.6.4
+django-filter==1.0.4
+markdown==2.6.9
 
 # db
-redis==2.10.5
-psycopg2==2.7.1
+redis==2.10.6
+psycopg2==2.7.3
 
 # celery
-celery==4.0.2
+celery==4.1.0
 django_celery_results==1.0.1
 
 # prod
 uwsgi
 
 # dev
-django_debug_toolbar>=1.7
-django_extensions>=1.7.8
-werkzeug>=0.12.1
+django_debug_toolbar==1.8
+django_extensions==1.9.1
+werkzeug
 
 # tests
 prospector
