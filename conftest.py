@@ -3,7 +3,7 @@ import os
 from selenium import webdriver
 import pytest
 import django
-from celery.contrib.testing import worker, tasks
+from celery.contrib.testing import worker
 
 from _project_ import celery_app as django_celery_app
 
@@ -28,14 +28,14 @@ def celery_session_app(request):
 
 @pytest.fixture(scope='session')
 def celery_session_worker(request,
-                          celery_session_app,
+                          celery_session_app,  # noqa: pylint: redefined-outer-name
                           celery_worker_pool,
                           celery_worker_parameters):
     """Session Fixture: Start worker that lives throughout test suite."""
     with worker.start_worker(celery_session_app,
                              pool=celery_worker_pool,
-                             **celery_worker_parameters) as w:
-        yield w
+                             **celery_worker_parameters) as worker_context:
+        yield worker_context
 
 
 # CELENIUM
@@ -51,11 +51,11 @@ def driver_kwargs():
 
 
 @pytest.yield_fixture
-def driver(request, driver_class, driver_kwargs):
+def driver(request, driver_class, driver_kwargs):  # noqa: pylint: redefined-outer-name
     """Returns a WebDriver instance based on options and capabilities"""
-    driver = driver_class(**driver_kwargs)
-    yield driver
-    driver.quit()
+    driver_context = driver_class(**driver_kwargs)
+    yield driver_context
+    driver_context.quit()
 
 
 @pytest.fixture(scope='function', autouse=True)

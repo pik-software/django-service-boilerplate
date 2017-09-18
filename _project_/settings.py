@@ -25,14 +25,15 @@ POSTGRES_HOST = '127.0.0.1'
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '0n-w7wsf^3-ehi^!@m2fayppf7cc3k4j5$2($59ai*5whm^l7k'
+SECRET_KEY = '0n-w7wsf^3-ehi^!@m2fayppf7cc3k4j5$2($59ai*5whm^l7k'  # noqa: dodgy: secret
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
-### <SERVICES> ###
+# ------------------ #
+# --- <SERVICES> --- #
 
 # SENTRY
 RAVEN_CONFIG = {
@@ -49,7 +50,8 @@ DATABASE_PASSWORD = None
 CACHE_KEY_PREFIX = BASE_DIR_NAME
 CACHE_HOST = REDIS_HOST
 
-### </SERVICES> ###
+# --- </SERVICES> --- #
+# ------------------- #
 
 # Application definition
 
@@ -134,10 +136,14 @@ CACHES = {
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.'
+             'UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.'
+             'MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.'
+             'CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.'
+             'NumericPasswordValidator'},
 ]
 
 # Internationalization
@@ -178,6 +184,6 @@ CELERYBEAT_SCHEDULE_FILENAME = os.path.join(DATA_DIR, 'celerybeat.db')
 CELERYBEAT_SCHEDULE = {}
 
 try:
-    from .settings_local import *
+    from .settings_local import *  # noqa: pylint: unused-wildcard-import, pylint: wildcard-import
 except ImportError:
     pass
