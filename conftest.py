@@ -61,3 +61,19 @@ def driver(request, driver_class, driver_kwargs):
 @pytest.fixture(scope='function', autouse=True)
 def _skip_sensitive(request):
     """Pytest-selenium patch: don't Skip destructive tests"""
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--selenium", action="store_true", default=False,
+        help="run selenium marked tests")
+
+
+def pytest_collection_modifyitems(config, items):
+    if config.getoption("--selenium"):
+        # if --selenium given in cli: do not skip the selenium tests
+        return
+    skip_selenium = pytest.mark.skip(reason="need --selenium option to run")
+    for item in items:
+        if "selenium" in item.keywords:
+            item.add_marker(skip_selenium)
