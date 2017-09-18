@@ -5,9 +5,6 @@ from django.utils.translation import ugettext_lazy as _
 from django.db import models
 
 
-_user_model = get_user_model()
-
-
 class Dated(models.Model):
     created = models.DateTimeField(
         editable=False, auto_now_add=True, verbose_name=_('Created')
@@ -21,7 +18,7 @@ class Dated(models.Model):
 
 
 class Owned(models.Model):
-    user = models.ForeignKey(_user_model, verbose_name=_("User"),
+    user = models.ForeignKey(get_user_model(), verbose_name=_("User"),
                              related_name="%(class)ss", db_index=True)
 
     class Meta:
@@ -29,7 +26,7 @@ class Owned(models.Model):
 
 
 class NullOwned(models.Model):
-    user = models.ForeignKey(_user_model, verbose_name=_("User"),
+    user = models.ForeignKey(get_user_model(), verbose_name=_("User"),
                              related_name="%(class)ss", null=True,
                              db_index=True)
 
