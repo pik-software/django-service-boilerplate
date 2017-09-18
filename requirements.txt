@@ -1,5 +1,11 @@
+# python utils
+Pillow
+requests
+beautifulsoup4
+
 Django==1.11.5
-Pillow==4.2.1
+
+# django utils
 django_widget_tweaks==1.4.1
 django-reversion==2.0.10
 
