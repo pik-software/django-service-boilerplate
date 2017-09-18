@@ -20,7 +20,7 @@ Create new project:
 
     git clone https://github.com/pahaz/django-project-stub.git project-name
     cd project-name
-    mkvirtualenv --python=python3.5 project-name  # create virtualenv
+    mkvirtualenv --python=$(which python3.5) project-name  # create virtualenv
     pip install -r requirements.txt  # install python requirements
     bower install  # install frontend requirements
     createdb project-name  # create postgres database
