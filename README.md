@@ -16,14 +16,36 @@ Frontend requirements:
 
   1. install `bower` -- https://bower.io/#install-bower (install `npm`, `node`, run `npm install -g bower`)
 
-Create new project:
+Create new project, virtualenv and install requirements:
 
     git clone https://github.com/pahaz/django-project-stub.git project-name
     cd project-name
     mkvirtualenv --python=$(which python3.5) project-name  # create virtualenv
     pip install -r requirements.txt  # install python requirements
     bower install  # install frontend requirements
+
+Create file `setting_local.py` and setup DATABASE and some local settings:
+
+      DEBUG = True
+      DATABASES = {
+          'default': {
+              'ENGINE': 'django.db.backends.postgresql_psycopg2',
+              'NAME': 'staff_pb',
+              'USER': 'postgres',
+              'PASSWORD': 'postgres',
+              'HOST': 'localhost',
+              'PORT': '5432'
+          }
+      }
+
+Create and migrate database:
+
     createdb project-name  # create postgres database
+    python manage.py migrate
+
+Run dev server:
+
+    python manage.py runserver
 
 # Project structure #
 
