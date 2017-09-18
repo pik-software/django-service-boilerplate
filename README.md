@@ -10,6 +10,7 @@ Backend requirements:
   1. install `virtualenv` -- https://virtualenv.pypa.io/en/stable/installation/#installation
   1. install `virtualenvwrapper` -- https://virtualenvwrapper.readthedocs.io/en/latest/install.html#installation (`pip install virtualenvwrapper`)
   1. install and run `PostgreSQL` and `Redis`
+  1. install `PhantomJS` selenium driver (if you want to run selenium tests)
 
 Frontend requirements:
 
