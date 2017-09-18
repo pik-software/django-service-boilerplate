@@ -4,25 +4,23 @@
 
 # HowTo Use #
 
+Backend requirements:
+
   1. install `pip` -- https://pip.pypa.io/en/stable/installing/#installation
   1. install `virtualenv` -- https://virtualenv.pypa.io/en/stable/installation/#installation
-  1. install `virtualenvwrapper` -- https://virtualenvwrapper.readthedocs.io/en/latest/install.html#installation
-  1. install `invoke` -- http://www.pyinvoke.org/installing.html#installing
+  1. install `virtualenvwrapper` -- https://virtualenvwrapper.readthedocs.io/en/latest/install.html#installation (`pip install virtualenvwrapper`)
 
 Frontend requirements:
 
-  1. install `bower` -- https://bower.io/#install-bower
-
-Create new virtual environment (if required):
-
-    mkvirtualenv --python=python3.5 project-name
+  1. install `bower` -- https://bower.io/#install-bower (install `npm`, `node`, run `npm install -g bower`)
 
 Create new project:
 
     git clone https://github.com/pahaz/django-project-stub.git project-name
     cd project-name
-    inv init
-
+    mkvirtualenv --python=python3.5 project-name  # create virtualenv
+    pip install -r requirements.txt  # install python requirements
+    bower install  # install frontend requirements
 
 # Project structure #
 
