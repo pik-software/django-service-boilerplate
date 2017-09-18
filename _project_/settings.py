@@ -15,7 +15,11 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
+BASE_DIR_NAME = os.path.basename(BASE_DIR)
 DATA_DIR = os.path.join(BASE_DIR, '__data__')
+
+REDIS_HOST = '127.0.0.1'
+POSTGRES_HOST = '127.0.0.1'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -28,6 +32,24 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
+### <SERVICES> ###
+
+# SENTRY
+RAVEN_CONFIG = {
+    'dsn': '',
+}
+
+# DATABASE
+DATABASE_NAME = BASE_DIR_NAME
+DATABASE_HOST = POSTGRES_HOST
+DATABASE_USER = None
+DATABASE_PASSWORD = None
+
+# CACHE
+CACHE_KEY_PREFIX = BASE_DIR_NAME
+CACHE_HOST = REDIS_HOST
+
+### </SERVICES> ###
 
 # Application definition
 
@@ -41,6 +63,9 @@ INSTALLED_APPS = [
 
     # CELERY
     'django_celery_results',
+
+    # SENTRY
+    'raven.contrib.django.raven_compat',
 
     # DEV
     'debug_toolbar',
@@ -85,11 +110,25 @@ TEMPLATES = [
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(DATA_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': DATABASE_NAME,
+        'USER': DATABASE_USER,
+        'PASSWORD': DATABASE_PASSWORD,
+        'HOST': POSTGRES_HOST,
+        'PORT': '5432'
     }
 }
 
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://" + CACHE_HOST + ":6379/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        },
+        "KEY_PREFIX": CACHE_KEY_PREFIX
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -128,8 +167,8 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(DATA_DIR, 'media'))
 
 # Celery
-CELERY_RESULT_BACKEND = 'django-cache'
-CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_BROKER_URL = "redis://" + REDIS_HOST + ":6379/0"
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['json']  # Ignore other content
