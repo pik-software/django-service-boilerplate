@@ -17,3 +17,4 @@ script:
   - python manage.py collectstatic
   - python manage.py check
   - pytest --cov-config .coveragerc --cov-report term-missing --cov . --selenium
+  - prospector -s veryhigh .
