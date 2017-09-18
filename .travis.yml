@@ -16,4 +16,4 @@ script:
   - python manage.py migrate
   - python manage.py collectstatic
   - python manage.py check
-  - pytest --selenium
+  - pytest --cov-config .coveragerc --cov-report term-missing --cov . --selenium

@@ -30,6 +30,7 @@ werkzeug
 # tests
 prospector
 pytest
+pytest-cov
 pytest-django
 pytest-selenium
 pytest-base-url
