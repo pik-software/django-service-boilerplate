@@ -9,6 +9,9 @@ services:
   - redis-server
   - postgresql
 
+before_install:
+  - createdb $(basename $PWD)
+
 install:
   - pip install -r requirements.txt
 
