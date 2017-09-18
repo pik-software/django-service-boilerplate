@@ -10,10 +10,14 @@ markdown==2.6.9
 # db
 redis==2.10.6
 psycopg2==2.7.3
+django-redis==4.8.0
 
 # celery
 celery==4.1.0
 django_celery_results==1.0.1
+
+# sentry
+raven
 
 # prod
 uwsgi
