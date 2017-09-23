@@ -7,7 +7,10 @@ Django==1.11.5
 
 # django utils
 django_widget_tweaks==1.4.1
+django-bootstrap-form==3.3
+django-registration==2.2
 django-reversion==2.0.10
+django-simple-history==1.9.0
 
 # rest
 djangorestframework==3.6.4
