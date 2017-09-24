@@ -71,13 +71,16 @@ INSTALLED_APPS = [
 
     # history
     'reversion',
+    'simple_history',
+
+    'bootstrapform',
 
     # DEV
     'debug_toolbar',
     'django_extensions',
 ]
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -85,6 +88,9 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'reversion.middleware.RevisionMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
 
     # DEV
     'debug_toolbar.middleware.DebugToolbarMiddleware',
@@ -174,6 +180,8 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(DATA_DIR, 'media'))
+
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 # Celery
 CELERY_RESULT_BACKEND = 'django-db'
