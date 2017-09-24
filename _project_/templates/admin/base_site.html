@@ -1,0 +1,20 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }} | ProjectX{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <style>
+  #content > h1 { visibility: hidden }
+
+  .form-row input {
+    width: calc(100% - 200px);
+  }
+  </style>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">ProjectX</a></h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
