@@ -2,6 +2,23 @@
 
 ![index](./docs/img/index.png)
 
+# Features
+
+ - Flat-UI templates
+ - Django Registration
+ - Authentication with username and password
+ - Celery integration
+ - Sentry integration
+ - Debug toolbar and Django extensions
+ - Docker build ready
+ - Dokku / Heroku deploy ready
+ - PyTest integration
+ - Selenium tests integration
+ - Travis CI integration
+ - Code style checkers (pep8, pylint, flake8, ...) by prospector
+ - Redis and Postgres integration
+ - Reversion and Simple-History integration
+
 # HowTo Use #
 
 Backend requirements:
