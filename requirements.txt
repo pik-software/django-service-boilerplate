@@ -11,6 +11,7 @@ django-bootstrap-form==3.3
 django-registration==2.2
 django-reversion==2.0.10
 django-simple-history==1.9.0
+django-sql-explorer==1.1.1
 
 # rest
 djangorestframework==3.6.4
