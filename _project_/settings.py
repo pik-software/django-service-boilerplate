@@ -31,6 +31,7 @@ SECRET_KEY = '0n-w7wsf^3-ehi^!@m2fayppf7cc3k4j5$2($59ai*5whm^l7k'  # noqa: dodgy
 DEBUG = False
 
 ALLOWED_HOSTS = ['*']
+INTERNAL_IPS = ['127.0.0.1']
 
 # ------------------ #
 # --- <SERVICES> --- #
@@ -182,6 +183,11 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(DATA_DIR, 'media'))
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+
+LOGIN_REDIRECT_URL = '/'
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 # Celery
 CELERY_RESULT_BACKEND = 'django-db'
