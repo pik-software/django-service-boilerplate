@@ -51,6 +51,15 @@ DATABASE_PASSWORD = None
 CACHE_KEY_PREFIX = BASE_DIR_NAME
 CACHE_HOST = REDIS_HOST
 
+# SQL EXPLORER
+EXPLORER_CONNECTIONS = {'Default': 'readonly'}
+EXPLORER_DEFAULT_CONNECTION = 'readonly'
+EXPLORER_SCHEMA_EXCLUDE_TABLE_PREFIXES = (
+    'auth_', 'contenttypes_',
+    'sessions_', 'admin_',
+    'django_', 'explorer_', 'reversion_',
+)
+
 # --- </SERVICES> --- #
 # ------------------- #
 
@@ -79,6 +88,7 @@ INSTALLED_APPS = [
     # DEV
     'debug_toolbar',
     'django_extensions',
+    'explorer',
 ]
 
 MIDDLEWARE = [
