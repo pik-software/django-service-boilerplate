@@ -41,7 +41,7 @@ Create new project, virtualenv and install requirements:
     pip install -r requirements.txt  # install python requirements
     bower install  # install frontend requirements
 
-Create file `setting_local.py` and setup DATABASE and some local settings:
+Create file `settings_local.py` and setup DATABASE and some local settings:
 
       DEBUG = True
       SECRET_KEY = '0n-w7wsf^3-ehi^!@m2fayppf7cc3k4j5$2($59ai*5whm^l7k'
