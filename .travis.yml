@@ -11,6 +11,7 @@ services:
 
 before_install:
   - createdb $(basename $PWD)
+  - echo "SECRET_KEY = '0n-w7wsf^3-ehi^!@m2fayppf7cc3k4j5$2($59ai*5whm^l7k'\n" > ./_project_/settings_local.py
 
 install:
   - pip install -r requirements.txt
