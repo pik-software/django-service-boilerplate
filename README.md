@@ -48,7 +48,7 @@ Create file `settings_local.py` and setup DATABASE and some local settings:
       DATABASES = {
           'default': {
               'ENGINE': 'django.db.backends.postgresql_psycopg2',
-              'NAME': 'staff_pb',
+              'NAME': 'project-name',
               'USER': 'postgres',
               'PASSWORD': 'postgres',
               'HOST': 'localhost',
