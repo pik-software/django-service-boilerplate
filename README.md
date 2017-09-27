@@ -44,6 +44,7 @@ Create new project, virtualenv and install requirements:
 Create file `setting_local.py` and setup DATABASE and some local settings:
 
       DEBUG = True
+      SECRET_KEY = '0n-w7wsf^3-ehi^!@m2fayppf7cc3k4j5$2($59ai*5whm^l7k'
       DATABASES = {
           'default': {
               'ENGINE': 'django.db.backends.postgresql_psycopg2',
