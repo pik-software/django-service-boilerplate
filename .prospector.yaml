@@ -2,6 +2,7 @@
 ignore-paths:
   - docs
   - migrations
+  - _project_/settings_local.py
 
 pylint:
   disable:

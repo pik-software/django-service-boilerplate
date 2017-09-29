@@ -11,6 +11,7 @@ services:
 
 before_install:
   - createdb $(basename $PWD)
+  - echo -e "SECRET_KEY = 'not so sectret!'\n" > ./_project_/settings_local.py
 
 install:
   - pip install -r requirements.txt

@@ -24,9 +24,6 @@ POSTGRES_HOST = '127.0.0.1'
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '0n-w7wsf^3-ehi^!@m2fayppf7cc3k4j5$2($59ai*5whm^l7k'  # noqa: dodgy: secret
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
