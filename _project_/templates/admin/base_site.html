@@ -1,0 +1,37 @@
+{% extends "admin/base.html" %}
+{% load static %}
+{% block title %}{{ title }} | {{ settings.SERVICE_TITLE }}{% endblock %}
+
+{% block extrastyle %}
+  <link rel="shortcut icon" href="{% static "favicon.ico" %}">
+  {{ block.super }}
+  <style>
+  #content > h1 { visibility: hidden }
+
+  .form-row input { width: calc(100% - 230px); }
+  .form-row input[type="radio"] { width: 15px; }
+  .form-row input[type="checkbox"] { width: 15px; }
+  .form-row .vDateField { width: 154px; }
+  .form-row .vForeignKeyRawIdAdminField { width: 42px; text-align: center; }
+
+  #user-tools > a:nth-child(2) { display: none; }
+  </style>
+{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">{{ settings.SERVICE_TITLE }}</a></h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block footer %}
+    {{ block.super }}
+    <script>
+    django.jQuery(function(){
+      var $el = django.jQuery('.vForeignKeyRawIdAdminField');
+      $el.prop("readonly", true);
+    });
+    </script>
+
+    {% include "include/metrics.html" %}
+{% endblock %}
