@@ -1,17 +1,36 @@
 # python utils
 Pillow
 requests
+pycurl>=7.43.0
 beautifulsoup4
+cucco==2.2.1
+openpyxl==2.4.8
+boto3==1.4.7
+google_cloud==0.28.0
+ddtrace==0.9.2
+datadog==0.16.0
+geocoder==1.32.1
 
 Django==1.11.5
 
 # django utils
 django_widget_tweaks==1.4.1
+django-bootstrap-form==3.3
+django-registration==2.2
 django-reversion==2.0.10
+django-simple-history==1.9.0
+django-sql-explorer==1.1.1
+dj_database_url==0.4.2
+django-storages==1.6.5
+django-waffle==0.12.0
+django-extra-views==0.9.0
+django-auth-ldap==1.2.16
 
 # rest
 djangorestframework==3.6.4
-django-filter==1.0.4
+djangorestframework-gis==0.11.2
+djangorestframework_filters==0.10.2
+django-filter==1.1.0
 markdown==2.6.9
 
 # db
@@ -37,8 +56,11 @@ werkzeug
 # tests
 prospector
 factory_boy
+freezegun
+pdbpp
 pytest
 pytest-cov
 pytest-django
 pytest-selenium
 pytest-base-url
+pytest-benchmark
