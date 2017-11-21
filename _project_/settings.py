@@ -9,46 +9,71 @@ https://docs.djangoproject.com/en/1.11/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
-
+import json
 import os
+import sys
+from logging import warning
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import dj_database_url
+from google.oauth2 import service_account
+
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
 BASE_DIR_NAME = os.path.basename(BASE_DIR)
 DATA_DIR = os.path.join(BASE_DIR, '__data__')
+SERVICE_NAME = os.environ.get('SERVICE_NAME', BASE_DIR_NAME)
 
-REDIS_HOST = '127.0.0.1'
-POSTGRES_HOST = '127.0.0.1'
+SERVICE_TITLE = 'ВКонтактус'
+
+REDIS_URL = os.environ.get(
+    'REDIS_URL',
+    'redis://@127.0.0.1:6379')
+DATABASE_URL = os.environ.get(
+    'DATABASE_URL',
+    'postgres://@127.0.0.1:5432/' + SERVICE_NAME)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '0n-w7wsf^3-ehi^!@m2fayppf7cc3k4j5$2($59ai*5whm^l7k'  # noqa: dodgy: secret
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
+SECRET_KEY = os.environ.get('SECRET_KEY', '~+%iawwf2@R!@nakwe%jcAWKJF1asdAFw2')
+ENVIRONMENT = os.environ.get('ENVIRONMENT', 'staging')
 
 ALLOWED_HOSTS = ['*']
+INTERNAL_IPS = ['127.0.0.1']
 
 # ------------------ #
 # --- <SERVICES> --- #
 
 # SENTRY
 RAVEN_CONFIG = {
-    'dsn': '',
+    'dsn': os.environ.get('RAVEN_DSN', ''),
 }
 
-# DATABASE
-DATABASE_NAME = BASE_DIR_NAME
-DATABASE_HOST = POSTGRES_HOST
-DATABASE_USER = None
-DATABASE_PASSWORD = None
+# DATADOG
+DD_STATSD_ADDR = os.environ.get('DD_AGENT_PORT_8125_UDP_ADDR', 'localhost')
+DD_STATSD_PORT = int(os.environ.get('DD_AGENT_PORT_8125_UDP_PORT', '8125'))
+DD_STATSD_NAMESPACE = SERVICE_NAME
+DD_TRACE_ADDR = os.environ.get('DD_AGENT_PORT_8126_TCP_ADDR', 'localhost')
+DD_TRACE_PORT = int(os.environ.get('DD_AGENT_PORT_8126_TCP_PORT', '8126'))
+DATADOG_TRACE = {
+    'DEFAULT_SERVICE': SERVICE_NAME + '-django-app',
+    'DEFAULT_DATABASE_PREFIX': SERVICE_NAME,
+    'AGENT_HOSTNAME': DD_TRACE_ADDR,
+    'AGENT_PORT': DD_TRACE_PORT,
+    'TAGS': {'env': ENVIRONMENT},
+}
 
-# CACHE
-CACHE_KEY_PREFIX = BASE_DIR_NAME
-CACHE_HOST = REDIS_HOST
+# SQL EXPLORER
+EXPLORER_CONNECTIONS = {'Default': 'readonly'}
+EXPLORER_DEFAULT_CONNECTION = 'readonly'
+EXPLORER_SCHEMA_EXCLUDE_TABLE_PREFIXES = (
+    'auth_', 'contenttypes_',
+    'sessions_', 'admin_',
+    'django_', 'explorer_', 'reversion_',
+    'staff_hist'
+)
 
 # --- </SERVICES> --- #
 # ------------------- #
@@ -62,6 +87,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.gis',
+    'rest_framework',
 
     # CELERY
     'django_celery_results',
@@ -69,15 +96,22 @@ INSTALLED_APPS = [
     # SENTRY
     'raven.contrib.django.raven_compat',
 
+    # DATADOG
+    'ddtrace.contrib.django',
+
     # history
     'reversion',
+    'simple_history',
+
+    'bootstrapform',
 
     # DEV
     'debug_toolbar',
     'django_extensions',
+    'explorer',
 ]
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -86,6 +120,9 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
+    'reversion.middleware.RevisionMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
+
     # DEV
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
@@ -93,6 +130,7 @@ MIDDLEWARE_CLASSES = [
 WSGI_APPLICATION = '_project_.wsgi.application'
 ROOT_URLCONF = '_project_.urls'
 
+TEMPLATE_ACCESSIBLE_SETTINGS = ['DEBUG', 'MEDIA_URL', 'SERVICE_TITLE']
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -101,10 +139,11 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
+                'django.template.context_processors.media',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.media',
+                'core.context_processors.settings',
             ],
         },
     },
@@ -114,24 +153,19 @@ TEMPLATES = [
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': DATABASE_NAME,
-        'USER': DATABASE_USER,
-        'PASSWORD': DATABASE_PASSWORD,
-        'HOST': POSTGRES_HOST,
-        'PORT': '5432'
-    }
+    'default': dj_database_url.parse(
+        DATABASE_URL,
+        engine='django.contrib.gis.db.backends.postgis')
 }
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://" + CACHE_HOST + ":6379/1",
+        "LOCATION": REDIS_URL,
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
-        "KEY_PREFIX": CACHE_KEY_PREFIX
+        "KEY_PREFIX": SERVICE_NAME
     }
 }
 
@@ -152,16 +186,25 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'  # 'ru-RU'
+LANGUAGE_CODE = 'ru-RU'  # 'en-us'
 
-TIME_ZONE = 'UTC'  # 'Asia/Yekaterinburg'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
+DATE_INPUT_FORMATS = [
+    '%Y-%m-%d', '%m/%d/%Y',   # '2006-10-25', '10/25/2006',
+    '%m/%d/%y',               # '10/25/06'
+    '%b %d %Y', '%b %d, %Y',  # 'Oct 25 2006', 'Oct 25, 2006'
+    '%d %b %Y', '%d %b, %Y',  # '25 Oct 2006', '25 Oct, 2006'
+    '%B %d %Y', '%B %d, %Y',  # 'October 25 2006', 'October 25, 2006'
+    '%d %B %Y', '%d %B, %Y',  # '25 October 2006', '25 October, 2006'
+    '%d.%m.%Y',               # '25.10.2006'
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
@@ -175,16 +218,106 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(DATA_DIR, 'media'))
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+
+LOGIN_REDIRECT_URL = '/'
+INDEX_STAFF_REDIRECT_URL = '/admin/housing/building/'
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    # 'core.ldap.RemoteUserBackend',
+]
+
 # Celery
 CELERY_RESULT_BACKEND = 'django-db'
-CELERY_BROKER_URL = "redis://" + REDIS_HOST + ":6379/0"
+CELERY_BROKER_URL = REDIS_URL
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['json']  # Ignore other content
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_RESULT_EXPIRES = 3600
+CELERY_IMPORTS = ['core.tasks']
 CELERYBEAT_SCHEDULE_FILENAME = os.path.join(DATA_DIR, 'celerybeat.db')
 CELERYBEAT_SCHEDULE = {}
+
+# DRF
+REST_FRAMEWORK = {
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_PARSER_CLASSES': (
+        'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser'
+    ),
+    'DEFAULT_PAGINATION_CLASS':
+        'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 10,
+}
+
+# storage
+_STORAGE = os.environ.get('DJANGO_FILE_STORAGE_BACKEND', None)
+_CREDENTIALS = os.environ.get('DJANGO_FILE_STORAGE_BACKEND_CREDENTIALS', None)
+GS_BUCKET_NAME = GS_PROJECT_ID = GS_CREDENTIALS = None
+if _STORAGE == 'storages.backends.gcloud.GoogleCloudStorage' and _CREDENTIALS:
+    DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+    GS_BUCKET_NAME = 'housing'
+    GS_PROJECT_ID = 'housing-service-184810'
+    # GS_AUTO_CREATE_BUCKET = True
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_info(
+        json.load(_CREDENTIALS))
+else:
+    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
+    warning('Use FileSystemStorage storage backend as DEFAULT_FILE_STORAGE')
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'root': {
+        'level': 'WARNING',
+        'handlers': ['sentry'],
+    },
+    'formatters': {
+        'verbose': {
+            'format': '[django] %(levelname)s %(asctime)s %(name)s/%(module)s %(process)d/%(thread)d: %(message)s'  # noqa
+        }
+    },
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'stream': sys.stdout,
+            'formatter': 'verbose'
+        },
+        'sentry': {
+            'level': 'INFO',
+            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',  # noqa
+            'tags': {'environment': ENVIRONMENT},
+        },
+    },
+    'loggers': {
+        'django': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': True,
+        },
+        'raven': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+        'sentry.errors': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        },
+    },
+}
 
 try:
     from .settings_local import *  # noqa: pylint: unused-wildcard-import, pylint: wildcard-import
