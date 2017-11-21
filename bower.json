@@ -1,7 +1,0 @@
-{
-  "name": "no-name",
-  "private": true,
-  "dependencies": {
-    "flat-ui": "2.3.0"
-  }
-}
