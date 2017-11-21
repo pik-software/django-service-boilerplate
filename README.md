@@ -1,7 +1,5 @@
 [![Build Status](https://travis-ci.org/pahaz/django-project-stub.svg?branch=master)](https://travis-ci.org/pahaz/django-project-stub)
 
-![index](./docs/img/index.png)
-
 # HowTo Use #
 
 Backend requirements:
@@ -16,21 +14,28 @@ Frontend requirements:
 
   1. install `bower` -- https://bower.io/#install-bower (install `npm`, `node`, run `npm install -g bower`)
 
+Ubuntu OS:
+1. install `libcurl4-openssl-dev` -- https://packages.ubuntu.com/xenial/libcurl4-openssl-dev (`sudo apt-get install libcurl4-openssl-dev`)
+1. install `zlib1g-dev` -- https://packages.ubuntu.com/ru/xenial/zlib1g-dev (`sudo apt-get install zlib1g-dev`)
+1. install `postgis` -- http://postgis.net/install/ (`sudo apt-get install postgis`)
+1. install `libgdal-dev` -- https://packages.ubuntu.com/xenial/libgdal-dev (`sudo apt-get install libgdal-dev`)
+1. install `gdal` -- https://pypi.python.org/pypi/GDAL (`pip install gdal`)
+
 Create new project, virtualenv and install requirements:
 
-    git clone https://github.com/pahaz/django-project-stub.git project-name
-    cd project-name
-    mkvirtualenv --python=$(which python3.5) project-name  # create virtualenv
+    git clone git@github.com:pik-software/<repo>.git <project-name>
+    cd <project-name>
+    mkvirtualenv --python=$(which python3.5) <project-name>
     pip install -r requirements.txt  # install python requirements
-    bower install  # install frontend requirements
 
-Create file `setting_local.py` and setup DATABASE and some local settings:
+Create file `settings_local.py` in `_project_` and setup DATABASE and some local settings:
 
       DEBUG = True
+      SECRET_KEY = '0n-w7wsf^3-ehi^!@m2fayppf7cc3k4j5$2($59ai*5whm^l7k'
       DATABASES = {
           'default': {
-              'ENGINE': 'django.db.backends.postgresql_psycopg2',
-              'NAME': 'staff_pb',
+              'ENGINE': 'django.contrib.gis.db.backends.postgis',
+              'NAME': '<project-name>',
               'USER': 'postgres',
               'PASSWORD': 'postgres',
               'HOST': 'localhost',
@@ -40,25 +45,18 @@ Create file `setting_local.py` and setup DATABASE and some local settings:
 
 Create and migrate database:
 
-    createdb project-name  # create postgres database
+    createdb <project-name>  # create postgres database
+    (OR sudo su postgres -c "createdb <project-name>")
     python manage.py migrate
 
 Run dev server:
 
     python manage.py runserver
 
-# Project structure #
+Database transfer with dumpfile:
 
- - [dir] `__data__` - project media data (`media` files, `db` files, `cache`, etc)
- - [dir] `_project_` - project level files
-    - [dir] `./templates` - project common templates
-    - [dir] `./static` - project common static files (js, css, img, etc)
-    - [file] `./settings.py` - project settings
-    - [file] `./urls.py` - project routs
- - [file] `requirements.txt` - project requirements
- - [file] `manage.py` - django manage file
+    # The command for create dumpfile (on localhost)
+    pg_dump -d <project-name> -h localhost -U postgres -W -Fc -x -O > dump.dmp
 
-# Tested #
-
-OS: Windows/MacOS/Linux
-Python: 3.5
+    # The command for restore dump from file (on server)
+    pg_restore dump.dmp
