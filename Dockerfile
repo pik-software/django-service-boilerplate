@@ -1,4 +1,4 @@
-FROM pahaz/base:v1.4
+FROM quay.io/pik-software/base:v1.6
 
 ENV PYTHONUNBUFFERED 1
 
@@ -14,7 +14,6 @@ ENV STATIC_ROOT /static
 ENV MEDIA_ROOT /media
 
 COPY . /app
-RUN chmod +x /app/docker-prepare.sh && chmod +x /docker-entrypoint.sh && /app/docker-prepare.sh
+RUN /app/docker-prepare.sh
 
-VOLUME ["/static", "/app"]
 ENTRYPOINT ["/docker-entrypoint.sh"]
