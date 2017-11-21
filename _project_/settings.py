@@ -221,7 +221,7 @@ MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(DATA_DIR, 'media'))
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 LOGIN_REDIRECT_URL = '/'
-INDEX_STAFF_REDIRECT_URL = '/admin/housing/building/'
+INDEX_STAFF_REDIRECT_URL = '/admin/'
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     # 'core.ldap.RemoteUserBackend',
@@ -295,7 +295,7 @@ LOGGING = {
             'formatter': 'verbose'
         },
         'sentry': {
-            'level': 'INFO',
+            'level': 'WARNING',
             'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',  # noqa
             'tags': {'environment': ENVIRONMENT},
         },
