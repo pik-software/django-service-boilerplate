@@ -1,2 +1,10 @@
 [run]
-omit = **/tests/*
+omit =
+    # omit anything in a tests directory anywhere
+    **/tests/*
+    **/migrations/*
+    # omit everything in .venv/
+    .venv/*
+    # omit this single file
+    manage.py
+    _project_/settings_local.py

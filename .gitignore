@@ -1,6 +1,9 @@
 .idea
 .venv
 .cache
+.env
+.benchmarks
+.coverage
 *.py[cod]
 *.log
 

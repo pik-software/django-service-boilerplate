@@ -1,9 +1,14 @@
 
 ignore-paths:
   - docs
+  - migrations
+  - .venv
+  - _project_/settings_local.py
+  - README.md
 
 pylint:
   disable:
     - unused-argument
     - too-few-public-methods
-
+    - too-many-arguments
+    - too-many-ancestors
