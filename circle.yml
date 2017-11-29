@@ -57,8 +57,7 @@ jobs:
             python manage.py migrate
             python manage.py collectstatic
             python manage.py check
-            pytest --cov-config .coveragerc --cov-report term-missing --selenium --durations=0 --ignore=housing --cov . -vv
-            #pytest --cov-config .coveragerc --cov-report term-missing --selenium --durations=0 --ds=housing.tests.settings --cov housing housing -vv
+            pytest --cov-config .coveragerc --cov-report term-missing --selenium --durations=0 --cov . -vvv
             prospector -s veryhigh .
 
       - store_artifacts:
