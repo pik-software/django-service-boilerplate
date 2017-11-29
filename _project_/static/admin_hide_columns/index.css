@@ -1,0 +1,38 @@
+.hideButton {
+    float: right;
+    cursor: pointer;
+    padding: 8px 0;
+    visibility: hidden;
+}
+
+th:hover .hideButton {
+    visibility: visible;
+}
+
+.hideButton:hover {
+    color: red;
+}
+
+.restoreColumns {
+    display: table-caption;
+    padding: 10px 0;
+    font-size: 10px;
+    min-height: 20px;
+}
+
+.restoreColumns:after {
+    content: '';
+    display: block;
+    clear: both;
+}
+
+.headerButton {
+    display: none;
+    float: left;
+    padding: 5px 7px;
+    cursor: pointer;
+}
+
+.headerButton:hover {
+    background-color: #f6f6f6;
+}

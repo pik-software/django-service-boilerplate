@@ -16,6 +16,7 @@
 
   #user-tools > a:nth-child(2) { display: none; }
   </style>
+  <link rel="stylesheet" type="text/css" href="{% static "admin_hide_columns/index.css" %}" />
 {% endblock %}
 
 {% block branding %}
@@ -32,6 +33,6 @@
       $el.prop("readonly", true);
     });
     </script>
-
+    <script type="text/javascript" src="{% static "admin_hide_columns/index.js" %}"></script>
     {% include "include/metrics.html" %}
 {% endblock %}
