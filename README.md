@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/pahaz/django-project-stub.svg?branch=master)](https://travis-ci.org/pahaz/django-project-stub)
+[![Build Status](https://travis-ci.org/pik-software/django-project-stub.svg?branch=master)](https://travis-ci.org/pik-software/django-project-stub)
 
 # HowTo Use #
 
