@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.org/pik-software/django-project-stub.svg?branch=master)](https://travis-ci.org/pik-software/django-project-stub)
-
+[![CircleCI](https://circleci.com/gh/pik-software/django-service-boilerplate.svg?style=svg)](https://circleci.com/gh/pik-software/django-service-boilerplate)
 # HowTo Use #
 
 Backend requirements:
