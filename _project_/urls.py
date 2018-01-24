@@ -18,12 +18,15 @@ from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
-from rest_framework.routers import DefaultRouter
 
+from core.api.router import StandardizedRouter
+from core.api.schema import SchemaView
 from core.views import task_result_api_view
+from contacts.api import ContactViewSet
 
-router = DefaultRouter()  # noqa: pylint: invalid-name
-# router.register('buildings', BuildingViewSet)
+router = StandardizedRouter()  # noqa: pylint: invalid-name
+router.register(
+    'contact-list', ContactViewSet, base_name='contact')
 
 
 @login_required
@@ -39,7 +42,9 @@ urlpatterns = [  # noqa: pylint: invalid-name
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('registration.auth_urls')),
     url(r'^api/task/result/(.+)/', task_result_api_view),
-    url(r'^api/v1/', include(router.urls)),
+    url(r'^api/v(?P<version>[1-9])/schema/',
+        SchemaView.as_view(), name='api_schema'),
+    url(r'^api/v(?P<version>[1-9])/', include(router.urls, namespace='api')),
 ]
 
 urlpatterns += static(

@@ -57,6 +57,27 @@ class Uided(models.Model):
         abstract = True
 
 
+class PUided(models.Model):
+    """
+    Primary Uided
+    """
+    UID_PREFIX = 'OBJ'
+    uid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+
+    @cached_property
+    def suid(self) -> str:
+        """
+        String representation of UID
+        """
+        return "{{{0}-{1}}}".format(self.UID_PREFIX, self.uid).lower()
+
+    def __str__(self):
+        return self.suid
+
+    class Meta:
+        abstract = True
+
+
 class Versioned(models.Model):
     version = models.IntegerField(default=1, editable=False)
 

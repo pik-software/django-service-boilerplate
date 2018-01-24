@@ -59,6 +59,25 @@ class SecureModelAdmin(admin.ModelAdmin):
               "to ModelAdmin ({})".format(type(self))
         assert 'get_fieldsets' in class_dict or 'fieldsets' in class_dict, msg
 
+    def save_model(self, request, obj, form, change):
+        # add `changeReason` for simple-history
+        change_prefix = f'Admin: changed by {request.user}: '
+        if not change:
+            obj.changeReason = f'Admin: created by {request.user}: {repr(obj)}'
+        elif form.changed_data:
+            obj.changeReason = change_prefix + f'{repr(form.changed_data)}'
+        else:
+            obj.changeReason = change_prefix + 'save() without changes'
+        super().save_model(request, obj, form, change)
+
+    def save_related(self, request, form, formsets, change):
+        super().save_related(request, form, formsets, change)
+
+    def delete_model(self, request, obj):
+        # add `changeReason` for simple-history
+        obj.changeReason = f'Admin: deleted by {request.user}: {repr(obj)}'
+        super().delete_model(request, obj)
+
 
 class SecureVersionedModelAdmin(VersionAdmin, SecureModelAdmin):
     history_latest_first = True
