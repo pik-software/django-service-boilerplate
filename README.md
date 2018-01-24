@@ -1,4 +1,5 @@
 [![CircleCI](https://circleci.com/gh/pik-software/django-service-boilerplate.svg?style=svg)](https://circleci.com/gh/pik-software/django-service-boilerplate)
+
 # HowTo Use #
 
 Backend requirements:
@@ -8,10 +9,6 @@ Backend requirements:
   1. install `virtualenvwrapper` -- https://virtualenvwrapper.readthedocs.io/en/latest/install.html#installation (`pip install virtualenvwrapper`)
   1. install and run `PostgreSQL` and `Redis`
   1. install `PhantomJS` selenium driver (if you want to run selenium tests)
-
-Frontend requirements:
-
-  1. install `bower` -- https://bower.io/#install-bower (install `npm`, `node`, run `npm install -g bower`)
 
 Ubuntu OS:
 1. install `libcurl4-openssl-dev` -- https://packages.ubuntu.com/xenial/libcurl4-openssl-dev (`sudo apt-get install libcurl4-openssl-dev`)
