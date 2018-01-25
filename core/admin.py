@@ -70,7 +70,7 @@ class SecureModelAdmin(admin.ModelAdmin):
             obj.changeReason = change_prefix + 'save() without changes'
         super().save_model(request, obj, form, change)
 
-    def save_related(self, request, form, formsets, change):
+    def save_related(self, request, form, formsets, change):  # noqa: pylint: useless-super-delegation
         super().save_related(request, form, formsets, change)
 
     def delete_model(self, request, obj):

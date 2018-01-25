@@ -320,6 +320,11 @@ LOGGING = {
             'handlers': ['console'],
             'propagate': True,
         },
+        'django.template': {
+            'level': 'ERROR',
+            'handlers': ['console'],
+            'propagate': False,
+        },
         'raven': {
             'level': 'DEBUG',
             'handlers': ['console'],

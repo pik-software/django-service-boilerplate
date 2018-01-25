@@ -8,7 +8,7 @@ class StandardizedAutoSchema(AutoSchema):
 
         REST_FRAMEWORK = {
             ...
-            'DEFAULT_SCHEMA_CLASS': 
+            'DEFAULT_SCHEMA_CLASS':
                 'core.api.inspectors.StandardizedAutoSchema',
             ...
         }
@@ -19,10 +19,10 @@ class StandardizedAutoSchema(AutoSchema):
 class StandardizedMetadata(SimpleMetadata):
     """
     Add this to `settings.py`:
-    
+
         REST_FRAMEWORK = {
             ...
-            'DEFAULT_METADATA_CLASS': 
+            'DEFAULT_METADATA_CLASS':
                 'core.api.inspectors.StandardizedMetadata',
             ...
         }
