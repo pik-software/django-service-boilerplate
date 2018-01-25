@@ -12,12 +12,14 @@ class _StandardizedOpenApiSchemaGenerator(OpenApiSchemaGenerator):
         """
         Customized result for `StandardizedPagination`
         """
-        class BaseFakeListSerializer(serializers.Serializer):
+        class BaseFakeListSerializer(serializers.Serializer):  # noqa: pylint: abstract-method 'create'/'update' is not overridden
             results = child_serializer_class(many=True)
 
         # Validate if the view has a pagination_class
-        if (not hasattr(view, 'pagination_class') or
-                    view.pagination_class is None):
+        has_no_pagination_class = (
+            not hasattr(view, 'pagination_class') or
+            view.pagination_class is None)
+        if has_no_pagination_class:
             return BaseFakeListSerializer
 
         pager = view.pagination_class
@@ -25,19 +27,20 @@ class _StandardizedOpenApiSchemaGenerator(OpenApiSchemaGenerator):
             # Must be a ProxyPagination
             pager = pager.default_pager
 
-        class FakePrevNextListSerializer(BaseFakeListSerializer):
+        class FakePrevNextListSerializer(BaseFakeListSerializer):  # noqa: pylint: abstract-method 'create'/'update' is not overridden
             next = serializers.URLField()
             previous = serializers.URLField()
 
-        class FakeListSerializer(FakePrevNextListSerializer):
+        class FakeListSerializer(FakePrevNextListSerializer):  # noqa: pylint: abstract-method 'create'/'update' is not overridden
             count = serializers.IntegerField()
 
-        class FakeStandardizedPagination(BaseFakeListSerializer):
+        class FakeStandardizedPagination(BaseFakeListSerializer):  # noqa: pylint: abstract-method 'create'/'update' is not overridden
             count = serializers.IntegerField()
             pages = serializers.IntegerField()
             page_size = serializers.IntegerField()
-            page_next = serializers.CharField()
-            page_previous = serializers.CharField()
+            page = serializers.IntegerField()
+            page_next = serializers.IntegerField()
+            page_previous = serializers.IntegerField()
 
         if issubclass(pager, StandardizedPagination):
             return FakeStandardizedPagination
@@ -59,7 +62,7 @@ class _StandardizedOpenApiSchemaGenerator(OpenApiSchemaGenerator):
 class SchemaView(BaseSchemaView):
     """
     Auto schema generator! Add this view in `urls.py`
-    
+
         urlpatterns = [
             ...
             url(r'^api/v(?P<version>[1-9])/schema/',

@@ -7,16 +7,15 @@ from rest_framework.response import Response
 class StandardizedPagination(PageNumberPagination):
     """
     Example: http://api.example.org/accounts/?page=4&page_size=100
-    
+
     Add this to `settings.py`:
-        
+
         REST_FRAMEWORK = {
             ...
-            'DEFAULT_PAGINATION_CLASS': 
+            'DEFAULT_PAGINATION_CLASS':
                 'core.api.pagination.StandardizedPagination',
             ...
         }
-
     """
     page_size_query_param = 'page_size'
     page_size = 20
@@ -45,5 +44,5 @@ class StandardizedPagination(PageNumberPagination):
             ('results', data),
         ]))
 
-    def get_schema_fields(self, view):
+    def get_schema_fields(self, view):  # noqa: pylint: useless-super-delegation
         return super().get_schema_fields(view)
