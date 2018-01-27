@@ -80,6 +80,9 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'django.contrib.gis',
 
+    # MAIN APPS
+    'contacts',
+
     # HISTORY
     'reversion',
     'simple_history',
