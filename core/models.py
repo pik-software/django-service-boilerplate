@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-from django.contrib.auth import get_user_model
+from django.conf import settings
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
@@ -20,7 +20,7 @@ class Dated(models.Model):
 
 class Owned(models.Model):
     user = models.ForeignKey(
-        get_user_model(), verbose_name=_("User"),
+        settings.AUTH_USER_MODEL, verbose_name=_("User"),
         related_name="%(class)ss", db_index=True,
         on_delete=models.CASCADE)
 
@@ -30,7 +30,7 @@ class Owned(models.Model):
 
 class NullOwned(models.Model):
     user = models.ForeignKey(
-        get_user_model(), verbose_name=_("User"),
+        settings.AUTH_USER_MODEL, verbose_name=_("User"),
         related_name="%(class)ss", null=True,
         db_index=True,
         on_delete=models.CASCADE)
