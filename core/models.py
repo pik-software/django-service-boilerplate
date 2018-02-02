@@ -2,7 +2,7 @@ from uuid import uuid4
 
 from django.contrib.auth import get_user_model
 from django.utils.functional import cached_property
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 from django.db import models
 
 
