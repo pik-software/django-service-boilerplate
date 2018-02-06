@@ -25,18 +25,18 @@ class HistoryViewSetMixin:
                     try:
                         value = getattr(instance, field_name)
                         ret[field_name] = value
-                    except Exception:  # noqa: pylint: broad-except
+                    except Exception:  # noqa: pylint=broad-except
                         continue
 
                 for field in fields:
                     try:
                         attribute = field.get_attribute(instance)
-                    except Exception:  # noqa: pylint: broad-except
+                    except Exception:  # noqa: pylint=broad-except
                         continue
                     try:
                         value = field.to_representation(attribute)
                         ret[field.field_name] = value
-                    except Exception:  # noqa: pylint: broad-except
+                    except Exception:  # noqa: pylint=broad-except
                         continue
 
                 return ret
@@ -72,7 +72,7 @@ class HistoryViewSetMixin:
         Can be overridden by the user in subclasses.
         """
         # TODO (pahaz): Use this as default permission check for all APIs
-        opts = self.get_queryset().model._meta  # noqa: pylint: protected-access
+        opts = self.get_queryset().model._meta  # noqa: pylint=protected-access
         method = request.method.lower()
         codename = f'can_{method}_api_{opts.model_name}_{self.action}'
         return request.user.has_perm("%s.%s" % (opts.app_label, codename))

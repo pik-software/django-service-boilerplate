@@ -24,7 +24,7 @@ from core.api.schema import SchemaView
 from core.views import task_result_api_view
 from contacts.api import ContactViewSet
 
-router = StandardizedRouter()  # noqa: pylint: invalid-name
+router = StandardizedRouter()  # noqa: pylint=invalid-name
 router.register(
     'contact-list', ContactViewSet, base_name='contact')
 
@@ -37,7 +37,7 @@ def index(request):
     return render(request, 'access_denied.html', {})
 
 
-urlpatterns = [  # noqa: pylint: invalid-name
+urlpatterns = [  # noqa: pylint=invalid-name
     url(r'^$', index, name='index'),
     url(r'^admin/', admin.site.urls),
     url(r'^accounts/', include('registration.auth_urls')),
