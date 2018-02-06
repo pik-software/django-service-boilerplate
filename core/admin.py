@@ -10,7 +10,7 @@ class SecureAdminInline(admin.TabularInline):
 
     def get_readonly_fields(self, request, obj=None):
         self._validate_admin_protocol()
-        opts = self.model._meta  # noqa: pylint: protected-access
+        opts = self.model._meta  # noqa: pylint=protected-access
         model_fields = [x.name for x in opts.get_fields()]
         fieldsets = flatten_fieldsets(self.get_fieldsets(request, obj))
         fields = set(model_fields) | set(self.readonly_fields) | set(fieldsets)
@@ -39,7 +39,7 @@ class SecureModelAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         self._validate_admin_protocol()
-        opts = self.model._meta  # noqa: pylint: protected-access
+        opts = self.model._meta  # noqa: pylint=protected-access
         model_fields = [x.name for x in opts.get_fields()]
         list_display = self.get_list_display(request)
         fieldsets = flatten_fieldsets(self.get_fieldsets(request, obj))
@@ -70,7 +70,7 @@ class SecureModelAdmin(admin.ModelAdmin):
             obj.changeReason = change_prefix + 'save() without changes'
         super().save_model(request, obj, form, change)
 
-    def save_related(self, request, form, formsets, change):  # noqa: pylint: useless-super-delegation
+    def save_related(self, request, form, formsets, change):  # noqa: pylint=useless-super-delegation
         super().save_related(request, form, formsets, change)
 
     def delete_model(self, request, obj):

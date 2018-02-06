@@ -2,6 +2,7 @@
 .venv
 .cache
 .env
+.pytest_cache
 .benchmarks
 .coverage
 *.py[cod]

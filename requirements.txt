@@ -61,6 +61,7 @@ werkzeug
 
 # tests
 prospector
+pylint
 factory_boy
 freezegun
 pdbpp

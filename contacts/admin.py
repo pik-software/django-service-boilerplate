@@ -20,7 +20,7 @@ class ContactAdmin(SecureVersionedModelAdmin):
         )}),
     )
 
-    def display_emails(self, obj):  # noqa: pylint: no-self-use
+    def display_emails(self, obj):  # noqa: pylint=no-self-use
         return format_html_join(
             mark_safe('<br>'), '<a href="mailto:{0}">{0}</a>',
             [(x, ) for x in obj.emails])
@@ -38,10 +38,10 @@ class ContactAdmin(SecureVersionedModelAdmin):
         return fields
 
     def has_add_permission(self, request):
-        return super(admin.ModelAdmin, self).has_add_permission(request)  # noqa: pylint: bad-super-call
+        return super(admin.ModelAdmin, self).has_add_permission(request)  # noqa: pylint=bad-super-call
 
     def has_change_permission(self, request, obj=None):
-        return super(admin.ModelAdmin, self).has_change_permission(request, obj)  # noqa: pylint: bad-super-call
+        return super(admin.ModelAdmin, self).has_change_permission(request, obj)  # noqa: pylint=bad-super-call
 
     def has_delete_permission(self, request, obj=None):
-        return super(admin.ModelAdmin, self).has_delete_permission(request, obj)  # noqa: pylint: bad-super-call
+        return super(admin.ModelAdmin, self).has_delete_permission(request, obj)  # noqa: pylint=bad-super-call
