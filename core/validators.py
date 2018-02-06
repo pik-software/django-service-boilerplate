@@ -2,13 +2,13 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.utils.translation import ugettext as _
 
-internal_phones_validator = RegexValidator(  # noqa: pylint: invalid-name
+internal_phones_validator = RegexValidator(  # noqa: pylint=invalid-name
     regex=r'^(\d{4}|\d{6}|\d{7})$',  # noqa
     message=_('Неверный формат номера внутреннего телефона. '
               'Используйте XXXX, XXXXXX или XXXXXXX.')
 )
 
-external_phones_validator = RegexValidator(  # noqa: pylint: invalid-name
+external_phones_validator = RegexValidator(  # noqa: pylint=invalid-name
     regex=r'^\+7\d{10}$',  # noqa
     message=_('Неверный формат номера внешнего телефона. '
               'Используйте +7XXXXXXXXXX')

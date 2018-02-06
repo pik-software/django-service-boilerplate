@@ -81,7 +81,7 @@ class PUided(models.Model):
 class Versioned(models.Model):
     version = models.IntegerField(default=1, editable=False)
 
-    def save(self, *args, **kwargs):  # noqa: pylint: arguments-differ
+    def save(self, *args, **kwargs):  # noqa: pylint=arguments-differ
         if not self.version:
             self.version = 1
         else:

@@ -44,5 +44,5 @@ class StandardizedPagination(PageNumberPagination):
             ('results', data),
         ]))
 
-    def get_schema_fields(self, view):  # noqa: pylint: useless-super-delegation
+    def get_schema_fields(self, view):  # noqa: pylint=useless-super-delegation
         return super().get_schema_fields(view)

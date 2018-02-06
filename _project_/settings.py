@@ -343,6 +343,6 @@ LOGGING = {
 }
 
 try:
-    from .settings_local import *  # noqa: pylint: unused-wildcard-import, pylint: wildcard-import
+    from .settings_local import *  # noqa: pylint=unused-wildcard-import, pylint=wildcard-import
 except ImportError:
     pass

@@ -1,1 +1,1 @@
-default_app_config = 'contacts.apps.AppConfig'  # noqa: pylint: invalid-name
+default_app_config = 'contacts.apps.AppConfig'  # noqa: invalid-name
