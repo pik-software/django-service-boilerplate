@@ -89,6 +89,7 @@ INSTALLED_APPS = [
 
     # API
     'rest_framework',
+    'rest_framework.authtoken',
     'django_filters',
     'crispy_forms',  # sexy django_filters forms
     'drf_openapi',
