@@ -19,6 +19,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 
+from core.api.auth import OBTAIN_AUTH_TOKEN
 from core.api.router import StandardizedRouter
 from core.api.schema import SchemaView
 from core.views import task_result_api_view
@@ -45,6 +46,7 @@ urlpatterns = [  # noqa: pylint=invalid-name
     url(r'^api/v(?P<version>[1-9])/schema/',
         SchemaView.as_view(), name='api_schema'),
     url(r'^api/v(?P<version>[1-9])/', include(router.urls, namespace='api')),
+    url(r'^api-token-auth/', OBTAIN_AUTH_TOKEN)
 ]
 
 urlpatterns += static(
