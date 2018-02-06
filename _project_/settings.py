@@ -89,6 +89,7 @@ INSTALLED_APPS = [
 
     # API
     'rest_framework',
+    'rest_framework.authtoken',
     'django_filters',
     'crispy_forms',  # sexy django_filters forms
     'drf_openapi',
@@ -251,6 +252,7 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser'
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication'
     ),
