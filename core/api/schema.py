@@ -12,7 +12,7 @@ class _StandardizedOpenApiSchemaGenerator(OpenApiSchemaGenerator):
         """
         Customized result for `StandardizedPagination`
         """
-        class BaseFakeListSerializer(serializers.Serializer):  # noqa: pylint: abstract-method 'create'/'update' is not overridden
+        class BaseFakeListSerializer(serializers.Serializer):  # noqa: pylint=abstract-method 'create'/'update' is not overridden
             results = child_serializer_class(many=True)
 
         # Validate if the view has a pagination_class
@@ -27,14 +27,14 @@ class _StandardizedOpenApiSchemaGenerator(OpenApiSchemaGenerator):
             # Must be a ProxyPagination
             pager = pager.default_pager
 
-        class FakePrevNextListSerializer(BaseFakeListSerializer):  # noqa: pylint: abstract-method 'create'/'update' is not overridden
+        class FakePrevNextListSerializer(BaseFakeListSerializer):  # noqa: pylint=abstract-method 'create'/'update' is not overridden
             next = serializers.URLField()
             previous = serializers.URLField()
 
-        class FakeListSerializer(FakePrevNextListSerializer):  # noqa: pylint: abstract-method 'create'/'update' is not overridden
+        class FakeListSerializer(FakePrevNextListSerializer):  # noqa: pylint=abstract-method 'create'/'update' is not overridden
             count = serializers.IntegerField()
 
-        class FakeStandardizedPagination(BaseFakeListSerializer):  # noqa: pylint: abstract-method 'create'/'update' is not overridden
+        class FakeStandardizedPagination(BaseFakeListSerializer):  # noqa: pylint=abstract-method 'create'/'update' is not overridden
             count = serializers.IntegerField()
             pages = serializers.IntegerField()
             page_size = serializers.IntegerField()

@@ -5,6 +5,12 @@ from rest_framework.compat import authenticate
 
 
 class AuthTokenSerializer(serializers.Serializer):
+    def update(self, instance, validated_data):
+        pass
+
+    def create(self, validated_data):
+        pass
+
     username = serializers.CharField(label=_("Username"))
     password = serializers.CharField(
         label=_("Password"),
@@ -34,6 +40,8 @@ class AuthTokenSerializer(serializers.Serializer):
         return attrs
 
 
-view = ObtainAuthToken
-view.serializer_class = AuthTokenSerializer
-obtain_auth_token = view.as_view()
+class StandardizedObtainAuthToken(ObtainAuthToken):
+    serializer_class = AuthTokenSerializer
+
+
+OBTAIN_AUTH_TOKEN = StandardizedObtainAuthToken.as_view()
