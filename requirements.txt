@@ -71,4 +71,4 @@ pytest-django
 pytest-selenium
 pytest-base-url
 pytest-benchmark
-pytest-catchlog
+pytest-capturelog>=0.7
