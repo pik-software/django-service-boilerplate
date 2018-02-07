@@ -6,6 +6,8 @@ from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSetMixin
 
+from core.api.mixins import BulkCreateModelMixin
+
 
 class HistoryViewSetMixin:
     def get_history_serializer(self, *args, **kwargs):
@@ -116,7 +118,7 @@ class StandartizedReadOnlyModelViewSet(
 
 
 class StandartizedModelViewSet(
-    mixins.CreateModelMixin,
+    BulkCreateModelMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,

@@ -12,6 +12,7 @@ class ContactViewSet(HistoryViewSetMixin, StandartizedModelViewSet):
     lookup_url_kwarg = '_uid'
     ordering = '-id'
     serializer_class = ContactSerializer
+    allow_bulk_create = True
 
     filter_backends = (
         StandardizedFieldFilters, StandardizedSearchFilter,
