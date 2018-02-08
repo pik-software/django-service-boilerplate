@@ -41,7 +41,6 @@ def standardized_handler(exc, context):
             data = {
                 'message': str(exc.detail),
                 'code': exc.default_code,
-                'detail': {},
             }
 
         set_rollback()
