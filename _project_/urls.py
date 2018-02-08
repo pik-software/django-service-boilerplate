@@ -41,6 +41,7 @@ def index(request):
 urlpatterns = [  # noqa: pylint=invalid-name
     url(r'^$', index, name='index'),
     url(r'^admin/', admin.site.urls),
+    url(r'^status/', include('health_check.urls')),
     url(r'^accounts/', include('registration.auth_urls')),
     url(r'^api/task/result/(.+)/', task_result_api_view),
     url(r'^api/v(?P<version>[1-9])/schema/',
