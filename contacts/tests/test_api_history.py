@@ -42,8 +42,7 @@ def test_get_api_history_access_denied(
 
     assert res.status_code == status.HTTP_403_FORBIDDEN
     assert res.data == {
-        'code': 'permission_denied', 'detail': {},
-        'message': 'Access denied'}
+        'code': 'permission_denied', 'message': 'Access denied'}
 
 
 def test_get_api_history_filtered_by_uid(
