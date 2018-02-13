@@ -1,5 +1,5 @@
 from django.apps import AppConfig as BaseAppConfig
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 
 class AppConfig(BaseAppConfig):
