@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
 REPO=$1
+BRANCH=$2
 
-echo "git push ssh://dokku@staging.pik-software.ru/${REPO}-master master"
+git push ssh://dokku@staging.pik-software.ru/${REPO}-${BRANCH} ${BRANCH}:master
