@@ -8,14 +8,13 @@ class BulkCreateModelMixin(CreateModelMixin):
     """
     Either create a single or many model instances in bulk by using the
     Serializers ``many=True``.
-    
+
     Example:
-        
+
         class ContactViewSet(StandartizedModelViewSet):
             ...
             allow_bulk_create = True
             ...
-        
     """
     allow_bulk_create = False
 
