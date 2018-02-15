@@ -14,7 +14,7 @@ def django_setup():
 
 def after_django_setup():
     from django.contrib.auth.models import User  # noqa
-    from contacts.tests.factories import *  # noqa
+    from contacts.tests.factories import ContactFactory  # noqa
 
     user, _ = User.objects.get_or_create(username='staging-superuser')
     user.is_staff = True
