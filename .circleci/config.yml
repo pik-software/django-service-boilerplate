@@ -27,25 +27,25 @@ jobs:
     steps:
       - checkout
 
-#      - run:
-#          name: install dependencies
-#          command: |
-#            python3 -m venv .venv
-#            . .venv/bin/activate
-#            pip install --upgrade setuptools
-#            pip install -r requirements.txt
+      - run:
+          name: install dependencies
+          command: |
+            python3 -m venv .venv
+            . .venv/bin/activate
+            pip install --upgrade setuptools
+            pip install -r requirements.txt
 
-#      - run:
-#          name: run tests
-#          command: |
-#            echo -e "SECRET_KEY = 'not so sectret!'\n" > ./_project_/settings_local.py
-#            . .venv/bin/activate
-#            sleep 1
-#            python manage.py migrate
-#            python manage.py collectstatic
-#            python manage.py check
-#            pytest --cov-config .coveragerc --cov-report term-missing --selenium --durations=0 --cov . -vvv
-#            prospector -s veryhigh .
+      - run:
+          name: run tests
+          command: |
+            echo -e "SECRET_KEY = 'not so sectret!'\n" > ./_project_/settings_local.py
+            . .venv/bin/activate
+            sleep 1
+            python manage.py migrate
+            python manage.py collectstatic
+            python manage.py check
+            pytest --cov-config .coveragerc --cov-report term-missing --selenium --durations=0 --cov . -vvv
+            prospector -s veryhigh .
 
       - deploy:
           name: deploy master
