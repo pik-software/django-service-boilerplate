@@ -2,6 +2,7 @@ import django.test
 import pytest
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
+from rest_framework import status
 
 from core.tasks.fixtures import create_user
 
@@ -39,8 +40,9 @@ def test_get_api_history_access_denied(
 
     res = logged_user_client.get(f'/api/v1/{model_type_name}-list/history/')
 
-    assert res.status_code == 403
-    assert res.data == {'detail': 'Access denied'}
+    assert res.status_code == status.HTTP_403_FORBIDDEN
+    assert res.data == {
+        'code': 'permission_denied', 'message': 'Access denied'}
 
 
 def test_get_api_history_filtered_by_uid(
@@ -55,8 +57,7 @@ def test_get_api_history_filtered_by_uid(
     res = logged_user_client.get(
         f'/api/v1/{model_type_name}-list/history/?_uid={obj.uid}')
 
-    assert res.status_code == 200
-    print(res.data)
+    assert res.status_code == status.HTTP_200_OK
     count = res.data['count']
     first_result = res.data['results'][0]
     assert count == 1
@@ -78,7 +79,5 @@ def test_get_api_history(
     res = logged_user_client.get(
         f'/api/v1/{model_type_name}-list/history/')
 
-    assert res.status_code == 200
-    print(res.data)
-    count = res.data['count']
-    assert count == 2
+    assert res.status_code == status.HTTP_200_OK
+    assert res.data['count'] == 2

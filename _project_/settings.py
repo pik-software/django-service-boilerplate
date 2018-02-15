@@ -281,6 +281,7 @@ REST_FRAMEWORK = {
 
     # Schema
     'DEFAULT_SCHEMA_CLASS': 'core.api.inspectors.StandardizedAutoSchema',
+    'EXCEPTION_HANDLER': 'core.api.exception_handler.standardized_handler',
 
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
@@ -295,7 +296,7 @@ if _STORAGE == 'gcloud' and _CREDENTIALS and GS_BUCKET_NAME and GS_PROJECT_ID:
     DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
     # GS_AUTO_CREATE_BUCKET = True
     GS_CREDENTIALS = service_account.Credentials.from_service_account_info(
-        json.load(base64.b64decode(_CREDENTIALS)))
+        json.loads(base64.b64decode(_CREDENTIALS), strict=False))
 else:
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
     warning('Use FileSystemStorage storage backend as DEFAULT_FILE_STORAGE')
