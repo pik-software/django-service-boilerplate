@@ -71,8 +71,8 @@ class PrimaryKeyModelSerializerField(serializers.Field):
 
         self._model = model = getattr(serializer, 'Meta').model
         if _get_model_field(model, 'uid'):
-            pk = serializers.UUIDField(format='hex')
-            pk.field_name = 'uid'
+            pk_field = serializers.UUIDField(format='hex')
+            pk_field.field_name = 'uid'
         else:
             # If you really want, You can add pk_field argument (similar to
             # rest_framework.serializers.PrimaryKeyRelatedField argument).
@@ -84,7 +84,7 @@ class PrimaryKeyModelSerializerField(serializers.Field):
         if get_allowed_objects and not callable(get_allowed_objects):
             raise TypeError("get_allowed_objects argument should be callable")
 
-        self._pk_field = pk
+        self._pk_field = pk_field
         self._serializer = serializer
 
         has_get_allowed_objects = bool(self._get_allowed_objects)
