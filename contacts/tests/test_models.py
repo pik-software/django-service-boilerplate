@@ -24,8 +24,11 @@ def test_create_model_by_factories(model_and_factory):
     model, factory = model_and_factory
     obj1 = factory.create()
     obj2 = model.objects.last()
-    assert hasattr(obj1, 'uid') and obj1.uid == obj2.uid
-    assert hasattr(obj1, 'id') and obj1.id == obj2.id
+    if hasattr(obj1, 'uid'):
+        assert obj1.uid == obj2.uid
+    if hasattr(obj1, 'id'):
+        assert obj1.id == obj2.id
+    assert obj1.pk == obj2.pk
     assert str(obj1) == str(obj2)
 
 
