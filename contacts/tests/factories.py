@@ -3,7 +3,8 @@ import random
 import factory
 import factory.fuzzy
 
-from contacts.models import Contact
+from core.tasks.fixtures import create_user
+from ..models import Contact, Comment
 
 
 def _get_random_internal_phones():
@@ -26,3 +27,13 @@ class ContactFactory(factory.django.DjangoModelFactory):
         lambda x: _get_random_internal_phones())
     emails = factory.LazyAttribute(
         lambda x: ['{0}@example.com'.format(x.name).lower()])
+
+
+class CommentFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Comment
+
+    contact = factory.SubFactory(ContactFactory)
+    message = factory.Faker('text')
+    user = factory.LazyAttribute(
+        lambda x: create_user())

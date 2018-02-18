@@ -6,7 +6,7 @@ from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSetMixin
 
-from core.api.mixins import BulkCreateModelMixin
+from ..api.mixins import BulkCreateModelMixin
 
 
 class HistoryViewSetMixin:
@@ -97,7 +97,7 @@ class HistoryViewSetMixin:
         return Response(serializer.data)
 
 
-class StandartizedGenericViewSet(ViewSetMixin, generics.GenericAPIView):
+class StandardizedGenericViewSet(ViewSetMixin, generics.GenericAPIView):
     """
     The GenericViewSet class does not provide any actions by default,
     but does include the base set of generic view behavior, such as
@@ -106,10 +106,10 @@ class StandartizedGenericViewSet(ViewSetMixin, generics.GenericAPIView):
     pass
 
 
-class StandartizedReadOnlyModelViewSet(
+class StandardizedReadOnlyModelViewSet(
     mixins.RetrieveModelMixin,
     mixins.ListModelMixin,
-    StandartizedGenericViewSet
+    StandardizedGenericViewSet
 ):
     """
     A viewset that provides default `list()` and `retrieve()` actions.
@@ -117,13 +117,13 @@ class StandartizedReadOnlyModelViewSet(
     pass
 
 
-class StandartizedModelViewSet(
+class StandardizedModelViewSet(
     BulkCreateModelMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
     mixins.ListModelMixin,
-    StandartizedGenericViewSet
+    StandardizedGenericViewSet
 ):
     """
     A viewset that provides default `create()`, `retrieve()`, `update()`,
