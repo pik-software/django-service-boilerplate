@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 import os
 
 from selenium import webdriver
@@ -77,3 +78,28 @@ def pytest_collection_modifyitems(config, items):
     for item in items:
         if "selenium" in item.keywords:
             item.add_marker(skip_selenium)
+
+
+# HELPERS
+
+@pytest.fixture(scope='function')
+def assert_num_queries_lte(pytestconfig):
+    from django.db import connection
+    from django.test.utils import CaptureQueriesContext
+
+    @contextmanager
+    def _assert_num_queries(num):
+        with CaptureQueriesContext(connection) as context:
+            yield
+            queries = len(context)
+            if queries > num:
+                msg = f"Expected to perform less then {num} queries" \
+                      f" but {queries} were done"
+                if pytestconfig.getoption('verbose') > 0:
+                    sqls = (q['sql'] for q in context.captured_queries)
+                    msg += '\n\nQueries:\n========\n\n%s' % '\n\n'.join(sqls)
+                else:
+                    msg += " (add -v option to show queries)"
+                pytest.fail(msg)
+
+    return _assert_num_queries
