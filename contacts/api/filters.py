@@ -1,7 +1,6 @@
 import rest_framework_filters as filters
 
-from contacts.models import Contact
-
+from ..models import Contact, Comment
 
 NAME_FILTERS = ['exact', 'in', 'startswith', 'endswith', 'contains']
 
@@ -18,4 +17,13 @@ class ContactFilter(filters.FilterSet):
         model = Contact
         fields = {
             'name': NAME_FILTERS,
+        }
+
+
+class CommentFilter(filters.FilterSet):
+    class Meta:
+        model = Comment
+        fields = {
+            'message': NAME_FILTERS,
+            'user': ['exact', 'in'],
         }

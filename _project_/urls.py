@@ -8,11 +8,13 @@ from core.api.auth import OBTAIN_AUTH_TOKEN
 from core.api.router import StandardizedRouter
 from core.api.schema import SchemaView
 from core.views import task_result_api_view
-from contacts.api import ContactViewSet
+from contacts.api import ContactViewSet, CommentViewSet
 
 router = StandardizedRouter()  # noqa: pylint=invalid-name
 router.register(
     'contact-list', ContactViewSet, base_name='contact')
+router.register(
+    'comment-list', CommentViewSet, base_name='comment')
 
 
 @login_required
