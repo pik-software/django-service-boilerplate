@@ -100,6 +100,13 @@ INSTALLED_APPS = [
     # SENTRY
     'raven.contrib.django.raven_compat',
 
+    # Django health check
+    'health_check',  # required
+    'health_check.db',  # stock Django health checkers
+    'health_check.cache',
+    'health_check.storage',
+    'health_check.contrib.celery',  # requires celery
+
     # DATADOG
     'ddtrace.contrib.django',
 
