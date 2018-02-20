@@ -51,6 +51,7 @@ def test_api_list(api_client, api_model):
 
 def test_api_retrieve(api_client, api_model):
     model, factory, options = api_model
+
     factory.create_batch(BATCH_MODELS)
     last_obj = factory.create()
 
