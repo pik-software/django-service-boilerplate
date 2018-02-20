@@ -23,6 +23,15 @@ def standardized_handler(exc, context):
 
     Any unhandled exceptions may return `None`, which will cause a 500 error
     to be raised.
+
+    Example:
+
+        REST_FRAMEWORK = {
+            ...
+            'EXCEPTION_HANDLER':
+                'core.api.exception_handler.standardized_handler',
+            ...
+        }
     """
     if isinstance(exc, exceptions.APIException):
         headers = {}
