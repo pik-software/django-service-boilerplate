@@ -27,13 +27,6 @@ jobs:
     steps:
       - checkout
 
-      # Download and cache dependencies
-      #- restore_cache:
-      #    keys:
-      #    - v1-dependencies-{{ checksum "requirements.txt" }}
-          # fallback to using the latest cache if no exact match is found
-      #    - v1-dependencies-
-
       - run:
           name: install dependencies
           command: |
@@ -42,12 +35,6 @@ jobs:
             pip install --upgrade setuptools
             pip install -r requirements.txt
 
-      #- save_cache:
-      #    paths:
-      #      - ./.venv
-      #    key: v1-dependencies-{{ checksum "requirements.txt" }}
-
-      # run tests!
       - run:
           name: run tests
           command: |
@@ -60,6 +47,10 @@ jobs:
             pytest --cov-config .coveragerc --cov-report term-missing --selenium --durations=0 --cov . -vvv
             prospector -s veryhigh .
 
-      - store_artifacts:
-          path: test-reports
-          destination: test-reports
+      - deploy:
+          name: deploy master
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              echo 'staging.pik-software.ru ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBOY5bwhxoqupBaChSCncDXgY+EPJC5DbZzfBJyrGh9etF+L8+4TJJUtzyCHUj0HcOUY186WHa3alIsAf5/KWbW0=' >> ~/.ssh/known_hosts
+              ./.circleci/deploy-to-dokku.sh ${CIRCLE_PROJECT_REPONAME} ${CIRCLE_BRANCH}
+            fi
