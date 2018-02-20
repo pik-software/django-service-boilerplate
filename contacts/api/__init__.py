@@ -1,3 +1,3 @@
-from .viewsets import ContactViewSet
+from .viewsets import ContactViewSet, CommentViewSet
 
-__all__ = ['ContactViewSet']
+__all__ = ['ContactViewSet', 'CommentViewSet']

@@ -1,21 +1,30 @@
-from django.contrib.contenttypes.models import ContentType
-from rest_framework import serializers
+from core.api.fields import PrimaryKeyModelSerializerField
+from core.api.serializers import StandardizedModelSerializer
+from ..models import Contact, Comment
 
-from contacts.models import Contact
 
-
-class ContactSerializer(serializers.ModelSerializer):
-    _uid = serializers.SerializerMethodField()
-    _type = serializers.SerializerMethodField()
-
-    def get__uid(self, obj):  # noqa: pylint=no-self-use
-        return obj.uid
-
-    def get__type(self, obj):  # noqa: pylint=no-self-use
-        return ContentType.objects.get_for_model(type(obj)).model
-
+class ContactSerializer(StandardizedModelSerializer):
     class Meta:
         model = Contact
+        read_only_fields = (
+            '_uid', '_type',
+        )
         fields = (
             '_uid', '_type', 'name', 'phones', 'emails', 'order_index',
+        )
+
+
+class CommentSerializer(StandardizedModelSerializer):
+    contact = PrimaryKeyModelSerializerField(
+        ContactSerializer,
+        allowed_objects=lambda serializer: serializer.Meta.model.objects.all()
+    )
+
+    class Meta:
+        model = Comment
+        read_only_fields = (
+            '_uid', '_type', 'user',
+        )
+        fields = (
+            '_uid', '_type', 'user', 'contact', 'message',
         )
