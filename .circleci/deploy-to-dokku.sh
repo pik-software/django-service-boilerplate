@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -x
 
 REPO=$1
 BRANCH=$2
