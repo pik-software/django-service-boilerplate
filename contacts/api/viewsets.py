@@ -42,7 +42,7 @@ class CommentViewSet(HistoryViewSetMixin, StandardizedModelViewSet):
     ordering_fields = ()
 
     def get_queryset(self):
-        return Comment.objects.all()
+        return Comment.objects.all().select_related('contact')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
