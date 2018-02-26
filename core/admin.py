@@ -2,6 +2,8 @@ from django.contrib.admin.utils import flatten_fieldsets
 from django.contrib.gis import admin
 from reversion.admin import VersionAdmin
 
+from core.models import Email
+
 
 class SecureAdminInline(admin.TabularInline):
     extra = 0
@@ -84,3 +86,11 @@ class SecureVersionedModelAdmin(VersionAdmin, SecureModelAdmin):
 
     # disable restore deleted button
     change_list_template = "admin/change_list.html"
+
+
+@admin.register(Email)
+class EmailAdmin(SecureVersionedModelAdmin):
+    list_display = (
+        'email_from', 'email_to', 'subject',
+        'body', 'context', 'error_message')
+    fieldsets = ((None, {'fields': list_display}),)
