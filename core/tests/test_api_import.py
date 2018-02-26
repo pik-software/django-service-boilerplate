@@ -48,7 +48,7 @@ def file():
 
 def test_unauthorised(client: django.test.Client):
     res = client.post(url)
-    assert status.HTTP_403_FORBIDDEN == res.status_code
+    assert status.HTTP_401_UNAUTHORIZED == res.status_code
 
 
 def test_authorised_without_permission(logged_user_client):
