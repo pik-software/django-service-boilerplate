@@ -5,7 +5,7 @@ DECIMAL_PLACES = 2
 
 
 class MoneyField(models.DecimalField):
-    def __init__(
+    def __init__(  # noqa: pylint=useless-super-delegation
             self, *args, max_digits=MAX_DIGITS,
             decimal_places=DECIMAL_PLACES, **kwargs):
         super().__init__(
