@@ -1,6 +1,7 @@
 from uuid import uuid4
 
 from django.conf import settings
+from django.contrib.postgres.fields import JSONField, ArrayField
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext as _
 from django.db import models
@@ -8,10 +9,10 @@ from django.db import models
 
 class Dated(models.Model):
     created = models.DateTimeField(
-        editable=False, auto_now_add=True, verbose_name=_('Created')
+        editable=False, auto_now_add=True, verbose_name=_('создан')
     )
     updated = models.DateTimeField(
-        editable=False, auto_now=True, verbose_name=_('Updated')
+        editable=False, auto_now=True, verbose_name=_('обновлен')
     )
 
     class Meta:
@@ -20,7 +21,7 @@ class Dated(models.Model):
 
 class Owned(models.Model):
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, verbose_name=_("User"),
+        settings.AUTH_USER_MODEL, verbose_name=_("пользователь"),
         related_name="%(class)ss", db_index=True,
         on_delete=models.CASCADE)
 
@@ -30,7 +31,7 @@ class Owned(models.Model):
 
 class NullOwned(models.Model):
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, verbose_name=_("User"),
+        settings.AUTH_USER_MODEL, verbose_name=_("пользователь"),
         related_name="%(class)ss", null=True,
         db_index=True,
         on_delete=models.CASCADE)
@@ -131,3 +132,24 @@ class Versioned(models.Model):
 
     class Meta:
         abstract = True
+
+
+class Email(Uided, Dated):
+    UID_PREFIX = 'EML'
+    email_from = models.CharField(
+        _('отправитель письма'),
+        max_length=255, blank=True, null=True)
+    email_to = ArrayField(models.CharField(
+        _('получатель письма'),
+        max_length=255, blank=True, null=True))
+    subject = models.CharField(
+        _('тема письма'),
+        max_length=1024, blank=True, null=True)
+    body = models.TextField(_('тело письма'), blank=True, null=True)
+    context = JSONField(editable=False, blank=True, null=True, default=None)
+    error_message = models.CharField(
+        _('текст ошибки'),
+        max_length=255, blank=True, null=True)
+
+    class Meta:
+        ordering = ['-id']
