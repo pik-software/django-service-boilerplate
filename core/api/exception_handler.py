@@ -33,23 +33,27 @@ def standardized_handler(exc, context):
             ...
         }
     """
-    if isinstance(exc, exceptions.APIException):
+    if isinstance(exc, exceptions.APIException):  # noqa
         headers = {}
         if getattr(exc, 'auth_header', None):
             headers['WWW-Authenticate'] = exc.auth_header
         if getattr(exc, 'wait', None):
             headers['Retry-After'] = '%d' % exc.wait
 
+        code = exc.default_code
+        if hasattr(exc.detail, 'code') and exc.detail.code:
+            code = exc.detail.code
+
         if isinstance(exc.detail, (list, dict)):
             data = {
-                'message': exc.default_detail,
-                'code': exc.default_code,
+                'code': code,
                 'detail': exc.get_full_details(),
+                'message': str(exc.default_detail),
             }
         else:
             data = {
+                'code': code,
                 'message': str(exc.detail),
-                'code': exc.default_code,
             }
 
         set_rollback()
