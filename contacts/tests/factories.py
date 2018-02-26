@@ -1,9 +1,8 @@
 import random
 
-import factory
 import factory.fuzzy
 
-from core.tasks.fixtures import create_user
+from core.tests.fixtures import create_user
 from ..models import Contact, Comment
 
 
