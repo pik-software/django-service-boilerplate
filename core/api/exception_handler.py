@@ -14,7 +14,7 @@ STANDARDIZED_4XX_ERRORS = [
 ]
 
 
-def standardized_handler(exc, context):
+def standardized_handler(exc, context):  # noqa
     """
     Returns the response that should be used for any given exception.
 
@@ -33,7 +33,7 @@ def standardized_handler(exc, context):
             ...
         }
     """
-    if isinstance(exc, exceptions.APIException):  # noqa
+    if isinstance(exc, exceptions.APIException):
         headers = {}
         if getattr(exc, 'auth_header', None):
             headers['WWW-Authenticate'] = exc.auth_header
