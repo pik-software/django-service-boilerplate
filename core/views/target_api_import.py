@@ -28,7 +28,7 @@ def async_file_import_view(request):
     if file_ is None:
         return Response(status=400)
 
-    base_dir = f'{settings.MEDIA_ROOT}/{settings.SERVICE_TITLE}'
+    base_dir = f'importer/{settings.SERVICE_TITLE}'
     filename = f'import_{time()}.txt'
     save_dir = os.path.join(base_dir, filename)
     saved_file = default_storage.save(save_dir, file_)
