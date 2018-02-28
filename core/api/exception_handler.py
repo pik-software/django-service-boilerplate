@@ -14,7 +14,7 @@ STANDARDIZED_4XX_ERRORS = [
 ]
 
 
-def standardized_handler(exc, context):
+def standardized_handler(exc, context):  # noqa
     """
     Returns the response that should be used for any given exception.
 
@@ -40,16 +40,20 @@ def standardized_handler(exc, context):
         if getattr(exc, 'wait', None):
             headers['Retry-After'] = '%d' % exc.wait
 
+        code = exc.default_code
+        if hasattr(exc.detail, 'code') and exc.detail.code:
+            code = exc.detail.code
+
         if isinstance(exc.detail, (list, dict)):
             data = {
-                'message': exc.default_detail,
-                'code': exc.default_code,
+                'code': code,
                 'detail': exc.get_full_details(),
+                'message': str(exc.default_detail),
             }
         else:
             data = {
+                'code': code,
                 'message': str(exc.detail),
-                'code': exc.default_code,
             }
 
         set_rollback()
