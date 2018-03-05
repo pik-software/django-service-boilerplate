@@ -13,7 +13,7 @@ except ImportError as ex:
 
 @app.shared_task()
 def import_from_file(file_name):
-    with open(default_storage.path(file_name), 'rb') as file_:
+    with default_storage.open(file_name) as file_:
         reader = io.BufferedReader(io.BytesIO(file_.read()))
         lines = io.TextIOWrapper(reader, encoding='utf-8')
         load_for_target(lines)
