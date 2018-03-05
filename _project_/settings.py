@@ -71,8 +71,6 @@ EXPLORER_SCHEMA_EXCLUDE_TABLE_PREFIXES = (
 # Application definition
 
 INSTALLED_APPS = [
-    'core',
-
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
