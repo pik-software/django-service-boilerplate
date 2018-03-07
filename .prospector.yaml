@@ -1,5 +1,5 @@
 test-warnings: true
-strictness: high
+strictness: veryhigh
 
 ignore-paths:
   - docs
