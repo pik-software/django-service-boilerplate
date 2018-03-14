@@ -30,7 +30,7 @@ def async_file_import_view(request):
 
     base_dir = f'importer/{settings.SERVICE_TITLE}'
     filename = f'import_{time()}.txt'
-    save_dir = os.path.join(base_dir, filename)
+    save_dir = f'{base_dir}/{filename}'
     saved_file = default_storage.save(save_dir, file_)
     result = import_from_file.delay(saved_file)
     return Response({'task-id': result.task_id})
