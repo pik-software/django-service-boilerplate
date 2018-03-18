@@ -65,7 +65,7 @@ prospector
 pylint
 factory_boy
 freezegun
-pdbpp
+pdbpp==0.9.2
 pytest
 pytest-cov
 pytest-django
