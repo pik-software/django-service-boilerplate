@@ -64,7 +64,7 @@ werkzeug
 prospector
 pylint
 factory_boy
-freezegun
+freezegun==0.3.10
 pdbpp
 pytest
 pytest-cov
