@@ -2,7 +2,7 @@
 Pillow
 requests
 pycurl>=7.43.0
-beautifulsoup4
+beautifulsoup4==4.6.0
 cucco==2.2.1
 openpyxl==2.5.0
 boto3==1.5.20
