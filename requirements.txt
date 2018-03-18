@@ -68,7 +68,7 @@ freezegun==0.3.10
 pdbpp==0.9.2
 pytest==3.4.2
 pytest-cov==2.5.1
-pytest-django
+pytest-django==3.1.2
 pytest-selenium
 pytest-base-url
 pytest-benchmark
