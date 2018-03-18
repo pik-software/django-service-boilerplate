@@ -58,7 +58,7 @@ uwsgi==2.0.17
 # dev
 django_debug_toolbar==1.9.1
 django_extensions==2.0.6
-werkzeug
+werkzeug==0.14.1
 
 # tests
 prospector
