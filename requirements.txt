@@ -1,6 +1,6 @@
 # python utils
 Pillow==5.0.0
-requests
+requests==2.18.4
 pycurl>=7.43.0
 beautifulsoup4
 cucco==2.2.1
