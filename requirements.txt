@@ -5,7 +5,7 @@ pycurl>=7.43.0
 beautifulsoup4==4.6.0
 cucco==2.2.1
 openpyxl==2.5.1
-boto3==1.5.20
+boto3==1.6.11
 google_cloud==0.32.0
 ddtrace==0.10.0
 datadog==0.17.0
