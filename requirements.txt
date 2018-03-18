@@ -63,7 +63,7 @@ werkzeug
 # tests
 prospector
 pylint
-factory_boy
+factory_boy==2.10.0
 freezegun
 pdbpp
 pytest
