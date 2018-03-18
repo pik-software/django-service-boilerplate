@@ -71,5 +71,5 @@ pytest-cov==2.5.1
 pytest-django==3.1.2
 pytest-selenium==1.11.4
 pytest-base-url==1.4.1
-pytest-benchmark
+pytest-benchmark==3.1.1
 pytest-capturelog>=0.7
