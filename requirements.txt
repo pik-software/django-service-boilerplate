@@ -50,7 +50,7 @@ celery==4.1.0
 django_celery_results==1.0.1
 
 # sentry
-raven
+raven==6.6.0
 
 # prod
 uwsgi
