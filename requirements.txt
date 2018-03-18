@@ -62,7 +62,7 @@ werkzeug
 
 # tests
 prospector
-pylint
+pylint==1.8.3
 factory_boy
 freezegun
 pdbpp
