@@ -61,7 +61,7 @@ django_extensions==2.0.6
 werkzeug==0.14.1
 
 # tests
-prospector
+prospector==0.12.7
 pylint
 factory_boy
 freezegun
