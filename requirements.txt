@@ -67,7 +67,7 @@ factory_boy
 freezegun
 pdbpp
 pytest
-pytest-cov
+pytest-cov==2.5.1
 pytest-django
 pytest-selenium
 pytest-base-url
