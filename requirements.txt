@@ -64,7 +64,7 @@ werkzeug==0.14.1
 prospector==0.12.7
 pylint==1.8.3
 factory_boy==2.10.0
-freezegun
+freezegun==0.3.10
 pdbpp
 pytest
 pytest-cov
