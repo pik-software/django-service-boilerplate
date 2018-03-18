@@ -63,7 +63,7 @@ werkzeug==0.14.1
 # tests
 prospector==0.12.7
 pylint==1.8.3
-factory_boy
+factory_boy==2.10.0
 freezegun
 pdbpp
 pytest
