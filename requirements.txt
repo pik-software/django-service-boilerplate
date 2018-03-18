@@ -1,5 +1,5 @@
 # python utils
-Pillow
+Pillow==5.0.0
 requests
 pycurl>=7.43.0
 beautifulsoup4
