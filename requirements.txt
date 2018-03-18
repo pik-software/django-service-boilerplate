@@ -42,7 +42,7 @@ drf_openapi==1.3.0
 
 # db
 redis==2.10.6
-psycopg2==2.7.3
+psycopg2==2.7.4
 django-redis==4.8.0
 
 # celery
