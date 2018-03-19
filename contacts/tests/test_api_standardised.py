@@ -28,7 +28,7 @@ def api_client():
     return client
 
 
-def test_api_list(api_client, api_model):
+def test_api_list(api_client, api_model):  # noqa: pylint=redefined-outer-name
     model, factory, options = api_model
     factory.create_batch(BATCH_MODELS)
     last_obj = factory.create()
@@ -49,7 +49,7 @@ def test_api_list(api_client, api_model):
     assert len(res.data['results']) > BATCH_MODELS
 
 
-def test_api_retrieve(api_client, api_model):
+def test_api_retrieve(api_client, api_model):  # noqa: pylint=redefined-outer-name
     model, factory, options = api_model
 
     factory.create_batch(BATCH_MODELS)
@@ -65,7 +65,7 @@ def test_api_retrieve(api_client, api_model):
 
 
 def test_api_list_num_queries(
-        api_client, api_model,
+        api_client, api_model,  # noqa: pylint=redefined-outer-name
         assert_num_queries_lte
 ):
     model, factory, options = api_model
