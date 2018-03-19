@@ -1,7 +1,9 @@
-import django.test
 import pytest
+
+import django.test
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
+
 from rest_framework import status
 
 from core.tasks.fixtures import create_user
@@ -32,8 +34,8 @@ def _add_get_api_history_access(user, model):
     user.user_permissions.add(permission)
 
 
-def test_get_api_history_access_denied(
-        logged_user_client, api_history_model_and_factory):
+def test_get_api_history_access_denied(  # noqa: pylint=invalid-name
+        logged_user_client, api_history_model_and_factory):  # noqa: pylint=redefined-outer-name
     model, factory = api_history_model_and_factory
     factory.create()
     model_type_name = ContentType.objects.get_for_model(model).model
@@ -45,8 +47,8 @@ def test_get_api_history_access_denied(
         'code': 'permission_denied', 'message': 'Access denied'}
 
 
-def test_get_api_history_filtered_by_uid(
-        logged_user_client, api_history_model_and_factory):
+def test_get_api_history_filtered_by_uid(  # noqa: pylint=invalid-name
+        logged_user_client, api_history_model_and_factory):  # noqa: pylint=redefined-outer-name
     model, factory = api_history_model_and_factory
     factory.create()
     obj = factory.create()
@@ -68,7 +70,7 @@ def test_get_api_history_filtered_by_uid(
 
 
 def test_get_api_history(
-        logged_user_client, api_history_model_and_factory):
+        logged_user_client, api_history_model_and_factory):  # noqa: pylint=redefined-outer-name
     model, factory = api_history_model_and_factory
     factory.create()
     factory.create()
