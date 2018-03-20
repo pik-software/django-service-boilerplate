@@ -1,7 +1,6 @@
 # python utils
 Pillow
 requests
-pycurl>=7.43.0
 beautifulsoup4
 cucco==2.2.1
 openpyxl==2.5.0
@@ -9,7 +8,6 @@ boto3==1.5.20
 google_cloud==0.32.0
 ddtrace==0.10.0
 datadog==0.17.0
-geocoder==1.38.0
 
 Django==1.11.9
 
