@@ -66,7 +66,7 @@ pdbpp
 pytest
 pytest-cov
 pytest-django
-pytest-selenium
+pytest-selenium==1.11.4
 pytest-base-url
 pytest-benchmark
 pytest-capturelog>=0.7
