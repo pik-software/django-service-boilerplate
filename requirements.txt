@@ -1,6 +1,6 @@
 # python utils
 Pillow==5.0.0
-requests
+requests==2.18.4
 beautifulsoup4==4.6.0
 cucco==2.2.1
 openpyxl==2.5.0
