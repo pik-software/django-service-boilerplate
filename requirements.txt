@@ -1,15 +1,13 @@
 # python utils
 Pillow
 requests
-pycurl>=7.43.0
 beautifulsoup4
 cucco==2.2.1
 openpyxl==2.5.0
 boto3==1.5.20
 google_cloud==0.32.0
-ddtrace==0.10.0
+ddtrace==0.11.0
 datadog==0.19.0
-geocoder==1.34.0
 
 Django==1.11.9
 
@@ -18,12 +16,12 @@ django_widget_tweaks==1.4.1
 django-bootstrap-form==3.3
 django-registration==2.4.1
 django-sql-explorer==1.1.1
-dj_database_url==0.4.2
+dj_database_url==0.5.0
 django-storages==1.6.5
 django-waffle==0.12.0
 django-extra-views==0.9.0
 django-auth-ldap==1.2.16
-django-health-check==3.4.3
+django-health-check==3.5.1
 
 # HISTORY
 django-reversion==2.0.12
@@ -57,7 +55,7 @@ uwsgi
 
 # dev
 django_debug_toolbar==1.9.1
-django_extensions==1.9.9
+django_extensions==2.0.6
 werkzeug
 
 # tests
