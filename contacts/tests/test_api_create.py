@@ -1,3 +1,4 @@
+# pylint: disable=redefined-outer-name
 import pytest
 
 import django.test
@@ -20,38 +21,38 @@ def client():
 
 
 @pytest.fixture
-def logged_user_client(client: django.test.Client):  # noqa: pylint=redefined-outer-name
+def logged_user_client(client: django.test.Client):
     user = create_user()
     client.force_login(user)
     client.user = user
     return client
 
 
-def test_api_authorization(client):  # noqa: pylint=redefined-outer-name
+def test_api_authorization(client):
     res = client.get('/api/v1/')
     assert res.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-def test_api_contact_create_without_request_user(client):  # noqa: pylint=redefined-outer-name, pylint=invalid-name
+def test_api_contact_create_without_request_user(client):  # noqa: pylint=invalid-name
     data = {'name': get_random_string()}
     res = client.post('/api/v1/contact-list/', data=data)
     assert res.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-def test_api_contact_create(logged_user_client):  # noqa: pylint=redefined-outer-name
+def test_api_contact_create(logged_user_client):
     data = {'name': get_random_string()}
     res = logged_user_client.post('/api/v1/contact-list/', data=data)
     assert res.status_code == status.HTTP_201_CREATED
 
 
-def test_api_contact_create_bulk(logged_user_client):  # noqa: pylint=redefined-outer-name
+def test_api_contact_create_bulk(logged_user_client):
     data = [{'name': get_random_string()}, {'name': get_random_string()}]
     res = logged_user_client.post('/api/v1/contact-list/', data=data)
     assert res.status_code == status.HTTP_201_CREATED
     assert len(res.data) == 2
 
 
-def test_api_contact_create_without_name(logged_user_client):  # noqa: pylint=redefined-outer-name, pylint=invalid-name
+def test_api_contact_create_without_name(logged_user_client):  # noqa: pylint=invalid-name
     data = {'noname': get_random_string()}
     res = logged_user_client.post('/api/v1/contact-list/', data=data)
     assert res.status_code == status.HTTP_400_BAD_REQUEST
@@ -62,19 +63,19 @@ def test_api_contact_create_without_name(logged_user_client):  # noqa: pylint=re
         'message': 'Invalid input.'}
 
 
-def test_api_contact_create_with_extra_field(logged_user_client):  # noqa: pylint=redefined-outer-name, pylint=invalid-name
+def test_api_contact_create_with_extra_field(logged_user_client):  # noqa: pylint=invalid-name
     data = {'name': get_random_string(), 'fooo': 'no'}
     res = logged_user_client.post('/api/v1/contact-list/', data=data)
     assert res.status_code == status.HTTP_201_CREATED
 
 
-def test_api_comment_create_without_request_user(client):  # noqa: pylint=redefined-outer-name, pylint=invalid-name
+def test_api_comment_create_without_request_user(client):  # noqa: pylint=invalid-name
     data = {'message': get_random_string()}
     res = client.post('/api/v1/comment-list/', data=data)
     assert res.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-def test_api_comment_create_without_user(logged_user_client):  # noqa: pylint=redefined-outer-name, pylint=invalid-name
+def test_api_comment_create_without_user(logged_user_client):  # noqa: pylint=invalid-name
     data = {'message': get_random_string()}
     res = logged_user_client.post('/api/v1/comment-list/', data=data)
     assert res.status_code == status.HTTP_400_BAD_REQUEST
@@ -86,7 +87,7 @@ def test_api_comment_create_without_user(logged_user_client):  # noqa: pylint=re
     }
 
 
-def test_api_comment_create(logged_user_client):  # noqa: pylint=redefined-outer-name
+def test_api_comment_create(logged_user_client):
     contact = ContactFactory.create()
     payload = {
         '_uid': contact.uid,
@@ -113,7 +114,7 @@ def test_api_comment_create(logged_user_client):  # noqa: pylint=redefined-outer
     }
 
 
-def test_api_comment_create_simple(logged_user_client):  # noqa: pylint=redefined-outer-name
+def test_api_comment_create_simple(logged_user_client):
     contact = ContactFactory.create()
     data = {'message': get_random_string(), 'contact': contact.uid}
     res = logged_user_client.post('/api/v1/comment-list/', data=data)
@@ -134,7 +135,7 @@ def test_api_comment_create_simple(logged_user_client):  # noqa: pylint=redefine
     }
 
 
-def test_api_comment_create_2_comments_for_one_contact(logged_user_client):  # noqa: pylint=redefined-outer-name, pylint=invalid-name
+def test_api_comment_create_2_comments_for_one_contact(logged_user_client):  # noqa: pylint=invalid-name
     contact = ContactFactory.create()
     payload = {
         '_uid': contact.uid,

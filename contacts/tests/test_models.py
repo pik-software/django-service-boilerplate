@@ -1,3 +1,4 @@
+# pylint: disable=redefined-outer-name
 import pytest
 
 from ..models import Contact, Comment
@@ -20,7 +21,7 @@ def critical_model_and_factory(request):
     return request.param
 
 
-def test_create_model_by_factories(model_and_factory):  # noqa: pylint=redefined-outer-name
+def test_create_model_by_factories(model_and_factory):
     model, factory = model_and_factory
     obj1 = factory.create()
     obj2 = model.objects.last()
@@ -32,8 +33,8 @@ def test_create_model_by_factories(model_and_factory):  # noqa: pylint=redefined
     assert str(obj1) == str(obj2)
 
 
-def test_critical_model_protocol(critical_model_and_factory):  # noqa: pylint=redefined-outer-name
-    model, factory = critical_model_and_factory  # noqa: pylint=unused-variable
+def test_critical_model_protocol(critical_model_and_factory):
+    model, _ = critical_model_and_factory
     fields = [f.name for f in model._meta.get_fields()]  # noqa: pylint=protected-access
     assert hasattr(model, 'history')
     assert model.UID_PREFIX != 'OBJ'

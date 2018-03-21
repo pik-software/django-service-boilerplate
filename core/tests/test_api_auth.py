@@ -1,3 +1,4 @@
+# pylint: disable=redefined-outer-name
 import pytest
 from django.utils.crypto import get_random_string
 from rest_framework import status
@@ -13,7 +14,7 @@ def client():
     return APIClient()
 
 
-def test_api_token_auth_without_data(client):  # noqa: pylint=redefined-outer-name
+def test_api_token_auth_without_data(client):  # noqa: pylint=invalid-name
     res = client.post('/api-token-auth/', data={})
 
     assert res.status_code == status.HTTP_400_BAD_REQUEST
@@ -26,7 +27,7 @@ def test_api_token_auth_without_data(client):  # noqa: pylint=redefined-outer-na
         'message': 'Invalid input.'}
 
 
-def test_api_token_auth(client):  # noqa: pylint=redefined-outer-name
+def test_api_token_auth(client):
     user = create_user()
     username = getattr(user, user.USERNAME_FIELD)
     password = get_random_string()

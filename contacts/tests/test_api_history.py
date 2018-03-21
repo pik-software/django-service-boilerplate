@@ -1,3 +1,4 @@
+# pylint: disable=redefined-outer-name
 import pytest
 
 import django.test
@@ -35,7 +36,7 @@ def _add_get_api_history_access(user, model):
 
 
 def test_get_api_history_access_denied(  # noqa: pylint=invalid-name
-        logged_user_client, api_history_model_and_factory):  # noqa: pylint=redefined-outer-name
+        logged_user_client, api_history_model_and_factory):
     model, factory = api_history_model_and_factory
     factory.create()
     model_type_name = ContentType.objects.get_for_model(model).model
@@ -48,7 +49,7 @@ def test_get_api_history_access_denied(  # noqa: pylint=invalid-name
 
 
 def test_get_api_history_filtered_by_uid(  # noqa: pylint=invalid-name
-        logged_user_client, api_history_model_and_factory):  # noqa: pylint=redefined-outer-name
+        logged_user_client, api_history_model_and_factory):
     model, factory = api_history_model_and_factory
     factory.create()
     obj = factory.create()
@@ -70,7 +71,7 @@ def test_get_api_history_filtered_by_uid(  # noqa: pylint=invalid-name
 
 
 def test_get_api_history(
-        logged_user_client, api_history_model_and_factory):  # noqa: pylint=redefined-outer-name
+        logged_user_client, api_history_model_and_factory):
     model, factory = api_history_model_and_factory
     factory.create()
     factory.create()
