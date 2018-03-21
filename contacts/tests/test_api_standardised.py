@@ -1,3 +1,4 @@
+# pylint: disable=redefined-outer-name
 import pytest
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import status
@@ -28,7 +29,7 @@ def api_client():
     return client
 
 
-def test_api_list(api_client, api_model):  # noqa: pylint=redefined-outer-name
+def test_api_list(api_client, api_model):
     model, factory, options = api_model
     factory.create_batch(BATCH_MODELS)
     last_obj = factory.create()
@@ -49,7 +50,7 @@ def test_api_list(api_client, api_model):  # noqa: pylint=redefined-outer-name
     assert len(res.data['results']) > BATCH_MODELS
 
 
-def test_api_retrieve(api_client, api_model):  # noqa: pylint=redefined-outer-name
+def test_api_retrieve(api_client, api_model):
     model, factory, options = api_model
 
     factory.create_batch(BATCH_MODELS)
@@ -65,7 +66,7 @@ def test_api_retrieve(api_client, api_model):  # noqa: pylint=redefined-outer-na
 
 
 def test_api_list_num_queries(
-        api_client, api_model,  # noqa: pylint=redefined-outer-name
+        api_client, api_model,
         assert_num_queries_lte
 ):
     model, factory, options = api_model
