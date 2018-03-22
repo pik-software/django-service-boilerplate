@@ -29,7 +29,7 @@ def celery_session_app(request):
 
 @pytest.fixture(scope='session')
 def celery_session_worker(request,
-                          celery_session_app,  # noqa: pylint=redefined-outer-name
+                          celery_session_app,
                           celery_worker_pool,
                           celery_worker_parameters):
     """Session Fixture: Start worker that lives throughout test suite."""
@@ -52,7 +52,7 @@ def driver_kwargs():
 
 
 @pytest.yield_fixture
-def driver(request, driver_class, driver_kwargs):  # noqa: pylint=redefined-outer-name
+def driver(request, driver_class, driver_kwargs):
     """Returns a WebDriver instance based on options and capabilities"""
     driver_instance = driver_class(**driver_kwargs)
     yield driver_instance
