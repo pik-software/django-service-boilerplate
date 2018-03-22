@@ -1,4 +1,3 @@
-# pylint: disable=redefined-outer-name
 import pytest
 from django.utils.crypto import get_random_string
 from rest_framework import status
