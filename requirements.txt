@@ -1,5 +1,5 @@
 # python utils
-Pillow==5.0.0
+Pillow==5.1.0
 requests==2.18.4
 beautifulsoup4==4.6.0
 cucco==2.2.1
