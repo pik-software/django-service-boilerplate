@@ -11,7 +11,7 @@ datadog==0.20.0
 Django==2.0.4
 
 # django utils
-django_widget_tweaks==1.4.1
+django_widget_tweaks==1.4.2
 django-bootstrap-form==3.4
 django-registration==2.4.1
 django-sql-explorer==1.1.1
