@@ -1,7 +1,9 @@
-import django.test
 import pytest
+
+import django.test
 from django.contrib.contenttypes.models import ContentType
 from django.utils.crypto import get_random_string
+
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -30,7 +32,7 @@ def test_api_authorization(client):
     assert res.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-def test_api_contact_create_without_request_user(client):
+def test_api_contact_create_without_request_user(client):  # noqa: pylint=invalid-name
     data = {'name': get_random_string()}
     res = client.post('/api/v1/contact-list/', data=data)
     assert res.status_code == status.HTTP_401_UNAUTHORIZED
@@ -49,7 +51,7 @@ def test_api_contact_create_bulk(logged_user_client):
     assert len(res.data) == 2
 
 
-def test_api_contact_create_without_name(logged_user_client):
+def test_api_contact_create_without_name(logged_user_client):  # noqa: pylint=invalid-name
     data = {'noname': get_random_string()}
     res = logged_user_client.post('/api/v1/contact-list/', data=data)
     assert res.status_code == status.HTTP_400_BAD_REQUEST
@@ -60,19 +62,19 @@ def test_api_contact_create_without_name(logged_user_client):
         'message': 'Invalid input.'}
 
 
-def test_api_contact_create_with_extra_field(logged_user_client):
+def test_api_contact_create_with_extra_field(logged_user_client):  # noqa: pylint=invalid-name
     data = {'name': get_random_string(), 'fooo': 'no'}
     res = logged_user_client.post('/api/v1/contact-list/', data=data)
     assert res.status_code == status.HTTP_201_CREATED
 
 
-def test_api_comment_create_without_request_user(client):
+def test_api_comment_create_without_request_user(client):  # noqa: pylint=invalid-name
     data = {'message': get_random_string()}
     res = client.post('/api/v1/comment-list/', data=data)
     assert res.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-def test_api_comment_create_without_user(logged_user_client):
+def test_api_comment_create_without_user(logged_user_client):  # noqa: pylint=invalid-name
     data = {'message': get_random_string()}
     res = logged_user_client.post('/api/v1/comment-list/', data=data)
     assert res.status_code == status.HTTP_400_BAD_REQUEST
@@ -132,7 +134,7 @@ def test_api_comment_create_simple(logged_user_client):
     }
 
 
-def test_api_comment_create_2_comments_for_one_contact(logged_user_client):
+def test_api_comment_create_2_comments_for_one_contact(logged_user_client):  # noqa: pylint=invalid-name
     contact = ContactFactory.create()
     payload = {
         '_uid': contact.uid,
@@ -141,7 +143,7 @@ def test_api_comment_create_2_comments_for_one_contact(logged_user_client):
 
     data = [
         {'message': get_random_string(), 'contact': payload},
-        {'message': get_random_string(), 'contact': payload},]
+        {'message': get_random_string(), 'contact': payload}, ]
     res = logged_user_client.post('/api/v1/comment-list/', data=data)
     assert res.status_code == status.HTTP_201_CREATED
     assert len(res.data) == 2

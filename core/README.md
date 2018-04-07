@@ -12,15 +12,14 @@ django-reversion==2.0.12
 django-simple-history==1.9.0
 
 # API
-djangorestframework==3.7.7
-djangorestframework-gis==0.11.2
-djangorestframework-filters==0.10.2
-django-filter==1.1.0
-django-crispy-forms==1.7.0
-markdown==2.6.11
-coreapi==2.3.3
-openapi_codec==1.3.2
-drf_openapi==1.3.0
+djangorestframework
+djangorestframework-filters
+django-filter
+django-crispy-forms
+markdown
+coreapi
+openapi_codec
+drf_openapi
 ```
 
 1. update `settings.py`:
