@@ -8,7 +8,7 @@ google_cloud==0.32.0
 ddtrace==0.11.0
 datadog==0.19.0
 
-Django==1.11.9
+Django==2.0.3
 
 # django utils
 django_widget_tweaks==1.4.1
