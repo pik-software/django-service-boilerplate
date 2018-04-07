@@ -13,7 +13,7 @@ def client():
     return APIClient()
 
 
-def test_api_token_auth_without_data(client):
+def test_api_token_auth_without_data(client):  # noqa: pylint=invalid-name
     res = client.post('/api-token-auth/', data={})
 
     assert res.status_code == status.HTTP_400_BAD_REQUEST
