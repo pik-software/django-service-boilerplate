@@ -1,7 +1,7 @@
 import reversion
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from simple_history.models import HistoricalRecords
 
 from core.models import Versioned, Uided, Dated, PUided, Owned
@@ -16,13 +16,11 @@ class Contact(Uided, Dated, Versioned):
         verbose_name=_('Номера телефонов'),
         help_text=_(
             'Номера телефонов вводятся в произвольном формате через запятую'
-        )
-    )
+        ))
     emails = ArrayField(
         models.EmailField(), blank=True, default=list,
         verbose_name=_('E-mail адреса'),
-        help_text=_('E-mail адреса вводятся через запятую')
-    )
+        help_text=_('E-mail адреса вводятся через запятую'))
 
     order_index = models.IntegerField(_('Индекс для сортировки'), default=100)
 
@@ -46,7 +44,9 @@ class Contact(Uided, Dated, Versioned):
 @reversion.register()
 class Comment(PUided, Dated, Versioned, Owned):
     UID_PREFIX = 'COM'
-    contact = models.ForeignKey(Contact, related_name='comments')
+    contact = models.ForeignKey(
+        Contact, related_name='comments',
+        on_delete=models.CASCADE)
     message = models.TextField(_('Сообщение'))
 
     history = HistoricalRecords()

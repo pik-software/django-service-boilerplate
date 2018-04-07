@@ -15,7 +15,7 @@ def _task2(self):
     raise RuntimeError('Request: {0!r}'.format(self.request.task))
 
 
-def test_get_task_result_task_success(rf, celery_session_worker):
+def test_get_task_result_task_success(rf, celery_session_worker):  # noqa: pylint=invalid-name
     request = rf.get('/test/')
     task = _task1.delay()
 
@@ -35,7 +35,7 @@ def test_get_task_result_task_success(rf, celery_session_worker):
     }
 
 
-def test_get_task_result_task_failure(rf, celery_session_worker):
+def test_get_task_result_task_failure(rf, celery_session_worker):  # noqa: pylint=invalid-name
     request = rf.get('/test/')
     task = _task2.delay()
 

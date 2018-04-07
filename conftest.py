@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 import os
 
 from selenium import webdriver
@@ -28,7 +29,7 @@ def celery_session_app(request):
 
 @pytest.fixture(scope='session')
 def celery_session_worker(request,
-                          celery_session_app,  # noqa: pylint=redefined-outer-name
+                          celery_session_app,
                           celery_worker_pool,
                           celery_worker_parameters):
     """Session Fixture: Start worker that lives throughout test suite."""
@@ -51,7 +52,7 @@ def driver_kwargs():
 
 
 @pytest.yield_fixture
-def driver(request, driver_class, driver_kwargs):  # noqa: pylint=redefined-outer-name
+def driver(request, driver_class, driver_kwargs):
     """Returns a WebDriver instance based on options and capabilities"""
     driver_instance = driver_class(**driver_kwargs)
     yield driver_instance
@@ -77,3 +78,28 @@ def pytest_collection_modifyitems(config, items):
     for item in items:
         if "selenium" in item.keywords:
             item.add_marker(skip_selenium)
+
+
+# HELPERS
+
+@pytest.fixture(scope='function')
+def assert_num_queries_lte(pytestconfig):
+    from django.db import connection
+    from django.test.utils import CaptureQueriesContext
+
+    @contextmanager
+    def _assert_num_queries(num):
+        with CaptureQueriesContext(connection) as context:
+            yield
+            queries = len(context)
+            if queries > num:
+                msg = f"Expected to perform less then {num} queries" \
+                      f" but {queries} were done"
+                if pytestconfig.getoption('verbose') > 0:
+                    sqls = (q['sql'] for q in context.captured_queries)
+                    msg += '\n\nQueries:\n========\n\n%s' % '\n\n'.join(sqls)
+                else:
+                    msg += " (add -v option to show queries)"
+                pytest.fail(msg)
+
+    return _assert_num_queries
