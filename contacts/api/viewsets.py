@@ -13,6 +13,7 @@ class ContactViewSet(StandardizedModelViewSet):
     ordering = '-id'
     serializer_class = ContactSerializer
     allow_bulk_create = True
+    allow_history = True
 
     filter_backends = (
         StandardizedFieldFilters, StandardizedSearchFilter,
@@ -32,6 +33,7 @@ class CommentViewSet(StandardizedModelViewSet):
     ordering = '-created'
     serializer_class = CommentSerializer
     allow_bulk_create = True
+    allow_history = True
 
     filter_backends = (
         StandardizedFieldFilters, StandardizedSearchFilter,
