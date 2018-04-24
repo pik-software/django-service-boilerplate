@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -x
 
-REPO=`git config --local remote.origin.url|sed -n 's#.*/\([^.]*\)\.git#\1#p'`
-BRANCH=`git branch | grep -e "^*" | cut -d' ' -f 2`
+REPO=${1:-`git config --local remote.origin.url|sed -n 's#.*/\([^.]*\)\.git#\1#p'`}
+BRANCH=${2:-`git branch | grep -e "^*" | cut -d' ' -f 2`}
 
 echo "DEPLOY !!! http://${REPO}-${BRANCH}.pik-software.ru/"
 git push ssh://dokku@staging.pik-software.ru/${REPO}-${BRANCH} ${BRANCH}:master || exit 1
