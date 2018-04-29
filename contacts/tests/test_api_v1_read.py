@@ -5,7 +5,6 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from core.tasks.fixtures import create_user
-from ..models import Contact
 from ..tests.factories import ContactFactory
 
 
