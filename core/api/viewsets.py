@@ -1,6 +1,7 @@
 from rest_framework import generics, mixins
 from rest_framework.viewsets import ViewSetMixin
 
+from replication.api.mixins import SubscribeViewSetMixin
 from ..api.mixins import BulkCreateModelMixin, HistoryViewSetMixin
 
 
@@ -16,6 +17,7 @@ class StandardizedGenericViewSet(ViewSetMixin, generics.GenericAPIView):
 class StandardizedReadOnlyModelViewSet(
     mixins.RetrieveModelMixin,
     mixins.ListModelMixin,
+    SubscribeViewSetMixin,
     HistoryViewSetMixin,
     StandardizedGenericViewSet
 ):
@@ -31,6 +33,7 @@ class StandardizedModelViewSet(
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
     mixins.ListModelMixin,
+    SubscribeViewSetMixin,
     HistoryViewSetMixin,
     StandardizedGenericViewSet
 ):

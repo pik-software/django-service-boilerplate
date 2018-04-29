@@ -14,6 +14,7 @@ class ContactViewSet(StandardizedModelViewSet):
     serializer_class = ContactSerializer
     allow_bulk_create = True
     allow_history = True
+    allow_subscribe = True
 
     filter_backends = (
         StandardizedFieldFilters, StandardizedSearchFilter,
@@ -34,6 +35,7 @@ class CommentViewSet(StandardizedModelViewSet):
     serializer_class = CommentSerializer
     allow_bulk_create = True
     allow_history = True
+    allow_subscribe = True
 
     filter_backends = (
         StandardizedFieldFilters, StandardizedSearchFilter,
