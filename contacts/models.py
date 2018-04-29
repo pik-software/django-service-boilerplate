@@ -1,4 +1,3 @@
-import reversion
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -7,7 +6,6 @@ from simple_history.models import HistoricalRecords
 from core.models import Versioned, Uided, Dated, PUided, Owned
 
 
-@reversion.register()
 class Contact(Uided, Dated, Versioned):
     UID_PREFIX = 'CON'
     name = models.CharField(_('Наименование'), max_length=255)
@@ -41,7 +39,6 @@ class Contact(Uided, Dated, Versioned):
         )
 
 
-@reversion.register()
 class Comment(PUided, Dated, Versioned, Owned):
     UID_PREFIX = 'COM'
     contact = models.ForeignKey(
