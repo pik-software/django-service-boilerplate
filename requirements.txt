@@ -21,6 +21,9 @@ django-waffle==0.14.0
 django-extra-views==0.10.0
 django-health-check==3.5.1
 
+#admin
+django-admin-view-permission==1.6
+
 # HISTORY
 django-reversion==2.0.13
 django-simple-history==2.0
