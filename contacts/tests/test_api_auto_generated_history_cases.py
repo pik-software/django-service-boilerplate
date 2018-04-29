@@ -95,7 +95,7 @@ def test_api_history_filter_by_uid(api_client, api_model):
     assert first_result['history_type'] == "+"
 
 
-def test_api_history_create_then_change(api_client, api_model):
+def test_api_history_create_and_change(api_client, api_model):
     model, factory, options = api_model
     last_obj = _create_few_models(factory)
     url = _url(model, options)
