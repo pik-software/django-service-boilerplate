@@ -1,18 +1,19 @@
 from contacts.models import Contact, Comment
 from core.api.filters import StandardizedFieldFilters, \
     StandardizedSearchFilter, StandardizedOrderingFilter
-from core.api.viewsets import HistoryViewSetMixin, StandardizedModelViewSet
+from core.api.viewsets import StandardizedModelViewSet
 
 from .filters import ContactFilter, CommentFilter
 from .serializers import ContactSerializer, CommentSerializer
 
 
-class ContactViewSet(HistoryViewSetMixin, StandardizedModelViewSet):
+class ContactViewSet(StandardizedModelViewSet):
     lookup_field = 'uid'
     lookup_url_kwarg = '_uid'
     ordering = '-id'
     serializer_class = ContactSerializer
     allow_bulk_create = True
+    allow_history = True
 
     filter_backends = (
         StandardizedFieldFilters, StandardizedSearchFilter,
@@ -26,12 +27,13 @@ class ContactViewSet(HistoryViewSetMixin, StandardizedModelViewSet):
         return Contact.objects.all()
 
 
-class CommentViewSet(HistoryViewSetMixin, StandardizedModelViewSet):
+class CommentViewSet(StandardizedModelViewSet):
     lookup_field = 'uid'
     lookup_url_kwarg = '_uid'
     ordering = '-created'
     serializer_class = CommentSerializer
     allow_bulk_create = True
+    allow_history = True
 
     filter_backends = (
         StandardizedFieldFilters, StandardizedSearchFilter,
