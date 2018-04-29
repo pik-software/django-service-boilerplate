@@ -1,6 +1,6 @@
 from django.contrib.gis import admin
 from django.forms import modelform_factory, ALL_FIELDS
-from reversion.admin import VersionAdmin
+from simple_history.admin import SimpleHistoryAdmin
 
 
 class ReasonedMixIn:
@@ -99,11 +99,8 @@ class StrictSecuredAdminInLine(StrictMixIn, SecuredAdminInline):
     pass
 
 
-class VersionedModelAdmin(VersionAdmin):
-    history_latest_first = True
-
-    # disable restore deleted button
-    change_list_template = "admin/change_list.html"
+class VersionedModelAdmin(SimpleHistoryAdmin):
+    pass
 
 
 class SecuredVersionedModelAdmin(VersionedModelAdmin, SecuredModelAdmin):
