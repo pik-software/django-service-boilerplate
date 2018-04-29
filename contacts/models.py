@@ -33,9 +33,6 @@ class Contact(Uided, Dated, Versioned):
         ordering = ['-id']
         permissions = (
             ("can_edit_contact", _("Может редактировать контакты")),
-            ("can_get_api_contact_history",
-             _("Может читать /api/v<X>/contact-list/history/")),
-
         )
 
 
@@ -57,6 +54,4 @@ class Comment(PUided, Dated, Versioned, Owned):
         ordering = ['-created']
         permissions = (
             ("can_edit_comment", _("Может редактировать коментарий")),
-            ("can_get_api_comment_history",
-             _("Может читать /api/v<X>/comment-list/history/")),
         )
