@@ -46,9 +46,11 @@ def _create_few_models(factory):
 
 
 def _create_history_permission(user, model):
-    model_type_name = ContentType.objects.get_for_model(model).model
-    permission = Permission.objects.get(
-        codename=f'can_get_api_{model_type_name}_history')
+    opts = model._meta
+    content_type = ContentType.objects.get_for_model(model)
+    permission, _ = Permission.objects.get_or_create(
+        content_type=content_type,
+        codename=f'view_historical{opts.model_name}')
     user.user_permissions.add(permission)
 
 
