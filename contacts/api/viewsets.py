@@ -1,7 +1,7 @@
 from contacts.models import Contact, Comment
 from core.api.filters import StandardizedFieldFilters, \
     StandardizedSearchFilter, StandardizedOrderingFilter
-from core.api.viewsets import HistoryViewSetMixin, StandardizedModelViewSet
+from core.api.viewsets import StandardizedModelViewSet
 
 from .filters import ContactFilter, CommentFilter
 from .serializers import ContactSerializer, CommentSerializer
