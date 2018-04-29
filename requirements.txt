@@ -7,6 +7,7 @@ openpyxl==2.5.2
 google_cloud==0.32.0
 ddtrace==0.11.1
 datadog==0.20.0
+pik-django-utils==1.0.3
 
 Django==1.11.12
 
@@ -20,6 +21,9 @@ django-storages==1.6.6
 django-waffle==0.14.0
 django-extra-views==0.10.0
 django-health-check==3.5.1
+
+#admin
+django-admin-view-permission==1.6
 
 # HISTORY
 django-reversion==2.0.13
