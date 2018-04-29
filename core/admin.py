@@ -1,6 +1,6 @@
 from django.contrib.admin.utils import flatten_fieldsets
 from django.contrib.gis import admin
-from reversion.admin import VersionAdmin
+from simple_history.admin import SimpleHistoryAdmin
 
 
 class SecureAdminInline(admin.TabularInline):
@@ -79,8 +79,5 @@ class SecureModelAdmin(admin.ModelAdmin):
         super().delete_model(request, obj)
 
 
-class SecureVersionedModelAdmin(VersionAdmin, SecureModelAdmin):
-    history_latest_first = True
-
-    # disable restore deleted button
-    change_list_template = "admin/change_list.html"
+class SecureVersionedModelAdmin(SimpleHistoryAdmin, SecureModelAdmin):
+    pass

@@ -1,6 +1,5 @@
 # Standardized API CheckList #
 
- - [ ] Model wrapped by: `@reversion.register()`
  - [ ] Model has: `UID_PREFIX`
  - [ ] Model has: `history = HistoricalRecords()`
  - [ ] Model has: `def __str__(self)`
