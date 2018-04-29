@@ -8,7 +8,6 @@ You can view example here: `contacts`
 
 ```
 # HISTORY
-django-reversion==2.0.12
 django-simple-history==1.9.0
 
 # API
@@ -28,7 +27,6 @@ drf_openapi
 INSTALLED_APPS = [
     ...
     # HISTORY
-    'reversion',
     'simple_history',
     ...
     # API
@@ -43,7 +41,6 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     ...
-    'reversion.middleware.RevisionMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
     ...
 ]
@@ -90,14 +87,12 @@ REST_FRAMEWORK = {
 1. check `models.py`:
 
 ```
-import reversion
 from django.db import models
 from django.utils.translation import ugettext as _
 from simple_history.models import HistoricalRecords
 
 from core.models import Dated, Uided, Versioned
 
-@reversion.register()
 class <Organization>(Uided, Dated, Versioned):
     UID_PREFIX = <'ORG'>
     name = models.CharField(_(<'Наименование'>), max_length=255)
