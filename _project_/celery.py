@@ -1,11 +1,11 @@
 from __future__ import absolute_import, unicode_literals
 import os
-from celery import Celery
+import celery
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', '_project_.settings')
 
-app = Celery('_project_')  # noqa: pylint=invalid-name
+app = celery.Celery('_project_')  # noqa: pylint=invalid-name
 
 # Using a string here means the worker don't have to serialize
 # the configuration object to child processes.
@@ -18,5 +18,5 @@ app.autodiscover_tasks()
 
 
 @app.task(bind=True)
-def debug_task(self):
+def debug_task(self: celery.Task):
     return 'Request: {0!r}'.format(self.request.task)

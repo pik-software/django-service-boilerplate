@@ -33,7 +33,7 @@ jobs:
             python3 -m venv .venv
             . .venv/bin/activate
             pip install --upgrade setuptools
-            pip install -r requirements.txt
+            pip install --exists-action w -r requirements.txt
 
       - run:
           name: run tests
@@ -44,8 +44,8 @@ jobs:
             python manage.py migrate
             python manage.py collectstatic
             python manage.py check
-            pytest --cov-config .coveragerc --cov-report term-missing --selenium --durations=0 --cov . -vvv
-            prospector -s veryhigh .
+            pytest --doctest-modules --cov-config .coveragerc --cov-report term-missing --selenium --durations=0 --cov . -vvv
+            prospector --profile-path . --profile .prospector.yaml .
 
       - deploy:
           name: deploy master

@@ -1,8 +1,8 @@
 import base64
 import json
+import logging
 import os
 import sys
-from logging import warning
 
 import dj_database_url
 from google.oauth2 import service_account
@@ -39,6 +39,7 @@ INTERNAL_IPS = ['127.0.0.1']
 # SENTRY
 RAVEN_CONFIG = {
     'dsn': os.environ.get('RAVEN_DSN', ''),
+    'CELERY_LOGLEVEL': logging.WARNING,
 }
 
 # DATADOG
@@ -60,9 +61,11 @@ EXPLORER_CONNECTIONS = {'Default': 'readonly'}
 EXPLORER_DEFAULT_CONNECTION = 'readonly'
 EXPLORER_SCHEMA_EXCLUDE_TABLE_PREFIXES = (
     'auth_', 'contenttypes_',
-    'sessions_', 'admin_',
-    'django_', 'explorer_', 'reversion_',
-    'staff_hist'
+    'sessions_', 'admin_', 'health_',
+    'django_', 'explorer_',
+    'authtoken_token',
+    'geography_', 'geometry_', 'raster_columns', 'raster_overviews',
+    'spatial_ref_sys',
 )
 
 # --- </SERVICES> --- #
@@ -71,6 +74,7 @@ EXPLORER_SCHEMA_EXCLUDE_TABLE_PREFIXES = (
 # Application definition
 
 INSTALLED_APPS = [
+    'admin_view_permission',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -84,7 +88,6 @@ INSTALLED_APPS = [
     'contacts',
 
     # HISTORY
-    'reversion',
     'simple_history',
 
     # API
@@ -128,7 +131,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     # HISTORY
-    'reversion.middleware.RevisionMiddleware',
     'simple_history.middleware.HistoryRequestMiddleware',
 
     # DEV
@@ -243,7 +245,9 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['json']  # Ignore other content
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_RESULT_EXPIRES = 3600
-CELERY_IMPORTS = ['core.tasks']
+CELERY_IMPORTS = [
+    'core.tasks',
+]
 CELERYBEAT_SCHEDULE_FILENAME = os.path.join(DATA_DIR, 'celerybeat.db')
 CELERYBEAT_SCHEDULE = {}
 
@@ -261,7 +265,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication'
+        'rest_framework.authentication.BasicAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -299,7 +303,7 @@ if _STORAGE == 'gcloud' and _CREDENTIALS and GS_BUCKET_NAME and GS_PROJECT_ID:
         json.loads(base64.b64decode(_CREDENTIALS), strict=False))
 else:
     DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
-    warning('Use FileSystemStorage storage backend as DEFAULT_FILE_STORAGE')
+    logging.warning('!! DEFAULT_FILE_STORAGE="FileSystemStorage"')
 
 
 LOGGING = {
