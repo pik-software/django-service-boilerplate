@@ -98,7 +98,7 @@ class SecuredAdminInline(PermittedFieldsMixIn, ReasonedMixIn,
 class StrictSecuredAdminInLine(StrictMixIn, SecuredAdminInline):
     pass
 
-  
+
 class VersionedModelAdmin(SimpleHistoryAdmin):
     pass
 
@@ -120,4 +120,3 @@ class RequiredInlineMixIn:
     def get_formset(self, *args, **kwargs):  # noqa: pylint=arguments-differ
         return super().get_formset(validate_min=self.validate_min, *args,
                                    **kwargs)
-
