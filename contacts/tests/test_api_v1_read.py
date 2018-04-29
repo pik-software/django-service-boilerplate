@@ -46,7 +46,7 @@ def test_api_list_contact(api_client):  # noqa: pylint=invalid-name
 
 
 def test_api_retrieve_contact(api_client):
-    obj: Contact = ContactFactory.create()
+    obj = ContactFactory.create()
     res = api_client.get(f'/api/v1/contact-list/{obj.uid}/')
     assert res.status_code == status.HTTP_200_OK
     _assert_api_object(res.data, {
