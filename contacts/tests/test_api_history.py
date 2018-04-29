@@ -6,7 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 
 from rest_framework import status
 
-from core.tasks.fixtures import create_user
+from core.tests.fixtures import create_user
 
 from contacts.models import Contact
 from contacts.tests.factories import ContactFactory

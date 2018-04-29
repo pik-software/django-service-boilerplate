@@ -63,3 +63,22 @@ def kpp_validator(value):
         )
     if len(value) != 9:
         raise ValidationError(_('Длина КПП не равна 9 символам'))
+
+
+def ogrn_validator(value):
+    if not value.isdigit():
+        raise ValidationError(
+            _('Лишние символы в ОГРН: %(value)s'), params={'value': value}
+        )
+    if len(value) != 13:
+        raise ValidationError(_('Длина ОГРН не равна 13 символам'))
+
+    a_digit = str(int(value[:-1]) % 11 % 10)
+
+    if a_digit != value[-1]:
+        raise ValidationError(_('Неверное контрольное число ОГРН'))
+
+
+def non_negative(value):
+    if value < 0:
+        raise ValidationError(_('Ошибка ввода: число < 0'))

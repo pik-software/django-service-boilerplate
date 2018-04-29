@@ -8,6 +8,7 @@ from core.api.auth import OBTAIN_AUTH_TOKEN
 from core.api.router import StandardizedRouter
 from core.api.schema import SchemaView
 from core.views import task_result_api_view
+from core.views.target_api_import import async_file_import_view
 from contacts.api import ContactViewSet, CommentViewSet
 
 router = StandardizedRouter()  # noqa: pylint=invalid-name
@@ -31,6 +32,7 @@ urlpatterns = [  # noqa: pylint=invalid-name
     url(r'^status/', include('health_check.urls')),
     url(r'^accounts/', include('registration.auth_urls')),
     url(r'^api/task/result/(.+)/', task_result_api_view),
+    url(r'^api/target-data-importer/', async_file_import_view),
     url(r'^api/v(?P<version>[1-9])/schema/',
         SchemaView.as_view(), name='api_schema'),
     url(r'^api/v(?P<version>[1-9])/', include(router.urls, namespace='api')),

@@ -8,10 +8,10 @@ from django.db import models
 
 class Dated(models.Model):
     created = models.DateTimeField(
-        editable=False, auto_now_add=True, verbose_name=_('Created')
+        editable=False, auto_now_add=True, verbose_name=_('создан')
     )
     updated = models.DateTimeField(
-        editable=False, auto_now=True, verbose_name=_('Updated')
+        editable=False, auto_now=True, verbose_name=_('обновлен')
     )
 
     class Meta:
@@ -20,7 +20,7 @@ class Dated(models.Model):
 
 class Owned(models.Model):
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, verbose_name=_("User"),
+        settings.AUTH_USER_MODEL, verbose_name=_("пользователь"),
         related_name="%(class)ss", db_index=True,
         on_delete=models.CASCADE, editable=False)
 
@@ -30,7 +30,7 @@ class Owned(models.Model):
 
 class NullOwned(models.Model):
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, verbose_name=_("User"),
+        settings.AUTH_USER_MODEL, verbose_name=_("пользователь"),
         related_name="%(class)ss", db_index=True,
         on_delete=models.CASCADE, editable=False,
         null=True)
