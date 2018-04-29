@@ -46,7 +46,7 @@ def _create_few_models(factory):
 
 
 def _create_history_permission(user, model):
-    opts = model._meta
+    opts = model._meta  # noqa: pylint=protected-access
     content_type = ContentType.objects.get_for_model(model)
     permission, _ = Permission.objects.get_or_create(
         content_type=content_type,
