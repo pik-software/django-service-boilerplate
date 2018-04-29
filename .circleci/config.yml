@@ -33,7 +33,7 @@ jobs:
             python3 -m venv .venv
             . .venv/bin/activate
             pip install --upgrade setuptools
-            pip install -r requirements.txt
+            pip install --exists-action w -r requirements.txt
 
       - run:
           name: run tests
