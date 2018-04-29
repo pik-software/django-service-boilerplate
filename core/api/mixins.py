@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
 from django_filters import filterset
-from rest_framework.decorators import list_route
+from rest_framework.decorators import action
 from rest_framework import status
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.response import Response
@@ -52,13 +52,13 @@ class HistoryViewSetMixin:
                 Object instance -> Dict of primitive datatypes.
                 """
                 ret = OrderedDict()
-                fields = self._readable_fields
+                fields = self._readable_fields  # noqa
 
-                field_names = [
+                history_field_names = [
                     'history_id', 'history_date', 'history_change_reason',
                     'history_user_id', 'history_type',
                 ]
-                for field_name in field_names:
+                for field_name in history_field_names:
                     try:
                         value = getattr(instance, field_name)
                         ret[field_name] = value
@@ -114,7 +114,7 @@ class HistoryViewSetMixin:
         codename = f'can_{method}_api_{opts.model_name}_{self.action}'
         return request.user.has_perm("%s.%s" % (opts.app_label, codename))
 
-    @list_route(methods=['GET'])
+    @action(methods=['GET'], detail=False)
     def history(self, request, **kwargs):
         if not self.allow_history:
             self.permission_denied(
