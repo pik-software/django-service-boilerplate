@@ -1,10 +1,18 @@
 from collections import OrderedDict
 
 from django_filters import filterset
+from django.utils.translation import ugettext_lazy as _
 from rest_framework.decorators import action
 from rest_framework import status
+from rest_framework.exceptions import APIException
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.response import Response
+from rest_framework.serializers import Serializer
+
+
+class _HistoryProtocolNotImplemented(APIException):
+    status_code = status.HTTP_501_NOT_IMPLEMENTED
+    default_detail = _('History protocol is not implemented yet')
 
 
 class BulkCreateModelMixin(CreateModelMixin):
@@ -45,6 +53,14 @@ class BulkCreateModelMixin(CreateModelMixin):
 class HistoryViewSetMixin:
     allow_history = False
 
+    @staticmethod
+    def _check_serializer_history_protocol(serializer: Serializer):
+        fields = serializer.child.fields if serializer.many else \
+            serializer.fields
+        required_fields = ['_uid', '_type', '_version']
+        if not all(f in fields for f in required_fields):
+            raise _HistoryProtocolNotImplemented()
+
     def get_history_serializer(self, *args, **kwargs):
         class HistorySerializer(self.get_serializer_class()):
             def to_representation(self, instance):
@@ -79,7 +95,9 @@ class HistoryViewSetMixin:
                 return ret
 
         kwargs['context'] = self.get_serializer_context()
-        return HistorySerializer(*args, **kwargs)
+        serializer = HistorySerializer(*args, **kwargs)
+        self._check_serializer_history_protocol(serializer)
+        return serializer
 
     def filter_history_queryset(self, queryset):
         class AutoFilterSet(filterset.FilterSet):
