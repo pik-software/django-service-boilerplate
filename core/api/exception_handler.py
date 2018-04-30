@@ -5,14 +5,6 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.views import set_rollback
 
-STANDARDIZED_4XX_ERRORS = [
-    status.HTTP_400_BAD_REQUEST, status.HTTP_401_UNAUTHORIZED,
-    status.HTTP_403_FORBIDDEN, status.HTTP_404_NOT_FOUND,
-    status.HTTP_408_REQUEST_TIMEOUT,
-    status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
-    status.HTTP_429_TOO_MANY_REQUESTS,
-]
-
 
 def standardized_handler(exc, context):  # noqa
     """
@@ -58,16 +50,7 @@ def standardized_handler(exc, context):  # noqa
 
         set_rollback()
 
-        if exc.status_code >= 500:
-            return Response(
-                data, status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                headers=headers)
-        elif exc.status_code >= 400:
-            if exc.status_code not in STANDARDIZED_4XX_ERRORS:
-                exc.status_code = status.HTTP_400_BAD_REQUEST
-            return Response(
-                data, status=exc.status_code,
-                headers=headers)
+        return Response(data, status=exc.status_code, headers=headers)
 
     elif isinstance(exc, Http404):
         data = {
