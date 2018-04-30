@@ -8,6 +8,7 @@ from rest_framework import serializers
 class StandardizedModelSerializer(serializers.ModelSerializer):
     _uid = serializers.SerializerMethodField()
     _type = serializers.SerializerMethodField()
+    _version = serializers.SerializerMethodField()
 
     def get__uid(self, obj) -> Optional[str]:  # noqa: pylint=no-self-use
         if not hasattr(obj, 'uid'):
@@ -20,3 +21,8 @@ class StandardizedModelSerializer(serializers.ModelSerializer):
         if not isinstance(obj, Model):
             return None
         return ContentType.objects.get_for_model(type(obj)).model
+
+    def get__version(self, obj) -> Optional[int]:  # noqa: pylint=no-self-use
+        if not hasattr(obj, 'version'):
+            return None
+        return obj.version
