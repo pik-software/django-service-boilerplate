@@ -1,6 +1,7 @@
 from uuid import uuid4
 
 from django.conf import settings
+from django.db.models import F
 from django.utils.functional import cached_property
 from django.utils.translation import ugettext as _
 from django.db import models
@@ -79,13 +80,22 @@ class PUided(models.Model):
 
 
 class Versioned(models.Model):
-    version = models.IntegerField(default=1, editable=False)
+    autoincrement_version = True
+
+    # Strict increment leads to problems in SimpleHistory (disable by default)
+    strict_autoincrement_version = False
+
+    version = models.IntegerField(editable=False)
 
     def save(self, *args, **kwargs):  # noqa: pylint=arguments-differ
         if not self.version:
             self.version = 1
         else:
-            self.version += 1
+            if self.autoincrement_version and self.pk:
+                self.version = F('version') + 1 \
+                    if self.strict_autoincrement_version \
+                    else self.version + 1
+
         super().save(*args, **kwargs)
 
     def optimistic_concurrency_update(self, **kwargs):
