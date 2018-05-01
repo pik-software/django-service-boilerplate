@@ -4,8 +4,10 @@ from django.utils.translation import ugettext_lazy as _
 from simple_history.models import HistoricalRecords
 
 from core.models import Versioned, Uided, Dated, PUided, Owned
+from eventsourcing.replicator import replicating
 
 
+@replicating('contact')
 class Contact(Uided, Dated, Versioned):
     UID_PREFIX = 'CON'
     name = models.CharField(_('Наименование'), max_length=255)
@@ -36,6 +38,7 @@ class Contact(Uided, Dated, Versioned):
         )
 
 
+@replicating('comment')
 class Comment(PUided, Dated, Versioned, Owned):
     UID_PREFIX = 'COM'
     contact = models.ForeignKey(
