@@ -6,8 +6,6 @@ _REPLICATED_MODEL_STORAGE = {}
 
 
 def replicated(_type: str):
-    if not _type.startswith('historical'):
-        raise ValueError('Allow replicate only historical<name> objects')
     if _type in _REPLICATED_MODEL_STORAGE:
         raise ValueError('Model with same name already exists')
 
@@ -22,3 +20,7 @@ def replicated(_type: str):
         return model
 
     return wrapper
+
+
+def is_replicated(model):
+    return model in _REPLICATED_MODEL_STORAGE.values()

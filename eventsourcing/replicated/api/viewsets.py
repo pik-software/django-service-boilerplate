@@ -4,8 +4,8 @@ from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 
 from core.api.viewsets import StandardizedGenericViewSet
-from replicated.processor import _ProcessHistoricalRecordError, \
-    _process_historical_record
+from eventsourcing.replicated.processor import _process_historical_record, \
+    _ProcessHistoricalRecordError
 
 
 class _WebhookProcessingError(APIException):

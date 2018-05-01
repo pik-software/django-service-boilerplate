@@ -46,12 +46,15 @@ def _create_few_models(factory):
 
 
 def _create_history_permission(user, model):
+    model = model.history.model
     opts = model._meta  # noqa: pylint=protected-access
     content_type = ContentType.objects.get_for_model(model)
-    permission, _ = Permission.objects.get_or_create(
+    permission = Permission.objects.get(
         content_type=content_type,
-        codename=f'view_historical{opts.model_name}')
+        codename=f'view_{opts.model_name}')
     user.user_permissions.add(permission)
+    assert user.has_perm(
+        f'{content_type.app_label}.view_{opts.model_name}')
 
 
 def test_api_history_access_denied(api_client, api_model):

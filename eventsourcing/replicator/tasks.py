@@ -4,15 +4,14 @@ from typing import Union, Tuple
 import celery
 import requests
 from celery import shared_task
-from raven.contrib.django.raven_compat.models import client
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.test import RequestFactory
 from django.urls import resolve
+from raven.contrib.django.raven_compat.models import client
 
-from .consts import WEBHOOK_SUBSCRIPTION
-from .models import Subscribe
-
+from ..consts import WEBHOOK_SUBSCRIPTION
+from ..models import Subscription
 
 LOGGER = logging.getLogger(__name__)
 
@@ -92,26 +91,34 @@ def _do_async_fake_request(
     return code, content
 
 
-def _transfer_webhook_data(webhook_url: str, data: str, **kwargs) -> None:
-    requests.post(webhook_url, data=data, json=True, timeout=10, **kwargs)
+def _transfer_webhook_data(webhook_url: str, **kwargs) -> Tuple[int, str]:
+    LOGGER.error('do webhook request url="%s"')
+    response = requests.post(webhook_url, timeout=10, **kwargs)
+    code, content = response.status_code, response.content
+    LOGGER.error('webhook response status_code=%s %r', code, content)
+    return code, content
 
 
-@shared_task(bind=True, retry_backoff=True)  # retry in 5 seconds
+@shared_task(bind=True, retry_backoff=True, max_retries=10000)  # retry in 5 seconds
 def _replicate_history_process_webhook_subscriber(
         self: celery.Task, subscriber_pk,
         app_label: str, history_model_name: str,
         history_object_id: Union[str, int],
 ) -> str:
     try:
-        subscriber: Subscribe = Subscribe.objects.get(pk=subscriber_pk)
-    except Subscribe.DoesNotExist:
+        subscriber: Subscription = Subscription.objects.get(pk=subscriber_pk)
+    except Subscription.DoesNotExist:
         return 'not_subscribed'
 
     webhook_url = subscriber.settings['webhook_url']
     api_version = subscriber.settings['api_version']
     webhook_cookies = subscriber.settings.get('webhook_cookies', None)
-    webhook_headers = subscriber.settings.get('webhook_headers', None)
+    webhook_headers = subscriber.settings.get('webhook_headers', {})
+    webhook_headers['content-type'] = 'application/json'
     webhook_auth = subscriber.settings.get('webhook_auth', None)
+    if webhook_auth and isinstance(webhook_auth, list):
+        # convert to requests auth tuple
+        webhook_auth = tuple(webhook_auth)
     user_pk = subscriber.user.pk
 
     hist_obj = _get_model_object(
@@ -138,9 +145,9 @@ def _replicate_history_process_webhook_subscriber(
         raise self.retry()
 
     try:
-        _transfer_webhook_data(
-            webhook_url, content, auth=webhook_auth, headers=webhook_headers,
-            cookies=webhook_cookies,
+        webhook_status, webhook_response = _transfer_webhook_data(
+            webhook_url, data=content, auth=webhook_auth,
+            headers=webhook_headers, cookies=webhook_cookies,
         )
         return 'ok'
     except Exception as exc:
@@ -150,7 +157,7 @@ def _replicate_history_process_webhook_subscriber(
 
 
 @shared_task(bind=True)
-def replicate_history(
+def _replicate_to_webhook_subscribers(
         self: celery.Task,
         app_label: str, history_model_name: str,
         history_object_id: Union[str, int],
@@ -169,7 +176,7 @@ def replicate_history(
     _uid = hist_obj.history_object.pk
 
     events = [f'{_type}', f'{_type}.{event}', f'{_type}.{event}.{_uid}']
-    subscribers = Subscribe.objects.filter(
+    subscribers = Subscription.objects.filter(
         events__overlap=events, type=WEBHOOK_SUBSCRIPTION)
 
     for subscriber in subscribers:

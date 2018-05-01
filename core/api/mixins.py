@@ -127,8 +127,8 @@ class HistoryViewSetMixin:
         Can be overridden by the user in subclasses.
         """
         opts = self.get_queryset().model._meta  # noqa: pylint=protected-access
-        return (request.user.has_perm(
-            f'{opts.app_label}.view_historical{opts.model_name}'))
+        return request.user.has_perm(
+            f'{opts.app_label}.view_historical{opts.model_name}')
 
     @action(methods=['GET'], detail=False)
     def history(self, request, **kwargs):

@@ -1,15 +1,19 @@
+import logging
+
 from django.contrib.postgres.fields import JSONField, ArrayField
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.utils.translation import ugettext_lazy as _
 from simple_history.models import HistoricalRecords
 
 from core.models import Dated, PUided, Versioned, Owned
 from .consts import SUBSCRIPTION_TYPES
 
+LOGGER = logging.getLogger(__name__)
 
-class Subscribe(PUided, Dated, Versioned, Owned):
+
+class Subscription(PUided, Dated, Versioned, Owned):
     name = models.CharField(max_length=255)
     type = models.IntegerField(choices=SUBSCRIPTION_TYPES)
     settings = JSONField()
@@ -17,17 +21,14 @@ class Subscribe(PUided, Dated, Versioned, Owned):
 
     history = HistoricalRecords()
 
-    def clean(self):
-        super().clean()
-
     class Meta:
         unique_together = (('name', 'type'), )
         verbose_name = _("Подписка")
         verbose_name_plural = _("Подписки")
 
 
-def create_or_update_subscription(user, name, type, settings, events):
-    obj, is_new = Subscribe.objects.get_or_create(
+def subscribe(user, name, type, settings, events):
+    obj, is_new = Subscription.objects.get_or_create(
         {'settings': settings, 'events': events, 'user': user},
         name=name, type=type)
 
@@ -48,29 +49,47 @@ def create_or_update_subscription(user, name, type, settings, events):
     return obj
 
 
+def unsubscribe(user, name, type, events):
+    obj, is_new = Subscription.objects.get_or_create(
+        {'settings': {}, 'events': [], 'user': user},
+        name=name, type=type)
+
+    if is_new:
+        return obj
+
+    if obj.user != user:
+        raise ValueError('You are trying update not your subscription')
+
+    new_events = [x for x in obj.events if x not in events]
+
+    if new_events == obj.events:
+        return obj
+
+    obj.events = new_events
+    obj.save()
+    return obj
+
+
 @receiver(post_save, dispatch_uid='historical-instance-saved')
-def historical_instance_saved(sender, instance, created, **kwargs):
+def _post_historical_instance_created(sender, instance, created, **kwargs):
     """
     Automatically triggers "created" and "updated" actions.
     """
-    opts = instance._meta.concrete_model._meta
-    if not opts.object_name.startswith('Historical'):
+    from .replicator.registry import _is_replicating_historical_model  # noqa
+    if not _is_replicating_historical_model(instance._meta.concrete_model):  # noqa
         return
     if not created:
         raise RuntimeError('Historical changes detected! WTF?')
 
-    model = '.'.join([opts.app_label, opts.model_name])
-    print('!', model, instance, instance.history_id)
-
-    _type = instance.history_object._meta.model_name
-    event = instance.history_type
+    _type = instance.history_object._meta.model_name  # noqa
+    _action = instance.history_type
     _uid = str(
         instance.history_object.uid if hasattr(instance.history_object, 'uid')
         else instance.history_object.pk)
-    events = [f'{_type}', f'{_type}.{event}', f'{_type}.{event}.{_uid}']
-    subscribers = Subscribe.objects.filter(events__overlap=events)
+    events = [f'{_type}', f'{_type}.{_action}', f'{_type}.{_action}.{_uid}']
+    subscribers = Subscription.objects.filter(events__overlap=events)
     if subscribers.exists():
-        from replication.tasks import replicate_history  # noqa
-        replicate_history.delay(
-            opts.app_label, opts.model_name, instance.history_id,
-        )
+        LOGGER.info('replicate %s.%s.%s [hist=%s]',
+                    _type, _action, _uid, instance.history_id)
+        from .replicator import replicate  # noqa
+        replicate(instance)

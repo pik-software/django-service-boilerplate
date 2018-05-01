@@ -9,12 +9,16 @@ from core.api.router import StandardizedRouter
 from core.api.schema import SchemaView
 from core.views import task_result_api_view
 from contacts.api import ContactViewSet, CommentViewSet
+from eventsourcing.replicated import ReplicatedWebhookViewSet
+from eventsourcing.replicator import SubscriptionViewSet
 
 router = StandardizedRouter()  # noqa: pylint=invalid-name
 router.register(
     'contact-list', ContactViewSet, base_name='contact')
 router.register(
     'comment-list', CommentViewSet, base_name='comment')
+router.register('webhook', ReplicatedWebhookViewSet, base_name='webhook')
+router.register('subscriptions', SubscriptionViewSet, base_name='subscription')
 
 
 @login_required
