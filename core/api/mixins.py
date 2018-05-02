@@ -92,6 +92,9 @@ class HistoryViewSetMixin:
                     except Exception:  # noqa: pylint=broad-except
                         continue
 
+                # change _type (historicalcontact -> contact)
+                if '_type' in ret and ret['_type'].startswith('historical'):
+                    ret['_type'] = ret['_type'][10:]
                 return ret
 
         kwargs['context'] = self.get_serializer_context()
