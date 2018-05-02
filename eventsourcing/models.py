@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from simple_history.models import HistoricalRecords
 
 from core.models import Dated, PUided, Versioned, Owned
+from .utils import _get_event_name
 from .consts import SUBSCRIPTION_TYPES
 
 LOGGER = logging.getLogger(__name__)
@@ -81,11 +82,7 @@ def _post_historical_instance_created(sender, instance, created, **kwargs):
     if not created:
         raise RuntimeError('Historical changes detected! WTF?')
 
-    _type = instance.history_object._meta.model_name  # noqa
-    _action = instance.history_type
-    _uid = str(
-        instance.history_object.uid if hasattr(instance.history_object, 'uid')
-        else instance.history_object.pk)
+    _type, _action, _uid = _get_event_name(instance)
     events = [f'{_type}', f'{_type}.{_action}', f'{_type}.{_action}.{_uid}']
     subscribers = Subscription.objects.filter(events__overlap=events)
     if subscribers.exists():

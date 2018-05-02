@@ -5,28 +5,18 @@ import celery
 import requests
 from celery import shared_task
 from django.contrib.auth import get_user_model
-from django.contrib.contenttypes.models import ContentType
 from django.test import RequestFactory
 from django.urls import resolve
 from raven.contrib.django.raven_compat.models import client
 
+from eventsourcing.utils import _get_event_name, _deserialize_history_instance
 from ..consts import WEBHOOK_SUBSCRIPTION
 from ..models import Subscription
 
 LOGGER = logging.getLogger(__name__)
 
 
-def _get_model_class(app_label, model_name):
-    ct = ContentType.objects.get(app_label=app_label, model=model_name)
-    return ct.model_class()
-
-
-def _get_model_object(app_label, model_name, pk):
-    model = _get_model_class(app_label, model_name)
-    return model.objects.get(pk=pk)
-
-
-def _do_async_fake_request(
+def _do_fake_request(
         user_pk: Union[int, str], method: str, url: str, *,
         url_args=None, url_kwargs=None, data=None) -> Tuple[int, str]:
     """
@@ -91,7 +81,7 @@ def _do_async_fake_request(
     return code, content
 
 
-def _transfer_webhook_data(webhook_url: str, **kwargs) -> Tuple[int, str]:
+def _do_webhook_request(webhook_url: str, **kwargs) -> Tuple[int, str]:
     LOGGER.error('do webhook request url="%s"')
     response = requests.post(webhook_url, timeout=10, **kwargs)
     code, content = response.status_code, response.content
@@ -99,14 +89,14 @@ def _transfer_webhook_data(webhook_url: str, **kwargs) -> Tuple[int, str]:
     return code, content
 
 
-@shared_task(bind=True, retry_backoff=True, max_retries=10000)  # retry in 5 seconds
-def _replicate_history_process_webhook_subscriber(
-        self: celery.Task, subscriber_pk,
+@shared_task(bind=True, retry_backoff=True, max_retries=10000)
+def _process_webhook_subscription(
+        self: celery.Task, subscription_pk,
         app_label: str, history_model_name: str,
         history_object_id: Union[str, int],
 ) -> str:
     try:
-        subscriber: Subscription = Subscription.objects.get(pk=subscriber_pk)
+        subscriber: Subscription = Subscription.objects.get(pk=subscription_pk)
     except Subscription.DoesNotExist:
         return 'not_subscribed'
 
@@ -121,22 +111,16 @@ def _replicate_history_process_webhook_subscriber(
         webhook_auth = tuple(webhook_auth)
     user_pk = subscriber.user.pk
 
-    hist_obj = _get_model_object(
+    hist_obj = _deserialize_history_instance(
         app_label, history_model_name, history_object_id)
-    _type = hist_obj.history_object._meta.model_name
-    event = hist_obj.history_type
-    _uid = str(
-        hist_obj.history_object.uid if hasattr(hist_obj.history_object, 'uid')
-        else hist_obj.history_object.pk)
+    _type, _action, _uid = _get_event_name(hist_obj)
 
     LOGGER.error('webhook process event[%s] %s.%s.%s',
-                 history_object_id, _type, event, _uid)
-
-    _type = hist_obj.history_object._meta.model_name
+                 history_object_id, _type, _action, _uid)
 
     history_url = f'/api/v{api_version}/{_type}-list/history/'
 
-    status, content = _do_async_fake_request(
+    status, content = _do_fake_request(
         user_pk, 'get', history_url, data={'history_id': hist_obj.history_id})
 
     if status != 200:
@@ -145,7 +129,7 @@ def _replicate_history_process_webhook_subscriber(
         raise self.retry()
 
     try:
-        webhook_status, webhook_response = _transfer_webhook_data(
+        webhook_status, webhook_response = _do_webhook_request(
             webhook_url, data=content, auth=webhook_auth,
             headers=webhook_headers, cookies=webhook_cookies,
         )
@@ -169,19 +153,17 @@ def _replicate_to_webhook_subscribers(
             opts.app_label, opts.object_name, instance.history_id)
 
     """
-    hist_obj = _get_model_object(
+    hist_obj = _deserialize_history_instance(
         app_label, history_model_name, history_object_id)
-    _type = hist_obj.history_object._meta.model_name
-    event = hist_obj.history_type
-    _uid = hist_obj.history_object.pk
+    _type, _action, _uid = _get_event_name(hist_obj)
 
-    events = [f'{_type}', f'{_type}.{event}', f'{_type}.{event}.{_uid}']
+    events = [f'{_type}', f'{_type}.{_action}', f'{_type}.{_action}.{_uid}']
     subscribers = Subscription.objects.filter(
         events__overlap=events, type=WEBHOOK_SUBSCRIPTION)
 
     for subscriber in subscribers:
         try:
-            _replicate_history_process_webhook_subscriber.delay(
+            _process_webhook_subscription.delay(
                 subscriber.pk, app_label, history_model_name, history_object_id
             )
         except Exception as exc:

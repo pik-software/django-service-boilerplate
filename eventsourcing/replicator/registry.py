@@ -2,6 +2,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Model
 from simple_history.manager import HistoryManager
 
+from eventsourcing.utils import _serialize_history_instance
 from .utils import _has_field
 from .tasks import _replicate_to_webhook_subscribers
 
@@ -21,9 +22,10 @@ def replicating(_type: str):
         if not _has_field(model, 'version') or not _has_field(model, 'uid'):
             raise ValueError('Model should have uid and version fields')
 
-        content_type = ContentType.objects.get_for_model(model).model
+        # Unfortunately, we can't use ContentType here
+        content_type = model._meta.concrete_model._meta.model_name  # noqa
         if content_type != _type:
-            raise ValueError('Model should have uid and version fields')
+            raise ValueError(f'Use @replicating("{content_type}", ...)')
 
         if not hasattr(model, 'history'):
             raise ValueError('Model should have Model.history object')
@@ -37,10 +39,8 @@ def replicating(_type: str):
 
 
 def replicate(instance):
-    model = instance._meta.concrete_model  # noqa
-    opts = model._meta  # noqa
-    _replicate_to_webhook_subscribers.delay(
-        opts.app_label, opts.model_name, instance.history_id)
+    app_label, model_name, history_id = _serialize_history_instance(instance)
+    _replicate_to_webhook_subscribers.delay(app_label, model_name, history_id)
 
 
 def is_replicating(model):

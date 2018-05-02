@@ -13,9 +13,9 @@ from rest_framework.test import APIClient
 import eventsourcing.replicator.registry
 from core.tasks.fixtures import create_user
 from eventsourcing.models import Subscription
-from eventsourcing.replicator.tasks import _do_async_fake_request, \
+from eventsourcing.replicator.tasks import _do_fake_request, \
     _replicate_to_webhook_subscribers, \
-    _replicate_history_process_webhook_subscriber
+    _process_webhook_subscription
 from ..models import Contact, Comment
 from ..tests.factories import ContactFactory, CommentFactory
 
@@ -101,7 +101,7 @@ def _assert_api_res(res, code, result):
 def _get_history_content(model, options, user, hist_obj):
     _type = ContentType.objects.get_for_model(model).model
     history_url = f'/api/v{options["version"]}/{_type}-list/history/'
-    status, content = _do_async_fake_request(
+    status, content = _do_fake_request(
         user.pk, 'get', history_url, data={'history_id': hist_obj.history_id})
     assert status == 200
     return content
@@ -287,7 +287,7 @@ def test_do_async_fake_request(api_model):
     history_url = f'/api/v{options["version"]}/{_type}-list/history/'
 
     _create_history_permission(user, model)
-    code, content = _do_async_fake_request(
+    code, content = _do_fake_request(
         user.pk, 'get', history_url, data={'history_id': hist_obj.history_id})
 
     print(content)
@@ -307,7 +307,7 @@ def test_replicate_history_call_process_webhook(
     subscribe = _create_subscription(model, options)
     process_webhook = mocker.patch(
         'eventsourcing.replicator.tasks.'
-        '_replicate_history_process_webhook_subscriber')
+        '_process_webhook_subscription')
 
     # create event
     obj = factory.create()
@@ -363,12 +363,12 @@ def test_process_webhook(api_model, mocker, celery_session_worker):
 
     subscribe = _create_subscription(model, options)
     transfer = mocker.patch(
-        'eventsourcing.replicator.tasks._transfer_webhook_data')
+        'eventsourcing.replicator.tasks._do_webhook_request')
     transfer.return_value = 200, ''
     hist1_content = _get_history_content(model, options, subscribe.user, hist1)
     app_label, model_name = hist1._meta.app_label, hist1._meta.model_name
 
-    r = _replicate_history_process_webhook_subscriber.delay(
+    r = _process_webhook_subscription.delay(
         subscribe.pk, app_label, model_name, hist1.pk)
 
     assert r.get(timeout=10) == 'ok'
@@ -386,7 +386,7 @@ def test_process_webhook_retry(api_model, celery_session_worker):
     app_label, model_name = hist_obj._meta.app_label, hist_obj._meta.model_name
     subscribe = _create_subscription(model, options)
 
-    r = _replicate_history_process_webhook_subscriber.delay(
+    r = _process_webhook_subscription.delay(
         subscribe.pk, app_label, model_name, hist_obj.pk)
     with pytest.raises(exceptions.TimeoutError):
         r.get(timeout=0.1)
