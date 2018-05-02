@@ -95,7 +95,8 @@ def test_api_history_filter_by_uid(api_client, api_model):
     first_result = res.data['results'][0]
     assert count == 1
     assert first_result['_uid'] == last_obj.uid
-    assert first_result['_type'] == 'historical' + _type
+    assert first_result['_type'] == _type
+    assert first_result['_version'] >= 1
     assert first_result['history_change_reason'] is None
     assert first_result['history_type'] == "+"
 
