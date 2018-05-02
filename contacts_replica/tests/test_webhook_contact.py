@@ -6,7 +6,14 @@ from contacts_replica.models import ContactReplica
 from core.tasks.fixtures import create_user
 
 UID = "f43c59ca-f632-4ada-98eb-99508fcfa072"
-PYLOAD = {"count":1,"pages":1,"page_size":20,"page":1,"page_next":None,"page_previous": None,"results":[{"_version":1,"history_id":128,"history_date":"2018-04-29T21:29:28.327108","history_change_reason":None,"history_user_id":None,"history_type":"+","_uid":UID,"_type":"historicalcontact","name":"Erin Griffith","phones":["7519"],"emails":["erin griffith@example.com"],"order_index":100}]}
+WEBHOOK_DATA = {
+    "count": 1, "pages": 1, "page_size": 20, "page": 1, "page_next": None,
+    "page_previous": None, "results": [
+        {"_version": 1, "history_date": "2018-04-29T21:29:28.327108",
+         "history_id": 128, "history_change_reason": None,
+         "history_user_id": None, "history_type": "+", "_uid": UID,
+         "_type": "contact", "name": "Erin Griffith", "phones": ["7519"],
+         "emails": ["erin griffith@example.com"], "order_index": 100}]}
 
 
 @pytest.fixture()
@@ -26,7 +33,7 @@ def api_client():
 
 
 def test_post_webhook(api_client: APIClient):
-    r = api_client.post(f'/api/v1/webhook/', data=PYLOAD)
+    r = api_client.post(f'/api/v1/webhook/', data=WEBHOOK_DATA)
     assert r.status_code == 200
     assert r.json() == {"status": "ok"}
 
@@ -35,11 +42,11 @@ def test_post_webhook(api_client: APIClient):
 
 
 def test_post_webhook_more_then_one_time(api_client: APIClient):
-    r = api_client.post(f'/api/v1/webhook/', data=PYLOAD)
+    r = api_client.post(f'/api/v1/webhook/', data=WEBHOOK_DATA)
     assert r.status_code == 200
-    r = api_client.post(f'/api/v1/webhook/', data=PYLOAD)
+    r = api_client.post(f'/api/v1/webhook/', data=WEBHOOK_DATA)
     assert r.status_code == 200
-    r = api_client.post(f'/api/v1/webhook/', data=PYLOAD)
+    r = api_client.post(f'/api/v1/webhook/', data=WEBHOOK_DATA)
     assert r.status_code == 200
 
     last = ContactReplica.objects.last()

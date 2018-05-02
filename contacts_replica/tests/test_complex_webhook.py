@@ -9,16 +9,36 @@ from rest_framework.test import APIClient
 from contacts.models import Contact, Comment
 from contacts.tests.factories import ContactFactory, CommentFactory
 from contacts_replica.models import ContactReplica, CommentReplica
+from eventsourcing.models import Subscription
 from core.tasks.fixtures import create_user
-from replication.models import Subscription
+
+
+@pytest.fixture(params=[
+    (Contact, [], ContactFactory, ContactReplica, {'version': 1}),
+    (Comment, [Contact], CommentFactory, CommentReplica, {'version': 1}),
+])
+def api_model(request):
+    return request.param
+
+
+@pytest.fixture
+def api_client():
+    password = get_random_string()
+    user = create_user(password=password)
+    client = APIClient()
+    client.force_login(user)
+    client.user = user
+    client.password = password
+    return client
 
 
 def _create_history_permission(user, model):
+    model = model.history.model
     opts = model._meta  # noqa: pylint=protected-access
     content_type = ContentType.objects.get_for_model(model)
-    permission, _ = Permission.objects.get_or_create(
+    permission = Permission.objects.get(
         content_type=content_type,
-        codename=f'view_historical{opts.model_name}')
+        codename=f'view_{opts.model_name}')
     user.user_permissions.add(permission)
 
 
@@ -38,26 +58,7 @@ def _create_subscribe(user: AbstractUser, password, model, options, base_url):
     })
 
 
-@pytest.fixture
-def api_client():
-    password = get_random_string()
-    user = create_user(password=password)
-    client = APIClient()
-    client.force_login(user)
-    client.user = user
-    client.password = password
-    return client
-
-
-@pytest.fixture(params=[
-    (Contact, [], ContactFactory, ContactReplica, {'version': 1}),
-    (Comment, [Contact], CommentFactory, CommentReplica, {'version': 1}),
-])
-def api_model(request):
-    return request.param
-
-
-def test_complex_replication(celery_session_worker, base_url,
+def test_webhook_replication(celery_session_worker, base_url,
                              api_client, api_model):
     model, dep_models, factory, replica_model, options = api_model
     for dep_model in dep_models:
