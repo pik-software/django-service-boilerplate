@@ -81,9 +81,24 @@ def _do_fake_request(
     return code, content
 
 
-def _do_webhook_request(webhook_url: str, **kwargs) -> Tuple[int, str]:
-    LOGGER.error('do webhook request url="%s"')
-    response = requests.post(webhook_url, timeout=10, **kwargs)
+def _prepare_webhook_request_kwargs(settings):
+    webhook_url = settings['webhook_url']
+    webhook_cookies = settings.get('webhook_cookies', None)
+    webhook_headers = settings.get('webhook_headers', {})
+    webhook_headers['content-type'] = 'application/json'
+    webhook_auth = settings.get('webhook_auth', None)
+    if webhook_auth and isinstance(webhook_auth, list):
+        # convert to requests auth tuple
+        webhook_auth = tuple(webhook_auth)
+    return dict(
+        url=webhook_url,
+        auth=webhook_auth, headers=webhook_headers, cookies=webhook_cookies,
+    )
+
+
+def _do_webhook_request(*, url, **kwargs) -> Tuple[int, str]:
+    LOGGER.error('do webhook request url="%s"', url)
+    response = requests.post(url, timeout=10, **kwargs)
     code, content = response.status_code, response.content
     LOGGER.error('webhook response status_code=%s %r', code, content)
     return code, content
@@ -98,17 +113,10 @@ def _process_webhook_subscription(
     try:
         subscriber: Subscription = Subscription.objects.get(pk=subscription_pk)
     except Subscription.DoesNotExist:
-        return 'not_subscribed'
+        return 'subscription_does_not_exist'
 
-    webhook_url = subscriber.settings['webhook_url']
     api_version = subscriber.settings['api_version']
-    webhook_cookies = subscriber.settings.get('webhook_cookies', None)
-    webhook_headers = subscriber.settings.get('webhook_headers', {})
-    webhook_headers['content-type'] = 'application/json'
-    webhook_auth = subscriber.settings.get('webhook_auth', None)
-    if webhook_auth and isinstance(webhook_auth, list):
-        # convert to requests auth tuple
-        webhook_auth = tuple(webhook_auth)
+    request_kwargs = _prepare_webhook_request_kwargs(subscriber.settings)
     user_pk = subscriber.user.pk
 
     hist_obj = _deserialize_history_instance(
@@ -119,7 +127,6 @@ def _process_webhook_subscription(
                  history_object_id, _type, _action, _uid)
 
     history_url = f'/api/v{api_version}/{_type}-list/history/'
-
     status, content = _do_fake_request(
         user_pk, 'get', history_url, data={'history_id': hist_obj.history_id})
 
@@ -130,8 +137,7 @@ def _process_webhook_subscription(
 
     try:
         webhook_status, webhook_response = _do_webhook_request(
-            webhook_url, data=content, auth=webhook_auth,
-            headers=webhook_headers, cookies=webhook_cookies,
+            data=content, **request_kwargs,
         )
         return 'ok'
     except Exception as exc:

@@ -298,7 +298,7 @@ def test_do_async_fake_request(api_model):
     assert content_json['results'][0]["history_type"] == '+'
     assert content_json['results'][0]["history_id"] == hist_obj.history_id
     assert content_json['results'][0]["_uid"] == str(hist_obj.uid)
-    assert content_json['results'][0]["_type"] == 'historical' + _type
+    assert content_json['results'][0]["_type"] == _type
 
 
 def test_replicate_history_call_process_webhook(
@@ -374,8 +374,8 @@ def test_process_webhook(api_model, mocker, celery_session_worker):
     assert r.get(timeout=10) == 'ok'
     print(transfer.call_args_list)
     assert transfer.call_args_list == [
-        call('http://localhost/', auth=None, cookies=None, data=hist1_content,
-             headers={'content-type': 'application/json'}),
+        call(url='http://localhost/', auth=None, cookies=None,
+             data=hist1_content, headers={'content-type': 'application/json'}),
     ]
 
 
