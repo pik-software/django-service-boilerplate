@@ -57,4 +57,4 @@ def _get_replication_model(_type):
 
 
 def _is_replicating_historical_model(model):
-    return model in _REPLICATING_HISTORICAL_MODELS
+    return model._meta.concrete_model in _REPLICATING_HISTORICAL_MODELS  # noqa

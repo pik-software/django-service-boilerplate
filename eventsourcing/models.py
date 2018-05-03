@@ -77,7 +77,7 @@ def _post_historical_instance_created(sender, instance, created, **kwargs):
     Automatically triggers "created" and "updated" actions.
     """
     from .replicator.registry import _is_replicating_historical_model  # noqa
-    if not _is_replicating_historical_model(instance._meta.concrete_model):  # noqa
+    if not _is_replicating_historical_model(instance):
         return
     if not created:
         raise RuntimeError('Historical changes detected! WTF?')
