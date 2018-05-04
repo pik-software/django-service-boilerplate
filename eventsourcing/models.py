@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from simple_history.models import HistoricalRecords
 
 from core.models import Dated, PUided, Versioned, Owned
-from .utils import _get_event_name
+from .utils import _get_event_names
 from .consts import SUBSCRIPTION_TYPES
 
 LOGGER = logging.getLogger(__name__)
@@ -71,8 +71,8 @@ def unsubscribe(user, name, type, events):
     return obj
 
 
-@receiver(post_save, dispatch_uid='historical-instance-saved')
-def _post_historical_instance_created(sender, instance, created, **kwargs):
+@receiver(post_save, dispatch_uid='post-save-historical-model')
+def _post_save_historical_model(sender, instance, created, **kwargs):
     """
     Automatically triggers "created" and "updated" actions.
     """
@@ -82,11 +82,9 @@ def _post_historical_instance_created(sender, instance, created, **kwargs):
     if not created:
         raise RuntimeError('Historical changes detected! WTF?')
 
-    _type, _action, _uid = _get_event_name(instance)
-    events = [f'{_type}', f'{_type}.{_action}', f'{_type}.{_action}.{_uid}']
+    events = _get_event_names(instance)
     subscribers = Subscription.objects.filter(events__overlap=events)
     if subscribers.exists():
-        LOGGER.info('replicate %s.%s.%s [hist=%s]',
-                    _type, _action, _uid, instance.history_id)
+        LOGGER.info('replicate %s [hist=%s]', events[-1], instance.history_id)
         from .replicator import replicate  # noqa
         replicate(instance)

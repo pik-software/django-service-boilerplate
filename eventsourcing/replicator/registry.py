@@ -2,12 +2,12 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Model
 from simple_history.manager import HistoryManager
 
-from eventsourcing.utils import _serialize_history_instance
+from eventsourcing.utils import _pack_history_instance
 from .utils import _has_field
 from .tasks import _replicate_to_webhook_subscribers
 
 _REPLICATING_MODEL_STORAGE = {}
-_REPLICATING_HISTORICAL_MODELS = set()
+_REPLICATING_HISTORICAL_MODEL_SET = set()
 
 
 def replicating(_type: str):
@@ -32,18 +32,18 @@ def replicating(_type: str):
         if not isinstance(model.history, HistoryManager):
             raise ValueError('Model.history is not a HistoryManager object')
 
-        _REPLICATING_HISTORICAL_MODELS.add(model.history.model)
+        _REPLICATING_HISTORICAL_MODEL_SET.add(model.history.model)
         _REPLICATING_MODEL_STORAGE[_type] = model
         return model
     return wrapper
 
 
-def replicate(instance):
-    app_label, model_name, history_id = _serialize_history_instance(instance)
-    _replicate_to_webhook_subscribers.delay(app_label, model_name, history_id)
+def replicate(instance) -> None:
+    packed_history = _pack_history_instance(instance)
+    _replicate_to_webhook_subscribers.delay(packed_history)
 
 
-def is_replicating(model):
+def is_replicating(model) -> bool:
     content_type = ContentType.objects.get_for_model(model).model
     return content_type in _REPLICATING_MODEL_STORAGE
 
@@ -57,4 +57,4 @@ def _get_replication_model(_type):
 
 
 def _is_replicating_historical_model(model):
-    return model._meta.concrete_model in _REPLICATING_HISTORICAL_MODELS  # noqa
+    return model._meta.concrete_model in _REPLICATING_HISTORICAL_MODEL_SET  # noqa
