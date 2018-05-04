@@ -37,8 +37,11 @@ INTERNAL_IPS = ['127.0.0.1']
 # --- <SERVICES> --- #
 
 # SENTRY
-RAVEN_CONFIG = {
+SENTRY_CONFIG = {
     'dsn': os.environ.get('RAVEN_DSN', ''),
+    'tags': {'environment': ENVIRONMENT},
+    'include_versions': False,
+    'release': None,
     'CELERY_LOGLEVEL': logging.WARNING,
 }
 
@@ -331,7 +334,6 @@ LOGGING = {
         'sentry': {
             'level': 'WARNING',
             'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',  # noqa
-            'tags': {'environment': ENVIRONMENT},
         },
     },
     'loggers': {
