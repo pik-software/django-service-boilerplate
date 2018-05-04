@@ -1,4 +1,7 @@
 from .api.viewsets import SubscriptionViewSet
 from .registry import replicating, is_replicating, replicate
+from .serializer import serialize
 
-__ALL__ = ['replicating', 'is_replicating', 'replicate', 'SubscriptionViewSet']
+__all__ = [
+    'replicating', 'is_replicating', 'serialize', 'replicate',
+    'SubscriptionViewSet']

@@ -13,8 +13,8 @@ from rest_framework.test import APIClient
 import eventsourcing.replicator.registry
 from core.tasks.fixtures import create_user
 from eventsourcing.models import Subscription
-from eventsourcing.replicator.serializer import _process_fake_request, \
-    serialize
+from eventsourcing.replicator import serialize
+from eventsourcing.replicator.serializer import _process_fake_request
 from eventsourcing.replicator.tasks import _replicate_to_webhook_subscribers, \
     _process_webhook_subscription
 from eventsourcing.utils import _pack_history_instance
