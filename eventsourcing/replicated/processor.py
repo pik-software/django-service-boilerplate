@@ -22,22 +22,10 @@ class _ProcessHistoricalRecordError(Exception):
                f"{message} (v={self._version})"
 
 
-def _process_historical_record(_type: str, _action: str, _uid: str,
-                               _version: int, obj: dict):
-    args = _type, _action, _uid, _version
-    if _type not in _REPLICATED_MODEL_STORAGE:
-        raise _ProcessHistoricalRecordError(*args, 'Unsupported _type')
-
-    if _action in ['-']:
-        return  # don't remove
-    elif _action in ['+', '~']:
-        pass
-    else:
-        raise _ProcessHistoricalRecordError(*args, 'Unsupported _action')
-
-    model = _REPLICATED_MODEL_STORAGE[_type]
+def _prepare_model_attributes(model, hist_record, ctx) -> dict:
     fields = _get_fields(model)
-    kwargs = {}
+    attributes = {}
+    obj = hist_record
 
     for field in fields:
         if field.name in obj:
@@ -45,14 +33,13 @@ def _process_historical_record(_type: str, _action: str, _uid: str,
             if field.is_relation:
                 if isinstance(value, dict):
                     if '_uid' not in value or '_type' not in value:
-                        raise _ProcessHistoricalRecordError(
-                            *args, f'FK "{field.name}": no FK[_type] '
-                                   f'or no FK[_uid]')
+                        mag = f'FK "{field.name}": no FK[_type] or no FK[_uid]'
+                        raise _ProcessHistoricalRecordError(*ctx, mag)
 
                     value = value['_uid']
                     if not isinstance(value, str):
-                        raise _ProcessHistoricalRecordError(
-                            *args, f'FK "{field.name}": type(_uid) != str')
+                        msg = f'FK "{field.name}": type(_uid) != str'
+                        raise _ProcessHistoricalRecordError(*ctx, msg)
 
                 rel_model = field.remote_field.model._meta.concrete_model  # noqa
                 rel_model_kwargs = {'uid': value} \
@@ -61,22 +48,40 @@ def _process_historical_record(_type: str, _action: str, _uid: str,
                 try:
                     value = rel_model.objects.get(**rel_model_kwargs)
                 except rel_model.DoesNotExist:
-                    raise _ProcessHistoricalRecordError(
-                        *args, f'FK "{field.name}": DoesNotExists')
-            kwargs[field.name] = value
+                    msg = f'FK "{field.name}": DoesNotExists'
+                    raise _ProcessHistoricalRecordError(*ctx, msg)
+            attributes[field.name] = value
+    return attributes
 
-    qs = model.objects.filter(uid=_uid)
-    if qs.exists():
-        instance = qs.first()
+
+def _process_historical_record(_type: str, _action: str, _uid: str,
+                               _version: int, hist_record: dict):
+    ctx = _type, _action, _uid, _version
+    if _type not in _REPLICATED_MODEL_STORAGE:
+        raise _ProcessHistoricalRecordError(*ctx, 'Unsupported _type')
+
+    if _action in ['-']:
+        # TODO: realize remove!?
+        return  # don't remove
+    elif _action in ['+', '~']:
+        pass
+    else:
+        raise _ProcessHistoricalRecordError(*ctx, 'Unsupported _action')
+
+    model = _REPLICATED_MODEL_STORAGE[_type]
+    model_attributes = _prepare_model_attributes(model, hist_record, ctx)
+
+    try:
+        instance = model.objects.get(uid=_uid)
         if _version > instance.version:
-            for key, val in kwargs.items():
+            for key, val in model_attributes.items():
                 setattr(instance, key, val)
         else:
             LOGGER.warning("Received old %s version = %s (current %s)",
                            _type, _version, instance.version)
             return
-    else:
-        instance = model(**kwargs)
+    except model.DoesNotExist:
+        instance = model(**model_attributes)
 
     instance.uid = _uid
     instance.autoincrement_version = False
