@@ -48,10 +48,6 @@ def is_replicating(model) -> bool:
     return content_type in _REPLICATING_MODEL_STORAGE
 
 
-def _is_replicating_type(_type):
-    return _type in _REPLICATING_MODEL_STORAGE
-
-
 def _get_replication_model(_type):
     return _REPLICATING_MODEL_STORAGE.get(_type)
 

@@ -4,8 +4,9 @@ from core.api.filters import StandardizedSearchFilter
 from core.api.mixins import BulkCreateModelMixin
 from core.api.serializers import StandardizedModelSerializer
 from core.api.viewsets import StandardizedReadOnlyModelViewSet
-from eventsourcing.replicator.registry import _is_replicating_type, \
-    _get_replication_model
+from eventsourcing.replicator.registry import _get_replication_model
+from eventsourcing.replicator.serializer import _check_serialize_problem, \
+    SerializeHistoricalInstanceError
 from ...consts import WEBHOOK_SUBSCRIPTION
 from ...models import Subscription, subscribe
 
@@ -65,6 +66,49 @@ class _SubscriptionSerializer(StandardizedModelSerializer):
         value.update({'api_version': version})
         return value
 
+    def _check_event_name(self, event):
+        splitted_event = event.split('.')
+        _type = splitted_event[0]
+        model = _get_replication_model(_type)
+        if not model:
+            raise serializers.ValidationError(
+                'wrong event name',
+                code='wrong_event',
+            )
+        if len(splitted_event) >= 2:
+            _action = splitted_event[1]
+            if _action not in ['+', '-', '~']:
+                raise serializers.ValidationError(
+                    'wrong event name',
+                    code='wrong_event',
+                )
+        if len(splitted_event) > 3:
+            raise serializers.ValidationError(
+                'wrong event name',
+                code='wrong_event',
+            )
+
+    def _check_event_permission(self, event):
+        _type = event.split('.', 1)[0]
+        model = _get_replication_model(_type)
+        codename = f'{model._meta.app_label}.view_historical' \
+                   f'{model._meta.model_name}'
+        user = self.context['request'].user
+        if not user.has_perm(codename):
+            raise serializers.ValidationError(
+                'no event permission',
+                code='no_event_permission',
+            )
+
+    def _check_event_serilize_problem(self, user, settings, event):
+        _type = event.split('.', 1)[0]
+        try:
+            _check_serialize_problem(user, settings, _type)
+        except SerializeHistoricalInstanceError:
+            raise serializers.ValidationError(
+                f'serialize "{event}" event problem', code='serialize'
+            )
+
     def validate_events(self, events):
         if not events:
             raise serializers.ValidationError(
@@ -74,23 +118,17 @@ class _SubscriptionSerializer(StandardizedModelSerializer):
         events = serializers.ListField(child=serializers.CharField())\
             .to_internal_value(events)
         for event in events:
-            event = event.split('.', 1)[0]
-            model = _get_replication_model(event)
-            if not model:
-                raise serializers.ValidationError(
-                    'wrong event name',
-                    code='wrong_event',
-                )
-            codename = f'{model._meta.app_label}.view_historical' \
-                       f'{model._meta.model_name}'
-            user = self.context['request'].user
-            if not user.has_perm(codename):
-                raise serializers.ValidationError(
-                    'no event permission',
-                    code='no_event_permission',
-                )
-
+            self._check_event_name(event)
+            self._check_event_permission(event)
         return events
+
+    def validate(self, attrs):
+        events = attrs['events']
+        settings = attrs['settings']
+        user = self.context['request'].user
+        for event in events:
+            self._check_event_serilize_problem(user, settings, event)
+        return attrs
 
     def create(self, validated_data):
         name = validated_data['name']

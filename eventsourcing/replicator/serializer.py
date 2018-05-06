@@ -16,16 +16,27 @@ class SerializeHistoricalInstanceError(Exception):
 
 
 def serialize(user, settings: dict, historical_instance) -> str:
-    _type, _action, _uid = _get_splitted_event_name(historical_instance)
-    history_id = historical_instance.history_id
+    _type, _, _ = _get_splitted_event_name(historical_instance)
     api_version = settings['api_version']
     history_url = f'/api/v{api_version}/{_type}-list/history/'
+    history_id = historical_instance.history_id
     status, content = _process_fake_request(
         user.pk, 'get', history_url, data={'history_id': history_id})
     if status != 200:
         raise SerializeHistoricalInstanceError(
             f'serialize api status = {status}')
     return content
+
+
+def _check_serialize_problem(user, settings: dict, _type):
+    # TODO: really we should check the serialize API schema here!
+    api_version = settings['api_version']
+    history_url = f'/api/v{api_version}/{_type}-list/history/'
+    status, content = _process_fake_request(
+        user.pk, 'get', history_url)
+    if status != 200:
+        raise SerializeHistoricalInstanceError(
+            f'serialize api status = {status}')
 
 
 def _process_fake_request(
