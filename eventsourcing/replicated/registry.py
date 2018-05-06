@@ -24,3 +24,7 @@ def replicated(_type: str):
 
 def is_replicated(model):
     return model in _REPLICATED_MODEL_STORAGE.values()
+
+
+def _get_replicated_model(_type):
+    return _REPLICATED_MODEL_STORAGE.get(_type)

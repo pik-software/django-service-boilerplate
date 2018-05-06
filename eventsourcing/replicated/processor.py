@@ -1,7 +1,7 @@
 import logging
 
 from .utils import _get_fields, _has_field
-from .registry import _REPLICATED_MODEL_STORAGE
+from .registry import _get_replicated_model
 
 
 LOGGER = logging.getLogger(__name__)
@@ -57,7 +57,8 @@ def _prepare_model_attributes(model, hist_record, ctx) -> dict:
 def _process_historical_record(_type: str, _action: str, _uid: str,
                                _version: int, hist_record: dict):
     ctx = _type, _action, _uid, _version
-    if _type not in _REPLICATED_MODEL_STORAGE:
+    model = _get_replicated_model(_type)
+    if not model:
         raise _ProcessHistoricalRecordError(*ctx, 'Unsupported _type')
 
     if _action in ['-']:
@@ -68,7 +69,6 @@ def _process_historical_record(_type: str, _action: str, _uid: str,
     else:
         raise _ProcessHistoricalRecordError(*ctx, 'Unsupported _action')
 
-    model = _REPLICATED_MODEL_STORAGE[_type]
     model_attributes = _prepare_model_attributes(model, hist_record, ctx)
 
     try:
