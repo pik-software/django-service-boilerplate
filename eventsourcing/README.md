@@ -1,0 +1,74 @@
+This module represent described by Martin Fowler "Event-Carried State Transfer"
+You can read more detail in article ["What do you mean by “Event-Driven”?"][1].
+
+Let's see how to use the `eventsourcing`.
+
+1) We have a model `Contract` and we want to have this model
+in a different services. It means we want to have `replicating` model
+to replicate this model to others services.
+
+`master-service`:
+
+```python
+
+    from simple_history.models import HistoricalRecords
+
+    from core.models import Versioned, Uided
+    from eventsourcing.replicator import replicating
+
+    @replicating('contract')
+    class Contract(Uided, Versioned):
+        number = models.CharField(max_length=255)
+        ...
+
+        history = HistoricalRecords()
+        ...
+
+```
+
+2) We want to create a model `ContractReplica` in a service when
+you create the `Contract` in master service. It means we want
+to have `replicated` model in other service.
+
+`replica-service`:
+
+```python
+
+    from core.models import Versioned, Uided
+    from eventsourcing.replicated import replicated
+
+    @replicated('contract')
+    class ContractReplica(Uided, Versioned):
+        number = models.CharField(max_length=255)
+        ...
+
+```
+
+3) You should know protocol between master and replica.
+
+```json
+{
+    "count": 1,
+    "results": [
+        {
+            "history_id": 133,
+            "history_date": "2018-04-30T12:04:33.690145",
+            "history_change_reason": None,
+            "history_user_id": None,
+            "history_type": "+",
+            "_uid": "123e4567-e89b-12d3-a456-426655440000",
+            "_type": "contract",
+            "_version": 1,
+            "number": "N14/10-11",
+            ...
+        }
+    ]
+}
+```
+
+4) Replica-service should subscribe on Create/Update/Delete events.
+
+5) Master-service should send events to all subscribers.
+
+
+[1]: https://martinfowler.com/articles/201701-event-driven.html

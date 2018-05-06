@@ -4,9 +4,5 @@ You can read more detail in article ["What do you mean by “Event-Driven”?"][
 
 [1]: https://martinfowler.com/articles/201701-event-driven.html
 
-How-to use:
-
-    WRITE CODE SAMPLE
+Read for details: README.md
 """
-
-# TODO(pahaz): write examples
