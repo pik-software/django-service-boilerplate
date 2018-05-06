@@ -45,6 +45,11 @@ to have `replicated` model in other service.
 ```
 
 3) You should know protocol between master and replica.
+The communication is realized through the mechanism of webhook
+callbacks. Each object state change creates a historical
+Create/Update/Delete event log. This event log is distributed to all
+subscribers via webhook callbacks. Example of "created event" for
+`Contract` model.
 
 ```json
 {
@@ -66,9 +71,37 @@ to have `replicated` model in other service.
 }
 ```
 
+Each models (`replicating`/`replicated`) must have `uid` and `version`
+fields. These fields are required to correctly restore the state
+change sequence.
+
+Each historical event record has:
+ - 5 history service fields: `history_id`, `history_date`,
+   `history_change_reason`, `history_user_id`, `history_type`
+ - 3 entity service fields: `_uid`, `_type`, `_version`
+
 4) Replica-service should subscribe on Create/Update/Delete events.
 
 5) Master-service should send events to all subscribers.
 
+```python
+from rest_framework.routers import DefaultRouter
+
+from eventsourcing.replicated import ReplicatedWebhookViewSet
+from eventsourcing.replicator import SubscriptionViewSet
+
+webhook = DefaultRouter()
+webhook.register(
+    'webhook', ReplicatedWebhookViewSet, base_name='webhook')
+webhook.register(
+    'subscriptions', SubscriptionViewSet, base_name='subscription')
+
+urlpatterns = [
+    ...
+    url(r'^api/v(?P<version>[1-9])/', include(webhook.urls)),
+]
+```
+
+Use `/api/v1/subscriptions` to subscribe on events.
 
 [1]: https://martinfowler.com/articles/201701-event-driven.html

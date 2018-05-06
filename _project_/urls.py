@@ -3,6 +3,8 @@ from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
+from django.views.static import serve
+from rest_framework.routers import DefaultRouter
 
 from core.api.auth import OBTAIN_AUTH_TOKEN
 from core.api.router import StandardizedRouter
@@ -17,8 +19,12 @@ router.register(
     'contact-list', ContactViewSet, base_name='contact')
 router.register(
     'comment-list', CommentViewSet, base_name='comment')
-router.register('webhook', ReplicatedWebhookViewSet, base_name='webhook')
-router.register('subscriptions', SubscriptionViewSet, base_name='subscription')
+
+webhook = DefaultRouter()
+webhook.register(
+    'webhook', ReplicatedWebhookViewSet, base_name='webhook')
+webhook.register(
+    'subscriptions', SubscriptionViewSet, base_name='subscription')
 
 
 @login_required
@@ -31,6 +37,8 @@ def index(request):
 
 urlpatterns = [  # noqa: pylint=invalid-name
     url(r'^$', index, name='index'),
+    url(r'^favicon.ico$', serve, {
+        'document_root': settings.STATIC_ROOT, 'path': 'favicon.ico'}),
     url(r'^admin/', admin.site.urls),
     url(r'^status/', include('health_check.urls')),
     url(r'^accounts/', include('registration.auth_urls')),
@@ -38,6 +46,7 @@ urlpatterns = [  # noqa: pylint=invalid-name
     url(r'^api/v(?P<version>[1-9])/schema/',
         SchemaView.as_view(), name='api_schema'),
     url(r'^api/v(?P<version>[1-9])/', include(router.urls, namespace='api')),
+    url(r'^api/v(?P<version>[1-9])/', include(webhook.urls)),
     url(r'^api-token-auth/', OBTAIN_AUTH_TOKEN),
 ]
 
