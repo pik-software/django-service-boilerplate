@@ -44,7 +44,7 @@ jobs:
             python manage.py migrate
             python manage.py collectstatic
             python manage.py check
-            pytest --doctest-modules --cov-config .coveragerc --cov-report term-missing --selenium --durations=0 --cov . -vvv
+            pytest --doctest-modules --selenium --durations=0 -vvvs
             prospector --profile-path . --profile .prospector.yaml .
 
       - deploy:
