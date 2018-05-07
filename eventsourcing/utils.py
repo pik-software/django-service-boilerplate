@@ -18,8 +18,8 @@ def _get_event_names(historical_instance):
 
 def _pack_history_instance(historical_instance):
     model = historical_instance._meta.concrete_model  # noqa
-    opts = model._meta  # noqa
-    return opts.app_label, opts.model_name, historical_instance.history_id
+    ct = ContentType.objects.get_for_model(model)
+    return ct.app_label, ct.model, historical_instance.history_id
 
 
 def _unpack_history_instance(packed_history):

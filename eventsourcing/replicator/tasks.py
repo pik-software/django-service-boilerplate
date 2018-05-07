@@ -34,8 +34,9 @@ def _run_request_to_webhook(
         user_pk, settings, serialized_data
 ) -> Tuple[int, str]:
     url, kwargs = _prepare_webhook_request_kwargs(settings)
+    data = serialized_data.encode('utf-8')
     LOGGER.info('do webhook request url="%s"; %r', url, kwargs)
-    response = requests.post(url, data=serialized_data, timeout=10, **kwargs)
+    response = requests.post(url, data=data, timeout=10, **kwargs)
     code, content = response.status_code, response.content
     LOGGER.info('webhook response status_code=%s %r', code, content)
     return code, content
@@ -94,7 +95,8 @@ def _process_webhook_subscription(
         raise self.retry(exc=exc)
 
 
-@shared_task(bind=True)
+@shared_task(bind=True, max_retries=3, default_retry_delay=1,
+             retry_backoff=True)
 def _replicate_to_webhook_subscribers(
         self: celery.Task,
         packed_history,
@@ -106,10 +108,17 @@ def _replicate_to_webhook_subscribers(
         _replicate_to_webhook_subscribers.delay(packed_history)
 
     """
-    hist_obj = _unpack_history_instance(packed_history)
-    events = _get_event_names(hist_obj)
-    subscribers = Subscription.objects.filter(
-        events__overlap=events, type=WEBHOOK_SUBSCRIPTION)
+    retry = self.request.retries
+    LOGGER.info('replicate_history: %r; retry=%s', packed_history, retry)
+    try:
+        hist_obj = _unpack_history_instance(packed_history)
+        events = _get_event_names(hist_obj)
+        subscribers = Subscription.objects.filter(
+            events__overlap=events, type=WEBHOOK_SUBSCRIPTION)
+    except Exception as exc:
+        LOGGER.exception('replicate_history: error: %r', exc)
+        client.captureException()
+        raise self.retry(exc=exc)
 
     for subscriber in subscribers:
         try:

@@ -208,12 +208,10 @@ def test_api_create_subscription(api_client, api_model):
     })
 
 
-def test_replicate_to_webhook_subscribers(api_model, mocker):
+def test_replicate_events(api_model, mocker):
     model, factory, options = api_model
     _create_subscription(model, options)
     _type = ContentType.objects.get_for_model(model).model
-    task = mocker.patch(
-        'eventsourcing.replicator.registry._replicate_to_webhook_subscribers')
 
     obj = factory.create()
     history = obj.history.all()
@@ -223,9 +221,6 @@ def test_replicate_to_webhook_subscribers(api_model, mocker):
 
     # create event
     _assert_history_object(hist_obj, _type, '+', _uid)
-    task.delay.assert_called_once_with(
-        (hist_obj._meta.app_label, hist_obj._meta.model_name, hist_obj.pk),
-    )
 
     # change event
     obj.version += 10
@@ -233,18 +228,12 @@ def test_replicate_to_webhook_subscribers(api_model, mocker):
     hist_obj = history.first()
 
     _assert_history_object(hist_obj, _type, '~', _uid)
-    task.delay.assert_called_with(
-        (hist_obj._meta.app_label, hist_obj._meta.model_name, hist_obj.pk),
-    )
 
     # delete event
     obj.delete()
     hist_obj = history.first()
 
     _assert_history_object(hist_obj, _type, '-', _uid)
-    task.delay.assert_called_with(
-        (hist_obj._meta.app_label, hist_obj._meta.model_name, hist_obj.pk),
-    )
 
 
 def test_replicate(api_model, mocker):
@@ -330,10 +319,8 @@ def test_replicate_history_call_process_webhook(
     r = _replicate_to_webhook_subscribers.delay(
         (app_label, model_name, hist1.pk))
     r.get(timeout=10)
-    assert process_webhook.delay.call_args_list == [
-        call(subscribe.pk, [app_label, model_name, hist1.pk]),
-        call(subscribe.pk, [app_label, model_name, hist1.pk]),
-    ]
+    process_webhook.delay.assert_called_with(
+        subscribe.pk, [app_label, model_name, hist1.pk])
 
     # change event
     obj.version += 10
@@ -343,12 +330,8 @@ def test_replicate_history_call_process_webhook(
     r = _replicate_to_webhook_subscribers.delay(
         (app_label, model_name, hist2.pk))
     r.get(timeout=10)
-    assert process_webhook.delay.call_args_list == [
-        call(subscribe.pk, [app_label, model_name, hist1.pk]),
-        call(subscribe.pk, [app_label, model_name, hist1.pk]),
-        call(subscribe.pk, [app_label, model_name, hist2.pk]),
-        call(subscribe.pk, [app_label, model_name, hist2.pk]),
-    ]
+    process_webhook.delay.assert_called_with(
+        subscribe.pk, [app_label, model_name, hist2.pk])
 
     # delete event
     obj.delete()
@@ -357,14 +340,8 @@ def test_replicate_history_call_process_webhook(
     r = _replicate_to_webhook_subscribers.delay(
         (app_label, model_name, hist3.pk))
     r.get(timeout=10)
-    assert process_webhook.delay.call_args_list == [
-        call(subscribe.pk, [app_label, model_name, hist1.pk]),
-        call(subscribe.pk, [app_label, model_name, hist1.pk]),
-        call(subscribe.pk, [app_label, model_name, hist2.pk]),
-        call(subscribe.pk, [app_label, model_name, hist2.pk]),
-        call(subscribe.pk, [app_label, model_name, hist3.pk]),
-        call(subscribe.pk, [app_label, model_name, hist3.pk]),
-    ]
+    process_webhook.delay.assert_called_with(
+        subscribe.pk, [app_label, model_name, hist3.pk])
 
 
 def test_process_webhook_ok(api_model, mocker, celery_session_worker):

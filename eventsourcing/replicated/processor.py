@@ -62,8 +62,12 @@ def _process_historical_record(_type: str, _action: str, _uid: str,
         raise _ProcessHistoricalRecordError(*ctx, 'Unsupported _type')
 
     if _action in ['-']:
-        # TODO: realize remove!?
-        return  # don't remove
+        try:
+            instance = model.objects.get(uid=_uid)
+            instance.delete()
+        except model.DoesNotExist:
+            pass
+        return
     elif _action in ['+', '~']:
         pass
     else:
@@ -72,7 +76,7 @@ def _process_historical_record(_type: str, _action: str, _uid: str,
     model_attributes = _prepare_model_attributes(model, hist_record, ctx)
 
     try:
-        instance = model.objects.get(uid=_uid)
+        instance = model._base_manager.get(uid=_uid)  # noqa
         if _version > instance.version:
             for key, val in model_attributes.items():
                 setattr(instance, key, val)
@@ -81,6 +85,8 @@ def _process_historical_record(_type: str, _action: str, _uid: str,
                            _type, _version, instance.version)
             return
     except model.DoesNotExist:
+        if _action == '~':
+            LOGGER.warning('create object on %s.%s.%s', _type, _action, _uid)
         instance = model(**model_attributes)
 
     instance.uid = _uid

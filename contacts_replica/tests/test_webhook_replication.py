@@ -1,4 +1,4 @@
-from time import sleep
+from time import sleep, time
 
 import pytest
 from django.contrib.auth.models import Permission, AbstractUser
@@ -13,9 +13,14 @@ from eventsourcing.models import Subscription
 from core.tasks.fixtures import create_user
 
 
+UNICHRS = 'abcdefабвгдеàHЯ⾀HÐ¯â¾€ЯЯ×�¼½¾¿™Ž'
+
+
 @pytest.fixture(params=[
-    (Contact, [], ContactFactory, ContactReplica, {'version': 1}),
-    (Comment, [Contact], CommentFactory, CommentReplica, {'version': 1}),
+    (Contact, [], ContactFactory, ContactReplica, {
+        'version': 1, 'field': 'name'}),
+    (Comment, [Contact], CommentFactory, CommentReplica, {
+        'version': 1, 'field': 'message'}),
 ])
 def api_model(request):
     return request.param
@@ -58,17 +63,67 @@ def _create_subscribe(user: AbstractUser, password, model, options, base_url):
     })
 
 
+def _create_deep_subscribe(
+        user: AbstractUser, password, model, dep_models, options, base_url,
+):
+    for dep_model in dep_models:
+        _create_subscribe(
+            user, password, dep_model, options, base_url)
+    _create_subscribe(
+        user, password, model, options, base_url)
+
+
+def _wait_query(model, kwargs, condition=lambda qs: qs.exists(), timeout=9.0):
+    t1 = time()
+    while time() - t1 < timeout:
+        qs = model.objects.filter(**kwargs)
+        if condition(qs):
+            return qs
+        sleep(0.1)
+    raise AssertionError('_wait_object() timeout')
+
+
 def test_webhook_replication(celery_session_worker, base_url,
                              api_client, api_model):
     model, dep_models, factory, replica_model, options = api_model
-    for dep_model in dep_models:
-        _create_subscribe(
-            api_client.user, api_client.password, dep_model, options, base_url)
-    _create_subscribe(
-        api_client.user, api_client.password, model, options, base_url)
+    _create_deep_subscribe(
+        api_client.user, api_client.password, model, dep_models, options,
+        base_url)
 
     x = factory.create()
-    sleep(1)  # TODO: replace to celery magic ... (wait until the action)
-    y = replica_model.objects.get(uid=x.uid)
+
+    y = _wait_query(replica_model, dict(uid=x.uid)).last()
     assert x.version == y.version
     assert x.uid == y.uid
+
+
+def test_webhook_replication_change_event(
+        celery_session_worker, base_url, api_client, api_model):
+    model, dep_models, factory, replica_model, options = api_model
+    _create_deep_subscribe(
+        api_client.user, api_client.password, model, dep_models, options,
+        base_url)
+
+    val1, val2 = get_random_string(9, UNICHRS), get_random_string(13, UNICHRS)
+    x = factory.create(**{options['field']: val1})
+    setattr(x, options['field'], val2)
+    x.save()
+
+    kwargs = {'uid': x.uid, options['field']: val2}
+    y = _wait_query(replica_model, kwargs).last()
+    assert x.version == y.version
+    assert x.uid == y.uid
+
+
+def test_webhook_delete_event(
+        celery_session_worker, base_url, api_client, api_model):
+    model, dep_models, factory, replica_model, options = api_model
+    _create_deep_subscribe(
+        api_client.user, api_client.password, model, dep_models, options,
+        base_url)
+
+    x = factory.create()
+    _wait_query(replica_model, dict(uid=x.uid))
+
+    x.delete()
+    _wait_query(replica_model, dict(uid=x.uid), lambda qs: not qs.exists())

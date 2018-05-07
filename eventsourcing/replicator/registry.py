@@ -40,7 +40,8 @@ def replicating(_type: str):
 
 def replicate(instance) -> None:
     packed_history = _pack_history_instance(instance)
-    _replicate_to_webhook_subscribers.delay(packed_history)
+    _replicate_to_webhook_subscribers.apply_async(
+        args=(packed_history, ), countdown=0.5)
 
 
 def is_replicating(model) -> bool:
