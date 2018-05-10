@@ -22,9 +22,9 @@ if ssh dokku@${HOST} -C apps:list | grep -qFx ${SERVICE_NAME}; then
     exit 2
 fi
 
-SECRET_KEY=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+SECRET_KEY=$( openssl rand -base64 18 )
 
-ssh root@${HOST} -C apps:create $SERVICE_NAME
+ssh root@${HOST} -C dokku apps:create $SERVICE_NAME
 
 # postgres (root required!)
 ssh root@${HOST} -C POSTGRES_IMAGE="mdillon/postgis" POSTGRES_IMAGE_VERSION="9.6" dokku postgres:create $SERVICE_NAME

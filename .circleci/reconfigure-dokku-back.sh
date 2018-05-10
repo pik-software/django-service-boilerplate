@@ -24,11 +24,11 @@ fi
 
 case "$BRANCH" in
     example1)
-        RELEASE_DATE=$( date '+%Y-%m-%d %T' )
+        RELEASE_DATE=$( date '+%Y-%m-%d-%H-%M-%S' )
         ;;
     *)
         RELEASE_DATE=$( date )
         ;;
 esac
 
-ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} RELEASE_DATE=${RELEASE_DATE}
+ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} RELEASE_DATE="'"${RELEASE_DATE}"'"

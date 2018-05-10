@@ -5,15 +5,15 @@ set -ex
 cd "$(dirname "$0")"
 echo "$(date +%Y-%m-%d-%H-%M-%S) - deploy-to-prod.sh $@"
 
-HOST=35.234.72.31
 REPO=$( git config --local remote.origin.url | sed -n 's#.*/\([^.]*\)\.git#\1#p' )
+HOST=$REPO.pik-software.ru
 BRANCH=master
 CURRENT_BRANCH=$( git branch | grep -e "^*" | cut -d' ' -f 2 )
 
-if [[ "$BRANCH" != "$CURRENT_BRANCH" ]]; then
-    echo "Deploy only master!"
-    exit 1
-fi
+#if [[ "$BRANCH" != "$CURRENT_BRANCH" ]]; then
+#    echo "Deploy only master!"
+#    exit 1
+#fi
 
 SERVICE_NAME="${REPO}"
 INIT_LETSENCRYPT=false
