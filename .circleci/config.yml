@@ -50,7 +50,7 @@ jobs:
       - deploy:
           name: deploy master
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+            if [ "${CIRCLE_BRANCH}" == "meteozon-deploy-1" || "${CIRCLE_BRANCH}" == "master" ]; then
               echo 'staging.pik-software.ru ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBOY5bwhxoqupBaChSCncDXgY+EPJC5DbZzfBJyrGh9etF+L8+4TJJUtzyCHUj0HcOUY186WHa3alIsAf5/KWbW0=' >> ~/.ssh/known_hosts
               ./.circleci/deploy-to-dokku.sh staging.pik-software.ru ${CIRCLE_PROJECT_REPONAME} ${CIRCLE_BRANCH}
             fi
