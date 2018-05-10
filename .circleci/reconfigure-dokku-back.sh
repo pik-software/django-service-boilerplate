@@ -22,7 +22,7 @@ if [[ -z "$BRANCH" ]]; then
     exit 1
 fi
 
-case "$1" in
+case "$BRANCH" in
     example1)
         RELEASE_DATE=$( date '+%Y-%m-%d %T' )
         ;;
