@@ -108,11 +108,9 @@ class HistoryViewSetMixin:
         Returns True if the given request has permission to add an object.
         Can be overridden by the user in subclasses.
         """
-        # TODO (pahaz): Use this as default permission check for all APIs
         opts = self.get_queryset().model._meta  # noqa: pylint=protected-access
-        method = request.method.lower()
-        codename = f'can_{method}_api_{opts.model_name}_{self.action}'
-        return request.user.has_perm("%s.%s" % (opts.app_label, codename))
+        return (request.user.has_perm(
+            f'{opts.app_label}.view_historical{opts.model_name}'))
 
     @action(methods=['GET'], detail=False)
     def history(self, request, **kwargs):

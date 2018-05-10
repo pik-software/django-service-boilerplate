@@ -1,5 +1,5 @@
-import pytest
 from django.contrib.contenttypes.models import ContentType
+import pytest
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -19,6 +19,11 @@ def api_model(request):
     return request.param
 
 
+@pytest.fixture()
+def client():
+    return APIClient()
+
+
 @pytest.fixture
 def api_client():
     user = create_user()
@@ -28,14 +33,45 @@ def api_client():
     return client
 
 
-def test_api_list(api_client, api_model):
-    model, factory, options = api_model
+def _url(model, options, obj=None):
+    _type = ContentType.objects.get_for_model(model).model
+    if obj:
+        return f'/api/v{options["version"]}/{_type}-list/{obj.uid}/'
+    return f'/api/v{options["version"]}/{_type}-list/'
+
+
+def _create_few_models(factory):
     factory.create_batch(BATCH_MODELS)
     last_obj = factory.create()
+    return last_obj
 
+
+def test_api_unauthorized_list(client, api_model):
+    model, factory, options = api_model
+    _create_few_models(factory)
+    url = _url(model, options)
+
+    res = client.get(url)
+
+    assert res.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+def test_api_unauthorized_retrieve(client, api_model):
+    model, factory, options = api_model
+    last_obj = _create_few_models(factory)
+    url = _url(model, options, last_obj)
+
+    res = client.get(url)
+
+    assert res.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+def test_api_list(api_client, api_model):
+    model, factory, options = api_model
+    last_obj = _create_few_models(factory)
+    url = _url(model, options)
     _type = ContentType.objects.get_for_model(model).model
 
-    url = f'/api/v{options["version"]}/{_type}-list/'
     res = api_client.get(url)
     assert res.status_code == status.HTTP_200_OK
     assert res.data['count'] > BATCH_MODELS
@@ -51,13 +87,10 @@ def test_api_list(api_client, api_model):
 
 def test_api_retrieve(api_client, api_model):
     model, factory, options = api_model
-
-    factory.create_batch(BATCH_MODELS)
-    last_obj = factory.create()
-
+    last_obj = _create_few_models(factory)
+    url = _url(model, options, last_obj)
     _type = ContentType.objects.get_for_model(model).model
 
-    url = f'/api/v{options["version"]}/{_type}-list/{last_obj.uid}/'
     res = api_client.get(url)
     assert res.status_code == status.HTTP_200_OK
     assert res.data['_uid'] == last_obj.uid
@@ -69,10 +102,8 @@ def test_api_list_num_queries(
         assert_num_queries_lte
 ):
     model, factory, options = api_model
-    factory.create_batch(BATCH_MODELS)
-    _type = ContentType.objects.get_for_model(model).model
-
-    url = f'/api/v{options["version"]}/{_type}-list/'
+    _create_few_models(factory)
+    url = _url(model, options)
 
     with assert_num_queries_lte(options["queries"]):
         res = api_client.get(url)
