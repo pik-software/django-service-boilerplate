@@ -48,9 +48,32 @@ jobs:
             prospector --profile-path . --profile .prospector.yaml .
 
       - deploy:
-          name: deploy master
+          name: deploy staging
           command: |
             if [[ "${CIRCLE_BRANCH}" == "meteozon-deploy-1" || "${CIRCLE_BRANCH}" == "master" ]]; then
               echo 'staging.pik-software.ru ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBOY5bwhxoqupBaChSCncDXgY+EPJC5DbZzfBJyrGh9etF+L8+4TJJUtzyCHUj0HcOUY186WHa3alIsAf5/KWbW0=' >> ~/.ssh/known_hosts
               ./.circleci/deploy-to-dokku.sh staging.pik-software.ru ${CIRCLE_PROJECT_REPONAME} ${CIRCLE_BRANCH}
             fi
+
+  deploy:
+    machine:
+        enabled: true
+    working_directory: ~/repo
+    steps:
+      - run:
+          name: deploy master
+          command: |
+            echo 'django-service-boilerplate.pik-software.ru ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFPXodJ4VrKP3YKaotYDle6krEX2M1qORWpEXm2yqLA5spRrIG7VEw7mvFzqWD9xfTaQr1l2uIuxXp6DFMZY4hc=' >> ~/.ssh/known_hosts
+            ./.circleci/deploy-to-prod.sh
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*/
