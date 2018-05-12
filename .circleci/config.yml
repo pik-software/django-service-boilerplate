@@ -89,10 +89,13 @@ workflows:
       - deploy-staging:
           requires:
             - build
-      - deploy:
+      - deploy-staging-testing:
           type: approval
           requires:
-            - build
+            - deploy-staging
+      - deploy:
+          requires:
+            - request-testing
           filters:
             branches:
               only: master
