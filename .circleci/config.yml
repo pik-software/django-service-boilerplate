@@ -55,6 +55,10 @@ jobs:
             pytest --doctest-modules --cov-config .coveragerc --cov-report term-missing --selenium --durations=0 --cov . -vvv
             prospector --profile-path . --profile .prospector.yaml .
 
+  deploy-staging:
+    working_directory: ~/repo
+    steps:
+      - checkout
       - run:
           name: deploy staging
           command: |
@@ -64,12 +68,9 @@ jobs:
             fi
 
   deploy:
-    machine:
-        enabled: true
     working_directory: ~/repo
     steps:
       - checkout
-
       - run:
           name: deploy master
           command: |
@@ -81,6 +82,9 @@ workflows:
   build-deploy:
     jobs:
       - build
+      - deploy-staging:
+          requires:
+            - build
       - deploy:
           type: approval
           requires:
