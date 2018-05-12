@@ -27,6 +27,9 @@ jobs:
     steps:
       - checkout
 
+      - type: cache-restore
+        key: pik-python-{{ arch }}-{{ .Branch }}-{{ checksum "requirements.txt" }}
+
       - run:
           name: install dependencies
           command: |
@@ -34,6 +37,11 @@ jobs:
             . .venv/bin/activate
             pip install --upgrade setuptools
             pip install --exists-action w -r requirements.txt
+
+      - type: cache-save
+        key: pik-python-{{ arch }}-{{ .Branch }}-{{ checksum "requirements.txt" }}
+        paths:
+          - "~/.cache/pip"
 
       - run:
           name: run tests
@@ -47,7 +55,7 @@ jobs:
             pytest --doctest-modules --cov-config .coveragerc --cov-report term-missing --selenium --durations=0 --cov . -vvv
             prospector --profile-path . --profile .prospector.yaml .
 
-      - deploy:
+      - run:
           name: deploy staging
           command: |
             if [[ "${CIRCLE_BRANCH}" == "meteozon-deploy-1" || "${CIRCLE_BRANCH}" == "master" ]]; then
