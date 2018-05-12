@@ -69,7 +69,7 @@ jobs:
               ./.circleci/deploy-to-dokku.sh staging.pik-software.ru ${CIRCLE_PROJECT_REPONAME} ${CIRCLE_BRANCH}
             fi
 
-  deploy:
+  deploy-prod:
     docker:
       - image: quay.io/pik-software/base:v1.6
     working_directory: ~/repo
@@ -89,13 +89,13 @@ workflows:
       - deploy-staging:
           requires:
             - build
-      - deploy-staging-testing:
+      - staging-ok:
           type: approval
           requires:
             - deploy-staging
-      - deploy:
+      - deploy-prod:
           requires:
-            - request-testing
+            - staging-ok
           filters:
             branches:
               only: master
