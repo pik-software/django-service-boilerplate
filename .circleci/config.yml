@@ -56,6 +56,8 @@ jobs:
             prospector --profile-path . --profile .prospector.yaml .
 
   deploy-staging:
+    docker:
+      - image: quay.io/pik-software/base:v1.6
     working_directory: ~/repo
     steps:
       - checkout
@@ -68,6 +70,8 @@ jobs:
             fi
 
   deploy:
+    docker:
+      - image: quay.io/pik-software/base:v1.6
     working_directory: ~/repo
     steps:
       - checkout
