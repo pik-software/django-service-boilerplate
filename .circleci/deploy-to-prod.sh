@@ -17,7 +17,7 @@ if [[ "$CURRENT_BRANCH" != "master" ]]; then
 fi
 if [[ "$HAS_RELEASE_TAG" != "1" ]]; then
     echo "Release tag required!"
-    exit2
+    exit 2
 fi
 
 SERVICE_NAME="${REPO}"
