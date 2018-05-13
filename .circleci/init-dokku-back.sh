@@ -49,3 +49,8 @@ ssh dokku@${HOST} -C config:set --no-restart $SERVICE_NAME DOKKU_LETSENCRYPT_EMA
 
 ssh dokku@${HOST} -C ps:set-restart-policy $SERVICE_NAME always
 ssh dokku@${HOST} -C ps:scale $SERVICE_NAME worker=1 beat=1
+
+if ssh root@${HOST} -C docker ps | grep -q dd-agent; then
+    # link to dd-agent
+    ssh dokku@${HOST} -C docker-options:add $SERVICE_NAME build,deploy,run "--link dd-agent:dd-agent"
+fi
