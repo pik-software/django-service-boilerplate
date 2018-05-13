@@ -9,11 +9,16 @@ REPO=$( git config --local remote.origin.url | sed -n 's#.*/\([^.]*\)\.git#\1#p'
 HOST=$REPO.pik-software.ru
 BRANCH=master
 CURRENT_BRANCH=$( git branch | grep -e "^*" | cut -d' ' -f 2 )
+HAS_RELEASE_TAG=$( git tag --points-at HEAD | grep -q "^v" && echo 1 || echo 0 )
 
-#if [[ "$BRANCH" != "$CURRENT_BRANCH" ]]; then
-#    echo "Deploy only master!"
-#    exit 1
-#fi
+if [[ "$CURRENT_BRANCH" != "master" ]]; then
+    echo "Deploy only master!"
+    exit 1
+fi
+if [[ "$HAS_RELEASE_TAG" != "1" ]]; then
+    echo "Release tag required!"
+    exit2
+fi
 
 SERVICE_NAME="${REPO}"
 INIT_LETSENCRYPT=false
