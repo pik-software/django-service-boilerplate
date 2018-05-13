@@ -24,7 +24,7 @@ fi
 
 case "$BRANCH" in
     master)
-        ENVIRONMENT="prod"
+        ENVIRONMENT="production"
         RELEASE_DATE=$( date '+%Y-%m-%d-%H-%M-%S' )
         ;;
     *)
