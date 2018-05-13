@@ -93,6 +93,9 @@ workflows:
           type: approval
           requires:
             - deploy-staging
+          filters:
+            branches:
+              only: master
       - deploy-prod:
           requires:
             - staging-ok
