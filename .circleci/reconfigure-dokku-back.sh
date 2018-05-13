@@ -23,12 +23,15 @@ if [[ -z "$BRANCH" ]]; then
 fi
 
 case "$BRANCH" in
-    example1)
+    master)
+        ENVIRONMENT="prod"
         RELEASE_DATE=$( date '+%Y-%m-%d-%H-%M-%S' )
         ;;
     *)
-        RELEASE_DATE=$( date )
+        ENVIRONMENT="staging"
+        RELEASE_DATE=$( date '+%Y-%m-%d-%H-%M-%S' )
         ;;
 esac
 
 ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} RELEASE_DATE="'"${RELEASE_DATE}"'"
+ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} ENVIRONMENT=${ENVIRONMENT}
