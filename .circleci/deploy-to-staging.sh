@@ -3,7 +3,7 @@
 set -ex
 
 cd "$(dirname "$0")"
-echo "$(date +%Y-%m-%d-%H-%M-%S) - deploy-to-dokku.sh $@"
+echo "$(date +%Y-%m-%d-%H-%M-%S) - deploy-to-staging.sh $@"
 
 HOST=$1
 REPO=$2
