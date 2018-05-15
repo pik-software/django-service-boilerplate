@@ -8,7 +8,7 @@ _STATSD = DogStatsd(host=settings.DD_STATSD_ADDR, port=settings.DD_STATSD_PORT,
 def _prepare_tags(tags):
     """
     >>> _prepare_tags({'protocol': 'http'})
-    ["protocol:http"]
+    ['protocol:http']
     """
     if not tags:
         return []

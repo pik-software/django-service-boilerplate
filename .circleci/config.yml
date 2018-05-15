@@ -44,7 +44,9 @@ jobs:
             python manage.py migrate
             python manage.py collectstatic
             python manage.py check
-            pytest --doctest-modules --selenium --durations=0 -vvvs
+            pytest --doctest-modules --selenium --durations=0 -vvvs --ignore=contacts --ignore=contacts_replica
+            pytest --doctest-modules --durations=0 -vvvs contacts
+            pytest --doctest-modules --durations=0 -vvvs contacts_replica
             prospector --profile-path . --profile .prospector.yaml .
 
       - deploy:

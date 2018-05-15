@@ -28,29 +28,31 @@ def _prepare_model_attributes(model, hist_record, ctx) -> dict:
     obj = hist_record
 
     for field in fields:
-        if field.name in obj:
-            value = obj[field.name]
-            if field.is_relation:
-                if isinstance(value, dict):
-                    if '_uid' not in value or '_type' not in value:
-                        mag = f'FK "{field.name}": no FK[_type] or no FK[_uid]'
-                        raise _ProcessHistoricalRecordError(*ctx, mag)
+        if field.name not in obj:
+            continue
 
-                    value = value['_uid']
-                    if not isinstance(value, str):
-                        msg = f'FK "{field.name}": type(_uid) != str'
-                        raise _ProcessHistoricalRecordError(*ctx, msg)
+        value = obj[field.name]
+        if field.is_relation:
+            if isinstance(value, dict):
+                if '_uid' not in value or '_type' not in value:
+                    mag = f'FK "{field.name}": no FK[_type] or no FK[_uid]'
+                    raise _ProcessHistoricalRecordError(*ctx, mag)
 
-                rel_model = field.remote_field.model._meta.concrete_model  # noqa
-                rel_model_kwargs = {'uid': value} \
-                    if _has_field(rel_model, 'uid') \
-                    else {'pk': value}
-                try:
-                    value = rel_model.objects.get(**rel_model_kwargs)
-                except rel_model.DoesNotExist:
-                    msg = f'FK "{field.name}": DoesNotExists'
+                value = value['_uid']
+                if not isinstance(value, str):
+                    msg = f'FK "{field.name}": type(_uid) != str'
                     raise _ProcessHistoricalRecordError(*ctx, msg)
-            attributes[field.name] = value
+
+            rel_model = field.remote_field.model._meta.concrete_model  # noqa
+            rel_model_kwargs = {'uid': value} \
+                if _has_field(rel_model, 'uid') \
+                else {'pk': value}
+            try:
+                value = rel_model.objects.get(**rel_model_kwargs)
+            except rel_model.DoesNotExist:
+                msg = f'FK "{field.name}": DoesNotExists'
+                raise _ProcessHistoricalRecordError(*ctx, msg)
+        attributes[field.name] = value
     return attributes
 
 

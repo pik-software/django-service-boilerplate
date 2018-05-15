@@ -58,8 +58,8 @@ subscribers via webhook callbacks. Example of "created event" for
         {
             "history_id": 133,
             "history_date": "2018-04-30T12:04:33.690145",
-            "history_change_reason": None,
-            "history_user_id": None,
+            "history_change_reason": null,
+            "history_user_id": null,
             "history_type": "+",
             "_uid": "123e4567-e89b-12d3-a456-426655440000",
             "_type": "contract",
