@@ -60,7 +60,6 @@ class PUided(models.Model):
     """
     Primary Uided
     """
-    UID_PREFIX = 'OBJ'
     uid = models.UUIDField(primary_key=True, default=uuid4, editable=False)
 
     @cached_property
