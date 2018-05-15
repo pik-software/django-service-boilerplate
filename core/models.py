@@ -40,7 +40,6 @@ class NullOwned(models.Model):
 
 
 class Uided(models.Model):
-    UID_PREFIX = 'OBJ'
     uid = models.UUIDField(unique=True, default=uuid4, editable=False)
 
     @cached_property
@@ -48,7 +47,7 @@ class Uided(models.Model):
         """
         String representation of UID
         """
-        return "{{{0}-{1}}}".format(self.UID_PREFIX, self.uid).lower()
+        return f"{self.uid}"
 
     def __str__(self):
         return self.suid
