@@ -125,6 +125,7 @@ class SoftDeleted(models.Model):
     )
 
     objects = SoftDeletedQuerySet.as_manager()
+    all_objects = models.QuerySet.as_manager()
 
     def delete(self, using=None, keep_parents=False):
         using = using or router.db_for_write(self.__class__, instance=self)

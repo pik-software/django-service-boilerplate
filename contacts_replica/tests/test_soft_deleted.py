@@ -22,6 +22,7 @@ def test_soft_delete_obj(model_and_factory):
 
     assert not model.objects.filter(pk=obj_pk).last()
     assert not model._default_manager.filter(pk=obj_pk).last()
+    assert model.all_objects.filter(pk=obj_pk).last()
     assert model._base_manager.filter(pk=obj_pk).last()
 
 
@@ -34,6 +35,7 @@ def test_soft_delete_qs(model_and_factory):
 
     assert not model.objects.filter(pk=obj_pk).last()
     assert not model._default_manager.filter(pk=obj_pk).last()
+    assert model.all_objects.filter(pk=obj_pk).last()
     assert model._base_manager.filter(pk=obj_pk).last()
 
 
@@ -46,6 +48,7 @@ def test_hard_delete_obj(model_and_factory):
 
     assert not model.objects.filter(pk=obj_pk).last()
     assert not model._default_manager.filter(pk=obj_pk).last()
+    assert not model.all_objects.filter(pk=obj_pk).last()
     assert not model._base_manager.filter(pk=obj_pk).last()
 
 
@@ -58,4 +61,5 @@ def test_hard_delete_qs(model_and_factory):
 
     assert not model.objects.filter(pk=obj_pk).last()
     assert not model._default_manager.filter(pk=obj_pk).last()
+    assert not model.all_objects.filter(pk=obj_pk).last()
     assert not model._base_manager.filter(pk=obj_pk).last()
