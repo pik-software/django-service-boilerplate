@@ -47,7 +47,7 @@ class Uided(models.Model):
         """
         String representation of UID
         """
-        return f"{self.uid}"
+        return str(self.uid)
 
     def __str__(self):
         return self.suid
@@ -68,7 +68,7 @@ class PUided(models.Model):
         """
         String representation of UID
         """
-        return "{{{0}-{1}}}".format(self.UID_PREFIX, self.uid).lower()
+        return str(self.uid)
 
     def __str__(self):
         return self.suid
