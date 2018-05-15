@@ -1,6 +1,5 @@
 import json
 from pprint import pprint
-from unittest.mock import call
 
 import pytest
 from celery import exceptions
@@ -10,14 +9,15 @@ from django.utils.crypto import get_random_string
 from rest_framework import status
 from rest_framework.test import APIClient
 
-import eventsourcing.replicator.registry
 from core.tasks.fixtures import create_user
+from eventsourcing import replicator
 from eventsourcing.models import Subscription
 from eventsourcing.replicator import serialize
 from eventsourcing.replicator.serializer import _process_fake_request
 from eventsourcing.replicator.tasks import _replicate_to_webhook_subscribers, \
     _process_webhook_subscription
-from eventsourcing.utils import _pack_history_instance
+from eventsourcing.utils import _pack_history_instance, \
+    _unpack_history_instance
 from ..models import Contact, Comment
 from ..tests.factories import ContactFactory, CommentFactory
 
@@ -208,6 +208,19 @@ def test_api_create_subscription(api_client, api_model):
     })
 
 
+def test_pack_unpack_history(api_model):
+    model, factory, options = api_model
+    obj = _create_few_models(factory)
+    hist1 = obj.history.last()
+
+    packed_history = _pack_history_instance(hist1)
+    assert packed_history == (
+        hist1._meta.app_label, hist1._meta.model_name, hist1.pk)
+
+    hist1_unpacked = _unpack_history_instance(packed_history)
+    assert hist1 == hist1_unpacked
+
+
 def test_replicate_events(api_model, mocker):
     model, factory, options = api_model
     _create_subscription(model, options)
@@ -240,7 +253,7 @@ def test_replicate(api_model, mocker):
     model, factory, options = api_model
     _create_subscription(model, options)
 
-    repl = mocker.patch.object(eventsourcing.replicator, 'replicate')
+    repl = mocker.patch.object(replicator, 'replicate')
 
     obj = factory.create()
     history = obj.history.all()
@@ -303,12 +316,12 @@ def test_serialize(api_model):
 
 
 def test_replicate_history_call_process_webhook(
-        api_model, mocker, celery_session_worker):
+        api_model, mocker, celery_worker):
     model, factory, options = api_model
     subscribe = _create_subscription(model, options)
     process_webhook = mocker.patch(
-        'eventsourcing.replicator.tasks.'
-        '_process_webhook_subscription')
+        'eventsourcing.replicator.tasks._process_webhook_subscription')
+    mocker.patch('eventsourcing.replicator.tasks._run_request_to_webhook')
 
     # create event
     obj = factory.create()
@@ -344,7 +357,7 @@ def test_replicate_history_call_process_webhook(
         subscribe.pk, [app_label, model_name, hist3.pk])
 
 
-def test_process_webhook_ok(api_model, mocker, celery_session_worker):
+def test_process_webhook_ok(api_model, mocker, celery_worker):
     model, factory, options = api_model
     obj = _create_few_models(factory)
     history = obj.history.all()
@@ -369,7 +382,7 @@ def test_process_webhook_ok(api_model, mocker, celery_session_worker):
         subscription.user, subscription.settings, result)
 
 
-def test_process_webhook_retry(api_model, celery_session_worker):
+def test_process_webhook_retry(api_model, celery_worker):
     model, factory, options = api_model
     obj = factory.create()
     hist_obj = obj.history.first()
@@ -380,3 +393,4 @@ def test_process_webhook_retry(api_model, celery_session_worker):
         subscribe.pk, packed_history)
     with pytest.raises(exceptions.TimeoutError):
         r.get(timeout=0.1)
+    r.revoke()

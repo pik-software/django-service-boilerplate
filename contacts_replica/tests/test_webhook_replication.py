@@ -83,8 +83,7 @@ def _wait_query(model, kwargs, condition=lambda qs: qs.exists(), timeout=9.0):
     raise AssertionError('_wait_object() timeout')
 
 
-def test_webhook_replication(celery_session_worker, base_url,
-                             api_client, api_model):
+def test_webhook_replication(celery_worker, base_url, api_client, api_model):
     model, dep_models, factory, replica_model, options = api_model
     _create_deep_subscribe(
         api_client.user, api_client.password, model, dep_models, options,
@@ -98,7 +97,7 @@ def test_webhook_replication(celery_session_worker, base_url,
 
 
 def test_webhook_replication_change_event(
-        celery_session_worker, base_url, api_client, api_model):
+        celery_worker, base_url, api_client, api_model):
     model, dep_models, factory, replica_model, options = api_model
     _create_deep_subscribe(
         api_client.user, api_client.password, model, dep_models, options,
@@ -115,8 +114,7 @@ def test_webhook_replication_change_event(
     assert x.uid == y.uid
 
 
-def test_webhook_delete_event(
-        celery_session_worker, base_url, api_client, api_model):
+def test_webhook_delete_event(celery_worker, base_url, api_client, api_model):
     model, dep_models, factory, replica_model, options = api_model
     _create_deep_subscribe(
         api_client.user, api_client.password, model, dep_models, options,
