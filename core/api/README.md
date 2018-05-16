@@ -1,6 +1,5 @@
 # Standardized API CheckList #
 
- - [ ] Model has: `UID_PREFIX`
  - [ ] Model has: `history = HistoricalRecords()`
  - [ ] Model has: `def __str__(self)`
  - [ ] Model: `issubclass(Model, (Uided, PUided))`

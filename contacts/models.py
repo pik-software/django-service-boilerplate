@@ -7,7 +7,6 @@ from core.models import Versioned, Uided, Dated, PUided, Owned
 
 
 class Contact(Uided, Dated, Versioned):
-    UID_PREFIX = 'CON'
     name = models.CharField(_('Наименование'), max_length=255)
     phones = ArrayField(
         models.CharField(max_length=30), blank=True, default=list,
@@ -37,7 +36,6 @@ class Contact(Uided, Dated, Versioned):
 
 
 class Comment(PUided, Dated, Versioned, Owned):
-    UID_PREFIX = 'COM'
     contact = models.ForeignKey(
         Contact, related_name='comments',
         on_delete=models.CASCADE)
