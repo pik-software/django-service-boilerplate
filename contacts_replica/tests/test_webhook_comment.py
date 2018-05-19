@@ -1,3 +1,4 @@
+# pylint: disable=invalid-name
 import pytest
 from copy import deepcopy
 from django.utils.crypto import get_random_string

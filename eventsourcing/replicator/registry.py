@@ -53,8 +53,8 @@ def replicate(instance) -> None:
 
 
 def is_replicating(model) -> bool:
-    content_type = ContentType.objects.get_for_model(model).model
-    return content_type in _REPLICATING_MODEL_STORAGE
+    content_type = ContentType.objects.get_for_model(model)
+    return content_type.model in _REPLICATING_MODEL_STORAGE
 
 
 def check_all_models_replicating(user, settings=None):
