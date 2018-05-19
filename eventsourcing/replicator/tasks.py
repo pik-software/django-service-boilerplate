@@ -2,9 +2,9 @@ import logging
 from typing import Tuple
 
 import celery
-import requests
 from celery import shared_task
 from raven.contrib.django.raven_compat.models import client
+import requests
 
 from core.monitoring import alert
 from ..utils import _get_splitted_event_name, \
@@ -123,7 +123,7 @@ def _replicate_to_webhook_subscribers(
     for subscriber in subscribers:
         try:
             _process_webhook_subscription.delay(subscriber.pk, packed_history)
-        except Exception as exc:
+        except Exception as exc:  # noqa: pylint=broad-except
             LOGGER.exception(
                 'replicate_history error: %s %s', subscriber.pk, exc)
             client.captureException()

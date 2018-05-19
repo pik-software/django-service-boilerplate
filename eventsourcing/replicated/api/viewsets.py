@@ -33,9 +33,6 @@ class _HistorySerializer(serializers.Serializer):
     count = serializers.IntegerField()
     results = serializers.ListField(child=_HistoryListItem())
 
-    def to_internal_value(self, data):
-        return super().to_internal_value(data)
-
 
 class ReplicatedWebhookViewSet(StandardizedGenericViewSet):
     serializer_class = _HistorySerializer

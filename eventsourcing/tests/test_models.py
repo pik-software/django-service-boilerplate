@@ -5,10 +5,10 @@ from eventsourcing.consts import WEBHOOK_SUBSCRIPTION
 from ..models import subscribe, unsubscribe
 
 
-def _assert_subscription(subscription, user, name, type, settings, events):
+def _assert_subscription(subscription, user, name, type_, settings, events):
     assert subscription.user == user
     assert subscription.name == name
-    assert subscription.type == type
+    assert subscription.type == type_
     assert subscription.settings == settings
     assert subscription.events == events
 
@@ -48,7 +48,7 @@ def test_unsubscribe():
         subscription, user, name, WEBHOOK_SUBSCRIPTION, {}, [])
 
 
-def test_unsubscribe_without_subscription():
+def test_unsubscribe_without_subscription():  # noqa: pylint=invalid-name
     user = create_user()
     name = get_random_string()
     subscription = unsubscribe(user, name, WEBHOOK_SUBSCRIPTION, [name])

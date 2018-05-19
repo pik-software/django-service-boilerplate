@@ -37,6 +37,8 @@ def _check_serialize_problem(user, settings: dict, _type):
     if status != 200:
         raise SerializeHistoricalInstanceError(
             f'serialize api status = {status}')
+    if not content:
+        raise SerializeHistoricalInstanceError('serialize api no content')
 
 
 def _process_fake_request(

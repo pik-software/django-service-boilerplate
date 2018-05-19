@@ -10,6 +10,12 @@ from rest_framework.response import Response
 from rest_framework.serializers import Serializer
 
 
+_HISTORY_FIELD_NAMES = [
+    'history_id', 'history_date', 'history_change_reason',
+    'history_user_id', 'history_type',
+]
+
+
 class _HistoryProtocolNotImplemented(APIException):
     status_code = status.HTTP_501_NOT_IMPLEMENTED
     default_detail = _('History protocol is not implemented yet')
@@ -64,17 +70,10 @@ class HistoryViewSetMixin:
     def get_history_serializer(self, *args, **kwargs):
         class HistorySerializer(self.get_serializer_class()):
             def to_representation(self, instance):
-                """
-                Object instance -> Dict of primitive datatypes.
-                """
                 ret = OrderedDict()
                 fields = self._readable_fields  # noqa
 
-                history_field_names = [
-                    'history_id', 'history_date', 'history_change_reason',
-                    'history_user_id', 'history_type',
-                ]
-                for field_name in history_field_names:
+                for field_name in _HISTORY_FIELD_NAMES:
                     try:
                         value = getattr(instance, field_name)
                         ret[field_name] = value

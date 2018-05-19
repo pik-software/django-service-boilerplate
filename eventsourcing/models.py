@@ -28,10 +28,10 @@ class Subscription(PUided, Dated, Versioned, Owned):
         verbose_name_plural = _("Подписки")
 
 
-def subscribe(user, name, type, settings, events):
+def subscribe(user, name, type_, settings, events):
     obj, is_new = Subscription.objects.get_or_create(
         {'settings': settings, 'events': events, 'user': user},
-        name=name, type=type)
+        name=name, type=type_)
 
     if is_new:
         return obj
@@ -50,10 +50,10 @@ def subscribe(user, name, type, settings, events):
     return obj
 
 
-def unsubscribe(user, name, type, events):
+def unsubscribe(user, name, type_, events):
     obj, is_new = Subscription.objects.get_or_create(
         {'settings': {}, 'events': [], 'user': user},
-        name=name, type=type)
+        name=name, type=type_)
 
     if is_new:
         return obj

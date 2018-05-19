@@ -15,9 +15,10 @@ class _SubscriptionSerializer(StandardizedModelSerializer):
     type = serializers.ChoiceField(choices={1})
 
     def validate_name(self, value):
-        qs = Subscription.objects.filter(name=value, type=WEBHOOK_SUBSCRIPTION)
-        if qs.exists():
-            subscription = qs.last()
+        q_set = Subscription.objects.filter(
+            name=value, type=WEBHOOK_SUBSCRIPTION)
+        if q_set.exists():
+            subscription = q_set.last()
             if subscription.user != self.context['request'].user:
                 raise serializers.ValidationError(
                     'Name is already used by another user',
@@ -41,6 +42,14 @@ class _SubscriptionSerializer(StandardizedModelSerializer):
                 code='settings_webhook_auth_bad_format',
             )
 
+    def _check_webhook_url(self, value: str):
+        if not isinstance(value, str) or not value:
+            raise serializers.ValidationError(
+                'settings.webhook_url has wrong format',
+                code='settings_webhook_url_bad_format',
+            )
+        # TODO: add url validation
+
     def validate_settings(self, value):
         if not isinstance(value, dict):
             raise serializers.ValidationError(
@@ -60,7 +69,7 @@ class _SubscriptionSerializer(StandardizedModelSerializer):
             self._check_webhook_auth(webhook_auth)
 
         webhook_url = value['webhook_url']
-        # TODO: validate url
+        self._check_webhook_url(webhook_url)
 
         version = int(self.context['view'].kwargs.get('version', 1))
         value.update({'api_version': version})
@@ -91,8 +100,8 @@ class _SubscriptionSerializer(StandardizedModelSerializer):
     def _check_event_permission(self, event):
         _type = event.split('.', 1)[0]
         model = _get_replication_model(_type)
-        codename = f'{model._meta.app_label}.view_historical' \
-                   f'{model._meta.model_name}'
+        opts = model._meta  # noqa: pylint=protected-access
+        codename = f'{opts.app_label}.view_historical{opts.model_name}'
         user = self.context['request'].user
         if not user.has_perm(codename):
             raise serializers.ValidationError(

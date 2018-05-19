@@ -74,15 +74,15 @@ def _cascade_soft_delete(inst_or_qs, using, keep_parents=False):
             collector.add_field_update(deleted_on_field, deleted, inst_list)
             del collector.data[model]
 
-    for i, qs in enumerate(collector.fast_deletes):
+    for i, q_set in enumerate(collector.fast_deletes):
         # make sure that we do archive on fast deletable models as
         # well.
-        model = qs.model
+        model = q_set.model
 
         if _has_field(model, 'deleted'):
             deleted_on_field = _get_field_by_name(model, 'deleted')
-            collector.add_field_update(deleted_on_field, deleted, qs)
-            collector.fast_deletes[i] = qs.none()
+            collector.add_field_update(deleted_on_field, deleted, q_set)
+            collector.fast_deletes[i] = q_set.none()
 
     return collector
 
@@ -135,7 +135,7 @@ class SoftDeleted(models.Model):
             "is set to None." % (self._meta.object_name, self._meta.pk.attname)
 
         if self.deleted:
-            return  # short-circuit here to prevent lots of nesting
+            return 0, {}  # short-circuit here to prevent lots of nesting
 
         if not self._meta.auto_created:
             signals.pre_delete.send(

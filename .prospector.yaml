@@ -16,3 +16,5 @@ pylint:
     - too-many-ancestors
     - redefined-outer-name
     - relative-beyond-top-level
+    - no-self-use
+    - abstract-method
