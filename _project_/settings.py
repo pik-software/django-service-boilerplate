@@ -258,6 +258,7 @@ CELERYBEAT_SCHEDULE_FILENAME = os.path.join(DATA_DIR, 'celerybeat.db')
 CELERYBEAT_SCHEDULE = {}
 
 # DRF
+REST_FRAMEWORK_LATEST_API_VERSION = '1'
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
@@ -317,7 +318,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'root': {
         'level': 'WARNING',
-        'handlers': ['sentry'],
+        'handlers': ['console', 'sentry'],
     },
     'formatters': {
         'verbose': {
@@ -338,7 +339,7 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'handlers': ['console'],
             'propagate': True,
         },
@@ -357,6 +358,11 @@ LOGGING = {
             'handlers': ['console'],
             'propagate': False,
         },
+        'eventsourcing': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        }
     },
 }
 
