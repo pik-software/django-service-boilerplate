@@ -71,6 +71,10 @@ def unsubscribe(user, name, type_, events):
     return obj
 
 
+# TODO(meteozond): I think it is more expedient connect to the signal in
+# the decorated models.
+
+
 @receiver(post_save, dispatch_uid='post-save-historical-model')
 def _post_save_historical_model(sender, instance, created, **kwargs):
     """

@@ -1,7 +1,8 @@
-from typing import Tuple, Union
-
+from typing import Tuple, Optional
 import logging
+
 from django.contrib.auth import get_user_model
+from django.db import models
 from django.test import RequestFactory
 from django.urls import resolve
 
@@ -33,7 +34,7 @@ def _check_serialize_problem(user, settings: dict, _type):
     api_version = settings['api_version']
     history_url = f'/api/v{api_version}/{_type}-list/history/'
     status, content = _process_fake_request(
-        user.pk, 'get', history_url)
+        user, 'get', history_url)
     if status != 200:
         raise SerializeHistoricalInstanceError(
             f'serialize api status = {status}')
@@ -42,7 +43,7 @@ def _check_serialize_problem(user, settings: dict, _type):
 
 
 def _process_fake_request(
-        user_pk: Union[int, str], method: str, url: str, *,
+        user: Optional[models.Model], method: str, url: str, *,
         url_args=None, url_kwargs=None, data=None) -> Tuple[int, str]:
     """
     Do fake requests to some site URLs.
@@ -91,8 +92,8 @@ def _process_fake_request(
     else:
         request = factory.get(url, data=data)
 
-    if user_pk:
-        request.user = get_user_model().objects.get(pk=user_pk)
+    if user:
+        request.user = get_user_model().objects.get(pk=user.pk)
 
     request.is_fake_request = True
 
