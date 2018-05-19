@@ -1,6 +1,7 @@
 # pylint: disable=invalid-name
-import pytest
 from copy import deepcopy
+
+import pytest
 from django.utils.crypto import get_random_string
 from rest_framework import status
 from rest_framework.test import APIClient

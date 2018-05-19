@@ -8,7 +8,6 @@ from django.utils.translation import ugettext_lazy as _
 from simple_history.models import HistoricalRecords
 
 from core.models import Dated, PUided, Versioned, Owned
-from .utils import _get_event_names
 from .consts import SUBSCRIPTION_TYPES
 
 LOGGER = logging.getLogger(__name__)
@@ -86,6 +85,7 @@ def _post_save_historical_model(sender, instance, created, **kwargs):
     if not created:
         raise RuntimeError('Historical changes detected! WTF?')
 
+    from eventsourcing.utils import _get_event_names  # noqa
     events = _get_event_names(instance)
     subscribers = Subscription.objects.filter(events__overlap=events)
     if subscribers.exists():
