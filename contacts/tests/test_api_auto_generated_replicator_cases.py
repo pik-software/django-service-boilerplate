@@ -328,35 +328,36 @@ def test_replicate_history_call_process_webhook(
 
     # create event
     obj = factory.create()
-    hist1 = obj.history.first()
-    app_label, model_name = hist1._meta.app_label, hist1._meta.model_name
+    history = obj.history.all()
+    hist = history.first()
+    app_label, model_name = hist._meta.app_label, hist._meta.model_name
 
     r = _replicate_to_webhook_subscribers.delay(
-        (app_label, model_name, hist1.pk))
+        (app_label, model_name, hist.pk))
     r.get(timeout=10)
     process_webhook.delay.assert_called_with(
-        subscribe.pk, [app_label, model_name, hist1.pk])
+        subscribe.pk, [app_label, model_name, hist.pk])
 
     # change event
     obj.version += 10
     obj.save()
-    hist2 = obj.history.first()
+    hist = history.first()
 
     r = _replicate_to_webhook_subscribers.delay(
-        (app_label, model_name, hist2.pk))
+        (app_label, model_name, hist.pk))
     r.get(timeout=10)
     process_webhook.delay.assert_called_with(
-        subscribe.pk, [app_label, model_name, hist2.pk])
+        subscribe.pk, [app_label, model_name, hist.pk])
 
     # delete event
     obj.delete()
-    hist3 = obj.history.first()
+    hist = history.first()
 
     r = _replicate_to_webhook_subscribers.delay(
-        (app_label, model_name, hist3.pk))
+        (app_label, model_name, hist.pk))
     r.get(timeout=10)
     process_webhook.delay.assert_called_with(
-        subscribe.pk, [app_label, model_name, hist3.pk])
+        subscribe.pk, [app_label, model_name, hist.pk])
 
 
 def test_process_webhook_ok(api_model, mocker, celery_worker):
