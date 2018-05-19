@@ -10,7 +10,6 @@ from core.monitoring import alert
 from ..utils import _get_splitted_event_name, \
     _unpack_history_instance, _get_event_names
 from ..consts import WEBHOOK_SUBSCRIPTION
-from ..models import Subscription
 from .serializer import serialize, SerializeHistoricalInstanceError
 
 LOGGER = logging.getLogger(__name__)
@@ -46,6 +45,7 @@ def _run_request_to_webhook(
 def _process_webhook_subscription(
         self: celery.Task, subscription_pk, packed_history,
 ) -> str:
+    from ..models import Subscription  # noqa
     try:
         subscription = Subscription.objects.select_related('user')\
             .get(pk=subscription_pk)
@@ -112,6 +112,7 @@ def _replicate_to_webhook_subscribers(
         _replicate_to_webhook_subscribers.delay(packed_history)
 
     """
+    from ..models import Subscription  # noqa
     retry = self.request.retries
     try:
         hist_obj = _unpack_history_instance(packed_history)
