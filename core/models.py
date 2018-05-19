@@ -1,11 +1,13 @@
+from collections import defaultdict
 from uuid import uuid4
 
 from django.conf import settings
+from django.contrib.admin.utils import NestedObjects
 from django.db.models import F, Q, FieldDoesNotExist, signals
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import ugettext as _
-from django.db import models, router
+from django.db import models, router, transaction
 
 
 class Dated(models.Model):
@@ -59,9 +61,10 @@ def _cascade_soft_delete(inst_or_qs, using, keep_parents=False):
     # The collector will iteratively crawl the relationships and
     # create a list of models and instances that are connected to
     # this instance.
-    collector = models.deletion.Collector(using=using)
+    collector = NestedObjects(using=using)
     collector.collect(instances, keep_parents=keep_parents)
     collector.sort()
+    soft_delete_objs = collector.soft_delete_objs = defaultdict(set)
 
     for model, instances in list(collector.data.items()):
         # remove archive mixin models from the delete list and put
@@ -72,8 +75,11 @@ def _cascade_soft_delete(inst_or_qs, using, keep_parents=False):
         if _has_field(model, 'deleted'):
             deleted_on_field = _get_field_by_name(model, 'deleted')
             collector.add_field_update(deleted_on_field, deleted, inst_list)
+            soft_delete_objs[model].update(inst_list)
             del collector.data[model]
 
+    # If we use the NestedObjects collector instead models.deletion.Collector,
+    # then the `collector.fast_deletes` will always be empty
     for i, q_set in enumerate(collector.fast_deletes):
         # make sure that we do archive on fast deletable models as
         # well.
@@ -85,6 +91,18 @@ def _cascade_soft_delete(inst_or_qs, using, keep_parents=False):
             collector.fast_deletes[i] = q_set.none()
 
     return collector
+
+
+def _delete_collected(collector):
+    with transaction.atomic(using=collector.using, savepoint=False):
+        result = collector.delete()
+        for model, instances in collector.soft_delete_objs.items():
+            if not model._meta.auto_created:
+                for obj in instances:
+                    signals.post_delete.send(
+                        sender=model, instance=obj, using=collector.using
+                    )
+    return result
 
 
 class SoftDeletedQuerySet(models.QuerySet):
@@ -107,7 +125,7 @@ class SoftDeletedQuerySet(models.QuerySet):
         # occur for each instance.
         collector = _cascade_soft_delete(self.all(), self.db)
         self._result_cache = None
-        return collector.delete()
+        return _delete_collected(collector)
 
     delete.alters_data = True
 
@@ -142,13 +160,7 @@ class SoftDeleted(models.Model):
                 sender=self.__class__, instance=self, using=using)
 
         collector = _cascade_soft_delete(self, using, keep_parents)
-        resp = collector.delete()
-
-        if not self._meta.auto_created:
-            signals.post_delete.send(
-                sender=self.__class__, instance=self, using=using)
-
-        return resp
+        return _delete_collected(collector)
 
     delete.alters_data = True
 
