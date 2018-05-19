@@ -67,7 +67,7 @@ class HistoryViewSetMixin:
         if not all(f in fields for f in required_fields):
             raise _HistoryProtocolNotImplemented()
 
-    def get_history_serializer(self, *args, **kwargs):
+    def get_history_serializer_class(self):
         class HistorySerializer(self.get_serializer_class()):
             def to_representation(self, instance):
                 ret = OrderedDict()
@@ -95,9 +95,12 @@ class HistoryViewSetMixin:
                 if '_type' in ret and ret['_type'].startswith('historical'):
                     ret['_type'] = ret['_type'][10:]
                 return ret
+        return HistorySerializer
 
+    def get_history_serializer(self, *args, **kwargs):
+        history_serializer_class = self.get_history_serializer_class()
         kwargs['context'] = self.get_serializer_context()
-        serializer = HistorySerializer(*args, **kwargs)
+        serializer = history_serializer_class(*args, **kwargs)
         self._check_serializer_history_protocol(serializer)
         return serializer
 

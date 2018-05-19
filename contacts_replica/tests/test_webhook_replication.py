@@ -75,29 +75,29 @@ def _create_deep_subscribe(
 
 
 def _wait_query(model, kwargs, condition=lambda qs: qs.exists(), timeout=9.0):
-    t1 = time()
-    while time() - t1 < timeout:
-        qs = model.objects.filter(**kwargs)
-        if condition(qs):
-            return qs
+    time1 = time()
+    while time() - time1 < timeout:
+        q_set = model.objects.filter(**kwargs)
+        if condition(q_set):
+            return q_set
         sleep(0.1)
     raise AssertionError('_wait_object() timeout')
 
 
-def test_webhook_replication(celery_worker, base_url, api_client, api_model):
+def test_webhook_create_event(celery_worker, base_url, api_client, api_model):
     model, dep_models, factory, replica_model, options = api_model
     _create_deep_subscribe(
         api_client.user, api_client.password, model, dep_models, options,
         base_url)
 
-    x = factory.create()
+    obj = factory.create()
 
-    y = _wait_query(replica_model, dict(uid=x.uid)).last()
-    assert x.version == y.version
-    assert x.uid == y.uid
+    replica_obj = _wait_query(replica_model, dict(uid=obj.uid)).last()
+    assert obj.version == replica_obj.version
+    assert obj.uid == replica_obj.uid
 
 
-def test_webhook_replication_change_event(
+def test_webhook_update_event(
         celery_worker, base_url, api_client, api_model):
     model, dep_models, factory, replica_model, options = api_model
     _create_deep_subscribe(
@@ -105,12 +105,12 @@ def test_webhook_replication_change_event(
         base_url)
     val1, val2 = get_random_string(9, UNICHRS), get_random_string(13, UNICHRS)
 
-    x = factory.create(**{options['field']: val1})
-    _wait_query(replica_model, {options['field']: val1, 'uid': x.uid})
+    obj = factory.create(**{options['field']: val1})
+    _wait_query(replica_model, {options['field']: val1, 'uid': obj.uid})
 
-    setattr(x, options['field'], val2)
-    x.save()
-    _wait_query(replica_model, {options['field']: val2, 'uid': x.uid})
+    setattr(obj, options['field'], val2)
+    obj.save()
+    _wait_query(replica_model, {options['field']: val2, 'uid': obj.uid})
 
 
 def test_webhook_delete_event(celery_worker, base_url, api_client, api_model):
@@ -119,8 +119,8 @@ def test_webhook_delete_event(celery_worker, base_url, api_client, api_model):
         api_client.user, api_client.password, model, dep_models, options,
         base_url)
 
-    x = factory.create()
-    _wait_query(replica_model, dict(uid=x.uid))
+    obj = factory.create()
+    _wait_query(replica_model, dict(uid=obj.uid))
 
-    x.delete()
-    _wait_query(replica_model, dict(uid=x.uid), lambda qs: not qs.exists())
+    obj.delete()
+    _wait_query(replica_model, dict(uid=obj.uid), lambda qs: not qs.exists())

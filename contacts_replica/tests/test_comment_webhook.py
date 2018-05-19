@@ -15,15 +15,15 @@ USER_PK = 99999
 CONTACT_UID = "c05bfac5-7c20-4754-aacb-a703a7e595c4"
 WEBHOOK_DATA = {
     "count": 1, "pages": 1, "page_size": 20, "page": 1, "page_next": None,
-    "page_previous": None, "results": [
-        {"history_id": 133, "history_date": "2018-04-30T12:04:33.690145",
-         "history_change_reason": None, "history_user_id": None,
-         "history_type": "+", "_uid": UID, "_type": "comment", "_version": 1,
-         "user": USER_PK, "contact": {
+    "page_previous": None, "results": [{
+        "history_id": 133, "history_date": "2018-04-30T12:04:33.690145",
+        "history_change_reason": None, "history_user_id": None,
+        "history_type": "+", "_uid": UID, "_type": "comment", "_version": 1,
+        "user": USER_PK, "contact": {
             "_uid": CONTACT_UID, "_type": "contact", "_version": 1,
             "name": "Mario Green", "phones": ["3728"],
             "emails": ["mario green@example.com"], "order_index": 100},
-         "message": "Main type individual manage bag inside nothing."}]}
+        "message": "Main type individual manage bag inside nothing."}]}
 
 
 @pytest.fixture()

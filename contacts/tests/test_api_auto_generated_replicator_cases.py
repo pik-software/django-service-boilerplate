@@ -328,8 +328,7 @@ def test_replicate_history_call_process_webhook(
 
     # create event
     obj = factory.create()
-    history = obj.history.all()
-    hist1 = history.first()
+    hist1 = obj.history.first()
     app_label, model_name = hist1._meta.app_label, hist1._meta.model_name
 
     r = _replicate_to_webhook_subscribers.delay(
@@ -341,7 +340,7 @@ def test_replicate_history_call_process_webhook(
     # change event
     obj.version += 10
     obj.save()
-    hist2 = history.first()
+    hist2 = obj.history.first()
 
     r = _replicate_to_webhook_subscribers.delay(
         (app_label, model_name, hist2.pk))
@@ -351,7 +350,7 @@ def test_replicate_history_call_process_webhook(
 
     # delete event
     obj.delete()
-    hist3 = history.first()
+    hist3 = obj.history.first()
 
     r = _replicate_to_webhook_subscribers.delay(
         (app_label, model_name, hist3.pk))
