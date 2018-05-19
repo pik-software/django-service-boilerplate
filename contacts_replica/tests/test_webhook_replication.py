@@ -102,16 +102,14 @@ def test_webhook_replication_change_event(
     _create_deep_subscribe(
         api_client.user, api_client.password, model, dep_models, options,
         base_url)
-
     val1, val2 = get_random_string(9, UNICHRS), get_random_string(13, UNICHRS)
+
     x = factory.create(**{options['field']: val1})
+    _wait_query(replica_model, {options['field']: val1, 'uid': x.uid})
+
     setattr(x, options['field'], val2)
     x.save()
-
-    kwargs = {'uid': x.uid, options['field']: val2}
-    y = _wait_query(replica_model, kwargs).last()
-    assert x.version == y.version
-    assert x.uid == y.uid
+    _wait_query(replica_model, {options['field']: val2, 'uid': x.uid})
 
 
 def test_webhook_delete_event(celery_worker, base_url, api_client, api_model):

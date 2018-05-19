@@ -31,7 +31,7 @@ def _prepare_webhook_request_kwargs(settings):
 
 
 def _run_request_to_webhook(
-        user_pk, settings, serialized_data
+        user, settings, serialized_data
 ) -> Tuple[int, str]:
     url, kwargs = _prepare_webhook_request_kwargs(settings)
     data = serialized_data.encode('utf-8')
@@ -57,21 +57,23 @@ def _process_webhook_subscription(
     hist_obj = _unpack_history_instance(packed_history)
     retry = self.request.retries
     _type, _action, _uid = _get_splitted_event_name(hist_obj)
+    _version = hist_obj.version
     ctx = {
         'name': subscription.name, 'user_pk': subscription.user.pk,
         'user_username': subscription.user.get_username(),
         '_type': _type, '_action': _action, '_uid': _uid,
         'retry': retry}
 
-    LOGGER.info('webhook process event[%s] %s.%s.%s (retry=%s)',
-                hist_obj.history_id, _type, _action, _uid, retry)
+    LOGGER.info('webhook %r %s.%s.%s (v=%s) retry=%s',
+                subscription.name, _type, _action, _uid, _version, retry)
 
     try:
         data = serialize(subscription.user, subscription.settings, hist_obj)
     except SerializeHistoricalInstanceError as exc:
         ctx.update({'error': exc})
         alert("webhook '{name}' serialize error: {error}", **ctx)
-        LOGGER.error('retry webhook: serialize error %r; retry=%s', exc, retry)
+        LOGGER.error('retry webhook %r: serialize error %r; retry=%s',
+                     subscription.name, exc, retry)
         raise self.retry()
 
     try:
@@ -84,13 +86,15 @@ def _process_webhook_subscription(
                 'response_content': response_content})
             alert("webhook '{name}' response status={response_status}", **ctx)
             LOGGER.error(
-                'retry webhook: remote response status!=200; retry=%s', retry)
+                'retry webhook %r: remote response status!=200; retry=%s',
+                subscription.name, retry)
             raise self.retry()
 
         return 'ok'
     except Exception as exc:
         LOGGER.exception(
-            'retry webhook: remote server error: %s; retry=%s', exc, retry)
+            'retry webhook %r: remote server error: %s; retry=%s',
+            subscription.name, exc, retry)
         client.captureException()
         raise self.retry(exc=exc)
 
@@ -109,21 +113,23 @@ def _replicate_to_webhook_subscribers(
 
     """
     retry = self.request.retries
-    LOGGER.info('replicate_history: %r; retry=%s', packed_history, retry)
     try:
         hist_obj = _unpack_history_instance(packed_history)
         events = _get_event_names(hist_obj)
         subscribers = Subscription.objects.filter(
             events__overlap=events, type=WEBHOOK_SUBSCRIPTION)
     except Exception as exc:
-        LOGGER.exception('replicate_history: error: %r', exc)
+        LOGGER.exception('replicate_to_webhook error: %r', exc)
         client.captureException()
         raise self.retry(exc=exc)
+
+    LOGGER.info('replicate_to_webhook %s (v=%s) retry=%s',
+                events[-1], hist_obj.version, retry)
 
     for subscriber in subscribers:
         try:
             _process_webhook_subscription.delay(subscriber.pk, packed_history)
         except Exception as exc:  # noqa: pylint=broad-except
             LOGGER.exception(
-                'replicate_history error: %s %s', subscriber.pk, exc)
+                'replicate_to_webhook error: %s %s', subscriber.pk, exc)
             client.captureException()

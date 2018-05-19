@@ -58,31 +58,48 @@ def _prepare_model_attributes(model, hist_record, ctx) -> dict:
 
 def _process_deleted_historical_record(model, _type, _uid, _version):
     try:
-        instance = model.objects.get(uid=_uid)
-        if _version > instance.version:
+        instance = model._base_manager.get(uid=_uid)  # noqa
+        if _version >= instance.version:
             instance.delete()
         else:
-            LOGGER.warning("Received old %s version = %s (current %s)",
-                           _type, _version, instance.version)
+            LOGGER.error("[D] %s.-.%s (v=%s): old version (current v=%s)",
+                         _type, _uid, _version, instance.version)
     except model.DoesNotExist:
-        LOGGER.warning("%s DoesNotExist version = %s", _type, _version)
+        LOGGER.warning("[D] %s.-.%s (v=%s): does not exists",
+                       _type, _uid, _version)
 
 
-def _process_created_or_updated_historical_record(
-        model, model_attributes, _type, _action, _uid, _version):
+def _process_created_historical_record(
+        model, model_attributes, _type, _uid, _version):
+    q_set = model._base_manager.filter(uid=_uid)  # noqa
+    if q_set.exists():
+        instance = q_set.last()
+        LOGGER.warning("[C] %s.+.%s (v=%s): already exists (current v=%s)",
+                       _type, _uid, _version, instance.version)
+        return
+
+    instance = model(**model_attributes)
+    instance.uid = _uid
+    instance.autoincrement_version = False
+    instance.version = _version
+    instance.save()
+
+
+def _process_updated_historical_record(
+        model, model_attributes, _type, _uid, _version):
     try:
         instance = model._base_manager.get(uid=_uid)  # noqa
         if _version > instance.version:
             for key, val in model_attributes.items():
                 setattr(instance, key, val)
         else:
-            LOGGER.warning("Received old %s version = %s (current %s)",
-                           _type, _version, instance.version)
+            LOGGER.warning("[U] %s.+.%s (v=%s): old version (current v=%s)",
+                           _type, _uid, _version, instance.version)
             return
     except model.DoesNotExist:
-        if _action == '~':
-            LOGGER.warning('create object on %s.%s.%s', _type, _action, _uid)
-        instance = model(**model_attributes)
+        LOGGER.error('[U] %s.-.%s (v=%s): does not exists',
+                     _type, _uid, _version)
+        return
 
     instance.uid = _uid
     instance.autoincrement_version = False
@@ -97,11 +114,16 @@ def _process_historical_record(_type: str, _action: str, _uid: str,
     if not model:
         raise _ProcessHistoricalRecordError(*ctx, 'Unsupported _type')
 
+    LOGGER.info('process_historical_record %s.%s.%s (v=%s)', *ctx)
     if _action in ['-']:
         _process_deleted_historical_record(model, _type, _uid, _version)
-    elif _action in ['+', '~']:
+    elif _action in ['+']:
         model_attributes = _prepare_model_attributes(model, hist_record, ctx)
-        _process_created_or_updated_historical_record(
-            model, model_attributes, _type, _action, _uid, _version)
+        _process_created_historical_record(
+            model, model_attributes, _type, _uid, _version)
+    elif _action in ['~']:
+        model_attributes = _prepare_model_attributes(model, hist_record, ctx)
+        _process_updated_historical_record(
+            model, model_attributes, _type, _uid, _version)
     else:
         raise _ProcessHistoricalRecordError(*ctx, 'Unsupported _action')
