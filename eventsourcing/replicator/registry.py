@@ -32,8 +32,12 @@ def replicating(_type: str):
         if not isinstance(model.history, HistoryManager):
             raise ValueError('Model.history is not a HistoryManager object')
 
-        _REPLICATING_HISTORICAL_MODEL_SET.add(model.history.model)
-        _REPLICATING_MODEL_STORAGE[_type] = model
+        historical = model.history.model
+        if historical in _REPLICATING_HISTORICAL_MODEL_SET:
+            raise ValueError('Model is already replicating')
+
+        _REPLICATING_HISTORICAL_MODEL_SET.add(historical)
+        _REPLICATING_MODEL_STORAGE[_type] = historical
         return model
     return wrapper
 
@@ -47,6 +51,11 @@ def replicate(instance) -> None:
 def is_replicating(model) -> bool:
     content_type = ContentType.objects.get_for_model(model).model
     return content_type in _REPLICATING_MODEL_STORAGE
+
+
+def check_replicating_models(user):
+    for model in _REPLICATING_HISTORICAL_MODEL_SET:
+        pass
 
 
 def _get_replication_model(_type):

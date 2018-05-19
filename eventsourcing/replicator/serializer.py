@@ -22,7 +22,7 @@ def serialize(user, settings: dict, historical_instance) -> str:
     history_url = f'/api/v{api_version}/{_type}-list/history/'
     history_id = historical_instance.history_id
     status, content = _process_fake_request(
-        user.pk, 'get', history_url, data={'history_id': history_id})
+        user, 'get', history_url, data={'history_id': history_id})
     if status != 200:
         raise SerializeHistoricalInstanceError(
             f'serialize api status = {status}')

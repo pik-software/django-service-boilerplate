@@ -78,8 +78,7 @@ class _SubscriptionSerializer(StandardizedModelSerializer):
     def _check_event_name(self, event):
         splitted_event = event.split('.')
         _type = splitted_event[0]
-        model = _get_replication_model(_type)
-        if not model:
+        if not _get_replication_model(_type):
             raise serializers.ValidationError(
                 'wrong event name',
                 code='wrong_event',
@@ -101,7 +100,7 @@ class _SubscriptionSerializer(StandardizedModelSerializer):
         _type = event.split('.', 1)[0]
         model = _get_replication_model(_type)
         opts = model._meta  # noqa: pylint=protected-access
-        codename = f'{opts.app_label}.view_historical{opts.model_name}'
+        codename = f'{opts.app_label}.view_{opts.model_name}'
         user = self.context['request'].user
         if not user.has_perm(codename):
             raise serializers.ValidationError(

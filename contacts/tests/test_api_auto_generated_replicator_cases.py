@@ -283,7 +283,7 @@ def test_do_async_fake_request(api_model):
 
     _create_history_permission(user, model)
     code, content = _process_fake_request(
-        user.pk, 'get', history_url, data={'history_id': hist_obj.history_id})
+        user, 'get', history_url, data={'history_id': hist_obj.history_id})
 
     print(content)
     assert code == 200
