@@ -1,3 +1,5 @@
+# pylint: disable=protected-access
+# pylint: disable=invalid-name
 import json
 from pprint import pprint
 
@@ -20,7 +22,6 @@ from eventsourcing.utils import _pack_history_instance, \
     _unpack_history_instance
 from ..models import Contact, Comment
 from ..tests.factories import ContactFactory, CommentFactory
-
 
 BATCH_MODELS = 5
 

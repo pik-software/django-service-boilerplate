@@ -1,3 +1,4 @@
+# pylint: disable=protected-access
 import pytest
 
 from ..models import ContactReplica, CommentReplica
@@ -14,7 +15,7 @@ def model_and_factory(request):
 
 
 def _assert_history_object(hist_obj, type_, event_, uid_):
-    _type = hist_obj.history_object._meta.model_name  # noqa
+    _type = hist_obj.history_object._meta.model_name
     _event = hist_obj.history_type
     _uid = hist_obj.history_object.uid
     assert _type == type_

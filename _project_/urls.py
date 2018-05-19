@@ -20,7 +20,7 @@ router.register(
 router.register(
     'comment-list', CommentViewSet, base_name='comment')
 
-webhook = DefaultRouter()
+webhook = DefaultRouter()  # noqa: pylint=invalid-name
 webhook.register(
     'webhook', ReplicatedWebhookViewSet, base_name='webhook')
 webhook.register(

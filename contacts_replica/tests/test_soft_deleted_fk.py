@@ -1,3 +1,4 @@
+# pylint: disable=protected-access
 import pytest
 
 from ..models import CommentReplica
