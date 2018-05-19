@@ -15,6 +15,7 @@ from core.tasks.fixtures import create_user
 from eventsourcing import replicator
 from eventsourcing.models import Subscription
 from eventsourcing.replicator import serialize
+from eventsourcing.replicator.registry import check_all_models_replicating
 from eventsourcing.replicator.serializer import _process_fake_request
 from eventsourcing.replicator.tasks import _replicate_to_webhook_subscribers, \
     _process_webhook_subscription
@@ -395,3 +396,11 @@ def test_process_webhook_retry(api_model, celery_worker):
     with pytest.raises(exceptions.TimeoutError):
         r.get(timeout=0.1)
     r.revoke()
+
+
+def test_check_model_replicating(api_model):
+    model, factory, options = api_model
+    _create_few_models(factory)
+    sub = _create_subscription(model, options)
+    _type = sub.events[0]
+    assert check_all_models_replicating(sub.user, sub.settings)[_type] == 'OK'
