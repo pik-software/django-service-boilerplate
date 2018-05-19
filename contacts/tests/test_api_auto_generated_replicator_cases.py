@@ -214,14 +214,14 @@ def test_api_create_subscription(api_client, api_model):
 def test_pack_unpack_history(api_model):
     model, factory, options = api_model
     obj = _create_few_models(factory)
-    hist1 = obj.history.last()
+    hist = obj.history.last()
+    app_label, model_name = hist._meta.app_label, hist._meta.model_name  # noqa
 
-    packed_history = _pack_history_instance(hist1)
-    assert packed_history == (
-        hist1._meta.app_label, hist1._meta.model_name, hist1.pk)
+    packed_history = _pack_history_instance(hist)
+    assert packed_history == (app_label, model_name, hist.pk)
 
     hist1_unpacked = _unpack_history_instance(packed_history)
-    assert hist1 == hist1_unpacked
+    assert hist == hist1_unpacked
 
 
 def test_replicate_events(api_model, mocker):
@@ -330,7 +330,7 @@ def test_replicate_history_call_process_webhook(
     obj = factory.create()
     history = obj.history.all()
     hist = history.first()
-    app_label, model_name = hist._meta.app_label, hist._meta.model_name
+    app_label, model_name = hist._meta.app_label, hist._meta.model_name  # noqa
 
     r = _replicate_to_webhook_subscribers.delay(
         (app_label, model_name, hist.pk))

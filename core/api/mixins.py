@@ -67,7 +67,7 @@ class HistoryViewSetMixin:
         if not all(f in fields for f in required_fields):
             raise _HistoryProtocolNotImplemented()
 
-    def get_history_serializer_class(self):
+    def get_history_serializer_class(self):  # noqa: is too complex
         class HistorySerializer(self.get_serializer_class()):
             def to_representation(self, instance):
                 ret = OrderedDict()

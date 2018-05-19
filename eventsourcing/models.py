@@ -85,7 +85,7 @@ def _post_save_historical_model(sender, instance, created, **kwargs):
     if not created:
         raise RuntimeError('Historical changes detected! WTF?')
 
-    from eventsourcing.utils import _get_event_names  # noqa
+    from .utils import _get_event_names  # noqa
     events = _get_event_names(instance)
     subscribers = Subscription.objects.filter(events__overlap=events)
     if subscribers.exists():

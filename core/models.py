@@ -97,7 +97,7 @@ def _delete_collected(collector):
     with transaction.atomic(using=collector.using, savepoint=False):
         result = collector.delete()
         for model, instances in collector.soft_delete_objs.items():
-            if not model._meta.auto_created:
+            if not model._meta.auto_created:  # noqa: pylint=protected-access
                 for obj in instances:
                     signals.post_delete.send(
                         sender=model, instance=obj, using=collector.using
