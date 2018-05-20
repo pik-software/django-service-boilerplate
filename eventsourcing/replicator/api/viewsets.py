@@ -1,10 +1,13 @@
 from rest_framework import serializers
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from core.api.filters import StandardizedSearchFilter
 from core.api.mixins import BulkCreateModelMixin
 from core.api.serializers import StandardizedModelSerializer
 from core.api.viewsets import StandardizedReadOnlyModelViewSet
-from eventsourcing.replicator.registry import _get_replication_model
+from eventsourcing.replicator.registry import _get_replication_model, \
+    check_replication
 from eventsourcing.replicator.serializer import _check_serialize_problem, \
     SerializeHistoricalInstanceError
 from ...consts import WEBHOOK_SUBSCRIPTION, ACTIONS
@@ -177,3 +180,9 @@ class SubscriptionViewSet(
 
     def get_queryset(self):
         return Subscription.objects.filter(user=self.request.user)
+
+    @action(methods=['GET'], detail=False)
+    def status(self, request, version, **kwargs):
+        settings = {'api_version': version}
+        statuses = check_replication(request.user, settings)
+        return Response(statuses)

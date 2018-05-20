@@ -72,7 +72,7 @@ def is_replicating(model) -> bool:
     return content_type.model in _REPLICATING_MODEL_STORAGE
 
 
-def check_all_models_replicating(user, settings=None):
+def check_replication(user, settings=None):
     if not settings:
         version = getattr(dj_settings, _LATEST_API_VERSION_SETTING, '1')
         settings = {'api_version': version}

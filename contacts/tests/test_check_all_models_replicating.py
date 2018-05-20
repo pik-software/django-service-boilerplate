@@ -2,7 +2,7 @@ import pytest
 from rest_framework.test import APIClient
 
 from core.tasks.fixtures import create_user
-from eventsourcing.replicator.registry import check_all_models_replicating
+from eventsourcing.replicator.registry import check_replication
 
 
 @pytest.fixture
@@ -15,7 +15,7 @@ def api_client():
 
 
 def test_check_replicating_models(api_client):
-    result = check_all_models_replicating(api_client.user)
+    result = check_replication(api_client.user)
     assert result == {
         'comment': 'ERROR: serialize api status = 403',
         'contact': 'ERROR: serialize api status = 403',

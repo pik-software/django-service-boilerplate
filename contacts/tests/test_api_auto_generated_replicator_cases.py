@@ -15,7 +15,7 @@ from rest_framework.test import APIClient
 from core.tasks.fixtures import create_user
 from eventsourcing.models import Subscription
 from eventsourcing.replicator import serialize
-from eventsourcing.replicator.registry import check_all_models_replicating
+from eventsourcing.replicator.registry import check_replication
 from eventsourcing.replicator.serializer import _process_fake_request
 from eventsourcing.replicator.tasks import _replicate_to_webhook_subscribers, \
     _process_webhook_subscription
@@ -210,6 +210,28 @@ def test_api_create_subscription(api_client, api_model):
     })
 
 
+def test_api_subscription_status_error_403(api_client, api_model):
+    model, factory, options = api_model
+    url = _url(model, options) + 'status/'
+    _type = ContentType.objects.get_for_model(model).model
+
+    res = api_client.get(url)
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json()[_type] == 'ERROR: serialize api status = 403'
+
+
+def test_api_subscription_status_ok(api_client, api_model):
+    model, factory, options = api_model
+    _create_few_models(factory)
+    url = _url(model, options) + 'status/'
+    _type = ContentType.objects.get_for_model(model).model
+    _create_history_permission(api_client.user, model)
+
+    res = api_client.get(url)
+    assert res.status_code == status.HTTP_200_OK
+    assert res.json()[_type] == 'OK'
+
+
 def test_pack_unpack_history(api_model):
     model, factory, options = api_model
     obj = _create_few_models(factory)
@@ -401,6 +423,7 @@ def test_process_webhook_retry(api_model, celery_worker):
 def test_check_model_replicating(api_model):
     model, factory, options = api_model
     _create_few_models(factory)
-    sub = _create_subscription(model, options)
-    _type = sub.events[0]
-    assert check_all_models_replicating(sub.user, sub.settings)[_type] == 'OK'
+    subs = _create_subscription(model, options)
+    statuses = check_replication(subs.user, subs.settings)
+    _type = subs.events[0]
+    assert statuses[_type] == 'OK'
