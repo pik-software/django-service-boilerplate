@@ -53,7 +53,7 @@ def replicating(_type: str):
 
 
 def replicate(instance) -> None:
-    from .tasks import _replicate_to_webhook_subscribers  # noqa
+    from . import _replicate_to_webhook_subscribers  # noqa
 
     packed_history = _pack_history_instance(instance)
     _replicate_to_webhook_subscribers.apply_async(
@@ -61,9 +61,9 @@ def replicate(instance) -> None:
 
 
 def re_replicate(subscription, events):
-    from .tasks import _re_replicate_subscription  # noqa
+    from . import _re_replicate_webhook_subscription  # noqa
 
-    _re_replicate_subscription.apply_async(
+    _re_replicate_webhook_subscription.apply_async(
         args=(subscription.pk, events), countdown=0.5)
 
 

@@ -136,7 +136,44 @@ def _replicate_to_webhook_subscribers(
             client.captureException()
 
 
-def _re_replicate_webhook_subscription(subscription, events):
+def _check_events(events):
+    for event in events:
+        splitted = event.split('.')
+        model = _get_replication_model(splitted[0])
+        if not model:
+            raise ValueError('invalid_event_type')
+        if len(splitted) >= 2 and splitted[1] not in ACTIONS:
+            raise ValueError('invalid_event_action')
+        if len(splitted) >= 3:
+            if not model.objects.filter(uid=splitted[2]).exists():
+                raise ValueError('invalid_event_uid')
+
+
+@shared_task(bind=True)
+def _re_replicate_webhook_subscription(
+        self: celery.Task, subscription_pk, events,
+) -> str:
+    """
+    Example:
+
+        subscription = Subscription.objects.get(...)
+        _re_replicate_webhook_subscription.delay(
+            subscription.pk, subscription.events)
+
+    """
+    try:
+        subscription = Subscription.objects.select_related('user')\
+            .get(pk=subscription_pk)
+    except Subscription.DoesNotExist:
+        LOGGER.warning(
+            "try to process does not exist subscription %s", subscription_pk)
+        return 'subscription_does_not_exist'
+
+    try:
+        _check_events(events)
+    except ValueError as exc:
+        return str(exc)
+
     for event in events:
         splitted = event.split('.')
         q_set = _get_replication_model(splitted[0]).objects.order_by('pk')
@@ -149,31 +186,4 @@ def _re_replicate_webhook_subscription(subscription, events):
             packed_history = _pack_history_instance(instance)
             _process_webhook_subscription.delay(
                 subscription.pk, packed_history)
-
-
-@shared_task(bind=True)
-def _re_replicate_subscription(
-        self: celery.Task, subscription_pk, events,
-) -> str:
-    try:
-        subscription = Subscription.objects.select_related('user')\
-            .get(pk=subscription_pk)
-    except Subscription.DoesNotExist:
-        LOGGER.warning(
-            "try to process does not exist subscription %s", subscription_pk)
-        return 'subscription_does_not_exist'
-
-    for event in events:
-        splitted = event.split('.')
-        model = _get_replication_model(splitted[0])
-        if not model:
-            return 'invalid_event_type'
-        if len(splitted) >= 2 and splitted[1] not in ACTIONS:
-            return 'invalid_event_action'
-        if len(splitted) >= 3:
-            if not model.objects.filter(uid=splitted[2]).exists():
-                return 'invalid_event_uid'
-
-    if subscription.type == WEBHOOK_SUBSCRIPTION:
-        _re_replicate_webhook_subscription(subscription, events)
     return 'ok'
