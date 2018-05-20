@@ -1,13 +1,19 @@
+import logging
+
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Model
+from django.db.models.signals import post_save
 from django.conf import settings as dj_settings
 from simple_history.manager import HistoryManager
 
-from eventsourcing.utils import _pack_history_instance
+from ..models import Subscription
+from ..utils import _pack_history_instance, _get_event_names
 from .serializer import _check_serialize_problem, \
     SerializeHistoricalInstanceError, serialize
 from .utils import _has_field
 from .tasks import _replicate_to_webhook_subscribers
+
+LOGGER = logging.getLogger(__name__)
 
 _LATEST_API_VERSION_SETTING = 'REST_FRAMEWORK_LATEST_API_VERSION'
 _REPLICATING_MODEL_STORAGE = {}
@@ -42,6 +48,7 @@ def replicating(_type: str):
 
         _REPLICATING_HISTORICAL_MODEL_SET.add(historical)
         _REPLICATING_MODEL_STORAGE[_type] = historical
+        post_save.connect(_post_save_historical_model, sender=historical)
         return model
     return wrapper
 
@@ -79,5 +86,12 @@ def _get_replication_model(_type):
     return _REPLICATING_MODEL_STORAGE.get(_type)
 
 
-def _is_replicating_historical_model(model):
-    return model._meta.concrete_model in _REPLICATING_HISTORICAL_MODEL_SET  # noqa
+def _post_save_historical_model(sender, instance, created, **kwargs):
+    if not created:
+        raise RuntimeError('Historical changes detected! WTF?')
+
+    events = _get_event_names(instance)
+    subscribers = Subscription.objects.filter(events__overlap=events)
+    if subscribers.exists():
+        LOGGER.info('replicate %s [hist=%s]', events[-1], instance.history_id)
+        replicate(instance)

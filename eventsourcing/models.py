@@ -2,8 +2,6 @@ import logging
 
 from django.contrib.postgres.fields import JSONField, ArrayField
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 from simple_history.models import HistoricalRecords
 
@@ -68,27 +66,3 @@ def unsubscribe(user, name, type_, events):
     obj.events = new_events
     obj.save()
     return obj
-
-
-# TODO(meteozond): I think it is more expedient connect to the signal in
-# the decorated models.
-
-
-@receiver(post_save, dispatch_uid='post-save-historical-model')
-def _post_save_historical_model(sender, instance, created, **kwargs):
-    """
-    Automatically triggers "created" and "updated" actions.
-    """
-    from .replicator.registry import _is_replicating_historical_model  # noqa
-    if not _is_replicating_historical_model(instance):
-        return
-    if not created:
-        raise RuntimeError('Historical changes detected! WTF?')
-
-    from .utils import _get_event_names  # noqa
-    events = _get_event_names(instance)
-    subscribers = Subscription.objects.filter(events__overlap=events)
-    if subscribers.exists():
-        LOGGER.info('replicate %s [hist=%s]', events[-1], instance.history_id)
-        from .replicator import replicate  # noqa
-        replicate(instance)

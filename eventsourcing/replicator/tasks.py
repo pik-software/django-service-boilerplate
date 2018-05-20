@@ -93,7 +93,8 @@ def _process_webhook_subscription(
         return 'ok'
     except Exception as exc:
         LOGGER.exception(
-            'retry webhook %r: remote server error: %s; retry=%s', subscription.name, exc, retry)
+            'retry webhook %r: remote server error: %s; retry=%s',
+            subscription.name, exc, retry)
         client.captureException()
         raise self.retry(exc=exc)
 

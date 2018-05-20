@@ -13,7 +13,6 @@ from rest_framework import status
 from rest_framework.test import APIClient
 
 from core.tasks.fixtures import create_user
-from eventsourcing import replicator
 from eventsourcing.models import Subscription
 from eventsourcing.replicator import serialize
 from eventsourcing.replicator.registry import check_all_models_replicating
@@ -256,7 +255,7 @@ def test_replicate(api_model, mocker):
     model, factory, options = api_model
     _create_subscription(model, options)
 
-    repl = mocker.patch.object(replicator, 'replicate')
+    repl = mocker.patch('eventsourcing.replicator.registry.replicate')
 
     obj = factory.create()
     history = obj.history.all()
