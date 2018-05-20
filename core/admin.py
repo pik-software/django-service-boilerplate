@@ -95,7 +95,7 @@ class SecuredAdminInline(PermittedFieldsMixIn, ReasonedMixIn,
     extra = 0
 
 
-class StrictSecuredAdminInLine(StrictMixIn, SecuredAdminInline):
+class StrictSecuredAdminInline(StrictMixIn, SecuredAdminInline):
     pass
 
 
