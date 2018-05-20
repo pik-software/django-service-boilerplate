@@ -7,14 +7,16 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.crypto import get_random_string
 from rest_framework.test import APIClient
 
+from core.tasks.fixtures import create_user
+from eventsourcing.models import Subscription
+from eventsourcing import tasks
 from contacts.models import Contact, Comment
 from contacts.tests.factories import ContactFactory, CommentFactory
 from contacts_replica.models import ContactReplica, CommentReplica
-from eventsourcing.models import Subscription
-from core.tasks.fixtures import create_user
 
 
 UNICHRS = 'abcdefабвгдеàHЯ⾀HÐ¯â¾€ЯЯ×�¼½¾¿™Ž'
+assert tasks
 
 
 @pytest.fixture(params=[

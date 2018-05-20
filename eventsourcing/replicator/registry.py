@@ -11,8 +11,6 @@ from ..utils import _pack_history_instance, _get_event_names
 from .serializer import _check_serialize_problem, \
     SerializeHistoricalInstanceError, serialize
 from .utils import _has_field
-from .tasks import _replicate_to_webhook_subscribers, \
-    _re_replicate_subscription
 
 LOGGER = logging.getLogger(__name__)
 
@@ -55,12 +53,16 @@ def replicating(_type: str):
 
 
 def replicate(instance) -> None:
+    from .tasks import _replicate_to_webhook_subscribers  # noqa
+
     packed_history = _pack_history_instance(instance)
     _replicate_to_webhook_subscribers.apply_async(
         args=(packed_history, ), countdown=0.5)
 
 
 def re_replicate(subscription, events):
+    from .tasks import _re_replicate_subscription  # noqa
+
     _re_replicate_subscription.apply_async(
         args=(subscription.pk, events), countdown=0.5)
 
