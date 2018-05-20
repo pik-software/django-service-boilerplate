@@ -1,5 +1,6 @@
 import logging
 
+from ..consts import UPDATED_ACTION, DELETED_ACTION, CREATED_ACTION
 from .utils import _get_fields, _has_field
 from .registry import _get_replicated_model
 
@@ -115,13 +116,13 @@ def _process_historical_record(_type: str, _action: str, _uid: str,
         raise _ProcessHistoricalRecordError(*ctx, 'Unsupported _type')
 
     LOGGER.info('process_historical_record %s.%s.%s (v=%s)', *ctx)
-    if _action in ['-']:
+    if _action in [DELETED_ACTION]:
         _process_deleted_historical_record(model, _type, _uid, _version)
-    elif _action in ['+']:
+    elif _action in [CREATED_ACTION]:
         model_attributes = _prepare_model_attributes(model, hist_record, ctx)
         _process_created_historical_record(
             model, model_attributes, _type, _uid, _version)
-    elif _action in ['~']:
+    elif _action in [UPDATED_ACTION]:
         model_attributes = _prepare_model_attributes(model, hist_record, ctx)
         _process_updated_historical_record(
             model, model_attributes, _type, _uid, _version)

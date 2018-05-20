@@ -4,7 +4,8 @@ from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 
 from core.api.viewsets import StandardizedGenericViewSet
-from eventsourcing.replicated.processor import _process_historical_record, \
+from ...consts import ACTIONS
+from ..processor import _process_historical_record, \
     _ProcessHistoricalRecordError
 
 
@@ -18,7 +19,7 @@ class _HistoryListItemSerializer(serializers.Serializer):
     _type = serializers.CharField()
     _uid = serializers.CharField()
     _version = serializers.IntegerField()
-    history_type = serializers.ChoiceField(choices={'+', '-', '~'})
+    history_type = serializers.ChoiceField(choices=ACTIONS)
     history_date = serializers.DateTimeField()
 
 

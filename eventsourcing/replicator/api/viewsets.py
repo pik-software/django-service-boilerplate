@@ -7,7 +7,7 @@ from core.api.viewsets import StandardizedReadOnlyModelViewSet
 from eventsourcing.replicator.registry import _get_replication_model
 from eventsourcing.replicator.serializer import _check_serialize_problem, \
     SerializeHistoricalInstanceError
-from ...consts import WEBHOOK_SUBSCRIPTION
+from ...consts import WEBHOOK_SUBSCRIPTION, ACTIONS
 from ...models import Subscription, subscribe
 
 
@@ -85,7 +85,7 @@ class _SubscriptionSerializer(StandardizedModelSerializer):
             )
         if len(splitted_event) >= 2:
             _action = splitted_event[1]
-            if _action not in ['+', '-', '~']:
+            if _action not in ACTIONS:
                 raise serializers.ValidationError(
                     'wrong event name',
                     code='wrong_event',
