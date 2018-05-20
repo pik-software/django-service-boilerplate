@@ -7,6 +7,7 @@ from eventsourcing.utils import _pack_history_instance
 from .serializer import _check_serialize_problem, \
     SerializeHistoricalInstanceError, serialize
 from .utils import _has_field
+from .tasks import _replicate_to_webhook_subscribers
 
 _LATEST_API_VERSION_SETTING = 'REST_FRAMEWORK_LATEST_API_VERSION'
 _REPLICATING_MODEL_STORAGE = {}
@@ -46,7 +47,6 @@ def replicating(_type: str):
 
 
 def replicate(instance) -> None:
-    from .tasks import _replicate_to_webhook_subscribers  # noqa
     packed_history = _pack_history_instance(instance)
     _replicate_to_webhook_subscribers.apply_async(
         args=(packed_history, ), countdown=0.5)
