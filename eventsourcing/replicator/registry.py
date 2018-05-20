@@ -11,13 +11,14 @@ from ..utils import _pack_history_instance, _get_event_names
 from .serializer import _check_serialize_problem, \
     SerializeHistoricalInstanceError, serialize
 from .utils import _has_field
-from .tasks import _replicate_to_webhook_subscribers
+from .tasks import _replicate_to_webhook_subscribers, \
+    _re_replicate_subscription
 
 LOGGER = logging.getLogger(__name__)
 
 _LATEST_API_VERSION_SETTING = 'REST_FRAMEWORK_LATEST_API_VERSION'
 _REPLICATING_MODEL_STORAGE = {}
-_REPLICATING_HISTORICAL_MODEL_SET = set()
+_REPLICATING_MODEL_SET = set()
 
 
 def replicating(_type: str):
@@ -43,10 +44,10 @@ def replicating(_type: str):
             raise ValueError('Model.history is not a HistoryManager object')
 
         historical = model.history.model
-        if historical in _REPLICATING_HISTORICAL_MODEL_SET:
+        if historical in _REPLICATING_MODEL_SET:
             raise ValueError('Model is already replicating')
 
-        _REPLICATING_HISTORICAL_MODEL_SET.add(historical)
+        _REPLICATING_MODEL_SET.add(historical)
         _REPLICATING_MODEL_STORAGE[_type] = historical
         post_save.connect(_post_save_historical_model, sender=historical)
         return model
@@ -57,6 +58,11 @@ def replicate(instance) -> None:
     packed_history = _pack_history_instance(instance)
     _replicate_to_webhook_subscribers.apply_async(
         args=(packed_history, ), countdown=0.5)
+
+
+def re_replicate(subscription, events):
+    _re_replicate_subscription.apply_async(
+        args=(subscription.pk, events), countdown=0.5)
 
 
 def is_replicating(model) -> bool:
@@ -84,6 +90,10 @@ def check_all_models_replicating(user, settings=None):
 
 def _get_replication_model(_type):
     return _REPLICATING_MODEL_STORAGE.get(_type)
+
+
+def _get_all_replication_models():
+    return list(_REPLICATING_MODEL_STORAGE.items())
 
 
 def _post_save_historical_model(sender, instance, created, **kwargs):

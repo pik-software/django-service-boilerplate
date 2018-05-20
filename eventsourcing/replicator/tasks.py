@@ -8,8 +8,8 @@ import requests
 
 from core.monitoring import alert
 from ..utils import _get_splitted_event_name, \
-    _unpack_history_instance, _get_event_names
-from ..consts import WEBHOOK_SUBSCRIPTION
+    _unpack_history_instance, _get_event_names, _pack_history_instance
+from ..consts import WEBHOOK_SUBSCRIPTION, ACTIONS
 from ..models import Subscription
 from .serializer import serialize, SerializeHistoricalInstanceError
 
@@ -133,3 +133,44 @@ def _replicate_to_webhook_subscribers(
             LOGGER.exception(
                 'replicate_to_webhook error: %s %s', subscriber.pk, exc)
             client.captureException()
+
+
+@shared_task(bind=True)
+def _re_replicate_subscription(
+        self: celery.Task, subscription_pk, events,
+) -> str:
+    try:
+        subscription = Subscription.objects.select_related('user')\
+            .get(pk=subscription_pk)
+    except Subscription.DoesNotExist:
+        LOGGER.warning(
+            "try to process does not exist subscription %s", subscription_pk)
+        return 'subscription_does_not_exist'
+
+    from .registry import _get_replication_model  # noqa
+
+    for event in events:
+        splitted = event.split('.')
+        model = _get_replication_model(splitted[0])
+        if not model:
+            return 'invalid_event_type'
+        if len(splitted) >= 2 and splitted[1] not in ACTIONS:
+            return 'invalid_event_action'
+        if len(splitted) >= 3:
+            if not model.objects.filter(uid=splitted[2]).exists():
+                return 'invalid_event_uid'
+
+    if subscription.type == WEBHOOK_SUBSCRIPTION:
+        for event in events:
+            splitted = event.split('.')
+            q_set = _get_replication_model(splitted[0]).objects.order_by('pk')
+            if len(splitted) >= 2:
+                q_set = q_set.filter(history_type=splitted[1])
+            if len(splitted) >= 3:
+                q_set = q_set.filter(uid=splitted[2])
+
+            for instance in q_set:
+                packed_history = _pack_history_instance(instance)
+                _process_webhook_subscription.delay(
+                    subscription.pk, packed_history)
+    return 'ok'
