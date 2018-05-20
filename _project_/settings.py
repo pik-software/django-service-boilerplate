@@ -252,7 +252,6 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_RESULT_EXPIRES = 3600
 CELERY_IMPORTS = [
     'core.tasks',
-    'eventsourcing.replicator.tasks',
 ]
 CELERYBEAT_SCHEDULE_FILENAME = os.path.join(DATA_DIR, 'celerybeat.db')
 CELERYBEAT_SCHEDULE = {}
