@@ -27,6 +27,9 @@ jobs:
     steps:
       - checkout
 
+      - type: cache-restore
+        key: pik-python-{{ arch }}-{{ .Branch }}-{{ checksum "requirements.txt" }}
+
       - run:
           name: install dependencies
           command: |
@@ -34,6 +37,11 @@ jobs:
             . .venv/bin/activate
             pip install --upgrade setuptools
             pip install --exists-action w -r requirements.txt
+
+      - type: cache-save
+        key: pik-python-{{ arch }}-{{ .Branch }}-{{ checksum "requirements.txt" }}
+        paths:
+          - "~/.cache/pip"
 
       - run:
           name: run tests
@@ -49,10 +57,50 @@ jobs:
             pytest --doctest-modules --durations=0 -vvvs contacts_replica
             prospector --profile-path . --profile .prospector.yaml .
 
-      - deploy:
+  deploy-staging:
+    docker:
+      - image: quay.io/pik-software/base:v1.6
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run:
+          name: deploy staging
+          command: |
+            if [[ "${CIRCLE_BRANCH}" == "deploy" || "${CIRCLE_BRANCH}" == "master" ]]; then
+              echo 'staging.pik-software.ru ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBOY5bwhxoqupBaChSCncDXgY+EPJC5DbZzfBJyrGh9etF+L8+4TJJUtzyCHUj0HcOUY186WHa3alIsAf5/KWbW0=' >> ~/.ssh/known_hosts
+              ./.circleci/deploy-to-staging.sh staging.pik-software.ru ${CIRCLE_PROJECT_REPONAME} ${CIRCLE_BRANCH}
+            fi
+
+  deploy-prod:
+    docker:
+      - image: quay.io/pik-software/base:v1.6
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - run:
           name: deploy master
           command: |
-            if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              echo 'staging.pik-software.ru ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBOY5bwhxoqupBaChSCncDXgY+EPJC5DbZzfBJyrGh9etF+L8+4TJJUtzyCHUj0HcOUY186WHa3alIsAf5/KWbW0=' >> ~/.ssh/known_hosts
-              ./.circleci/deploy-to-dokku.sh ${CIRCLE_PROJECT_REPONAME} ${CIRCLE_BRANCH}
-            fi
+            echo 'django-service-boilerplate.pik-software.ru ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFPXodJ4VrKP3YKaotYDle6krEX2M1qORWpEXm2yqLA5spRrIG7VEw7mvFzqWD9xfTaQr1l2uIuxXp6DFMZY4hc=' >> ~/.ssh/known_hosts
+            ./.circleci/deploy-to-prod.sh
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy-staging:
+          requires:
+            - build
+      - staging-ok:
+          type: approval
+          requires:
+            - deploy-staging
+          filters:
+            branches:
+              only: master
+      - deploy-prod:
+          requires:
+            - staging-ok
+          filters:
+            branches:
+              only: master

@@ -13,7 +13,7 @@ BASE_DIR_NAME = os.path.basename(BASE_DIR)
 DATA_DIR = os.path.join(BASE_DIR, '__data__')
 SERVICE_NAME = os.environ.get('SERVICE_NAME', BASE_DIR_NAME)
 
-SERVICE_TITLE = 'ВСервисус'
+SERVICE_TITLE = 'Сервис'
 
 REDIS_URL = os.environ.get(
     'REDIS_URL',
