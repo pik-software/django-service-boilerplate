@@ -89,6 +89,7 @@ class HistoryViewSetMixin:
                     'history_id': ['exact', 'gt', 'gte', 'lt', 'lte', 'in'],
                     'history_type': ['exact', 'in'],
                     'history_user_id': ['exact', 'in', 'isnull'],
+                    'history_date': ['exact', 'gt', 'gte', 'lt', 'lte', 'in'],
                     self.lookup_field: [
                         'exact', 'gt', 'gte', 'lt', 'lte', 'in', 'isnull'],
                 }
