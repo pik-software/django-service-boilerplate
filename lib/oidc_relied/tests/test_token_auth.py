@@ -8,7 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.http import Http404
 from requests import Response, HTTPError
 
-from housing.models import Building
+from contacts.models import Contact
 
 
 class HTTPResponse(Response):
@@ -31,15 +31,15 @@ class JsonResponse(Response):
         return self._json
 
 
-make_api_request = partial(django.test.Client().get, "/api/v1/building-list/",  # noqa invalid-name
+make_api_request = partial(django.test.Client().get, "/api/v1/contact-list/",  # noqa invalid-name
                            **{'HTTP_AUTHORIZATION': 'Bearer pik token'})
 
 
 @patch("social_core.backends.base.BaseAuth.request")
 def test_correct_token_api(oidc_request_mock):
-    content_type = ContentType.objects.get_for_model(Building)
+    content_type = ContentType.objects.get_for_model(Contact)
     perm = Permission.objects.get(content_type=content_type,
-                                  codename="view_building")
+                                  codename="view_contact")
     default_group = Group.objects.create(name='default')
     default_group.permissions.add(perm)
 
