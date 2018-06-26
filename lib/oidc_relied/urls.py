@@ -7,7 +7,7 @@ from .views import (oidc_admin_login, oidc_admin_logout,
 
 urlpatterns = [  # noqa: invalid-name
 
-    # We need to override default `social_python` `complete` bahavior in order
+    # We need to override default `social_python` `complete` behavior in order
     # to provide backchannel logout implementation.
     url(r'^openid/complete/(?P<backend>[^/]+)/', complete),
     url(r'^openid/logout/(?P<backend>[^/]+)/$',
