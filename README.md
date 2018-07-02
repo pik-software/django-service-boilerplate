@@ -21,7 +21,7 @@ Create new project, virtualenv and install requirements:
 
     git clone git@github.com:pik-software/<repo>.git <project-name>
     cd <project-name>
-    mkvirtualenv --python=$(which python3.5) <project-name>
+    mkvirtualenv --python=$(which python3.6) <project-name>
     pip install -r requirements.txt  # install python requirements
 
 Create file `settings_local.py` in `_project_` and setup DATABASE and some local settings:
