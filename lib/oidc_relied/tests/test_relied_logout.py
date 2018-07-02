@@ -7,6 +7,7 @@ import django.test
 from django.urls import reverse
 
 from pik.core.tests import create_user
+from rest_framework import status
 
 
 @pytest.fixture
@@ -27,7 +28,7 @@ def logged_user_client(client: django.test.Client, user):
 def test_logout(logged_user_client):
     logged_user_client.session['id_token'] = '{testidtoken}'
     resp = logged_user_client.get(reverse('admin:logout'))
-    assert resp.status_code == 302
+    assert resp.status_code == status.HTTP_302_FOUND
     assert resp['Location'] == 'http://op/openid/end-session/?{}'.format(
         urlencode({'post_logout_redirect_uri': 'http://testserver/logout/'}))
     assert logged_user_client.session.get('id_token') is None

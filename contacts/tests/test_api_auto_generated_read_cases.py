@@ -53,7 +53,8 @@ def test_api_unauthorized_list(client, api_model):
 
     res = client.get(url)
 
-    assert res.status_code == status.HTTP_401_UNAUTHORIZED
+    assert res.status_code in (status.HTTP_401_UNAUTHORIZED,
+                               status.HTTP_403_FORBIDDEN)
 
 
 def test_api_unauthorized_retrieve(client, api_model):
@@ -63,7 +64,8 @@ def test_api_unauthorized_retrieve(client, api_model):
 
     res = client.get(url)
 
-    assert res.status_code == status.HTTP_401_UNAUTHORIZED
+    assert res.status_code in (status.HTTP_401_UNAUTHORIZED,
+                               status.HTTP_403_FORBIDDEN)
 
 
 def test_api_list(api_client, api_model):

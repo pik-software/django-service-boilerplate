@@ -29,30 +29,49 @@ PIK_OIDC_PROVIDER_NAME = 'pik'
 class PIKOpenIdConnectAuth(OpenIdConnectAuth):  # noqa: abstract-method
     OIDC_ENDPOINT = settings.OIDC_PIK_ENDPOINT
     name = PIK_OIDC_PROVIDER_NAME
-    DEFAULT_SCOPE = OpenIdConnectAuth.DEFAULT_SCOPE + ['roles']
     USERDATA_KEY = 'oidc_userdata_{access_token}'
-    TOKEN_SESSION_KEY = 'oidc_token_session_{access_token}'
+    SID_SESSIONS_KEY = 'oidc_sid_sessions_{sid}'
+    SID_TOKENS_KEY = 'oidc_sid_tokens_{sid}'
+    RESPONSE_TYPE = 'code'
+    EXTRA_DATA = OpenIdConnectAuth.EXTRA_DATA + [('sid', 'sid')]
+    GET_ALL_EXTRA_DATA = True
 
     def do_auth(self, access_token: str, *args, **kwargs) -> Any:
         user = super().do_auth(access_token, *args, **kwargs)
 
-        id_token = kwargs.get('response', {}).get('id_token')
-        if user.is_authenticated and id_token is not None:
+        id_token_hint = kwargs.get('response', {}).get('id_token')
+        if user.is_authenticated and id_token_hint is not None:
             self.access_token = access_token  # noqa attribute-defined-outside-init
-            self.strategy.session_set('id_token', id_token)
+            self.strategy.session_set('id_token_hint', id_token_hint)
+
+        sid = user.social_user.extra_data.get('sid')
+        if sid:
+            key = self.SID_TOKENS_KEY.format(sid=sid)
+            values = cache.get(key, [])
+            if access_token not in values:
+                values.append(access_token)
+                cache.set(key, values, timeout=settings.SESSION_COOKIE_AGE)
 
         return user
 
-    def save_token_session(self) -> None:
-        """ Save token to session link. Needed to provided backchannel
-        logout.
-        """
+    def save_logout_artefacts(self) -> None:
+        """ Save sid to token/session links, . Needed to provide backchannel
+            logout. """
 
-        access_token = getattr(self, 'access_token', None)
-        cache.set(self.TOKEN_SESSION_KEY.format(access_token=access_token),
-                  self.strategy.session.session_key)
+        if not self.id_token:
+            return
 
-    def validate_and_return_logout_token(self, jws: dict) -> dict:  # noqa invalid-name
+        sid = self.id_token.get('sid')
+
+        if not sid:
+            return
+
+        key = self.SID_SESSIONS_KEY.format(sid=sid)
+        values = cache.get(key, [])
+        values.append(self.strategy.session.session_key)
+        cache.set(key, values, timeout=settings.SESSION_COOKIE_AGE)
+
+    def validate_and_return_logout_token(self, jws: str) -> dict:  # noqa invalid-name
         """ Validated logout_token """
         try:
             # Decode the JWT and raise an error if the sig is invalid
@@ -98,25 +117,30 @@ class PIKOpenIdConnectAuth(OpenIdConnectAuth):  # noqa: abstract-method
         """ Process backchannel logout """
 
         logout_token = self.validate_and_return_logout_token(logout_token)
-        access_token = logout_token['sid']
-        cache.delete(self.USERDATA_KEY.format(access_token=access_token))
+        sid = logout_token.get('sid')
 
-        token_session_key = self.TOKEN_SESSION_KEY.format(
-            access_token=access_token)
-        session_key = cache.get(token_session_key)
-        if session_key is not None:
-            engine = import_module(settings.SESSION_ENGINE)
-            engine.SessionStore(session_key).delete()
-            cache.delete(token_session_key)
+        if sid:
+            cache_key = self.SID_TOKENS_KEY.format(sid=sid)
+            for access_token in cache.get(cache_key, ()):
+                cache.delete(self.USERDATA_KEY.format(
+                    access_token=access_token))
+            cache.delete(cache_key)
+
+            cache_key = self.SID_SESSIONS_KEY.format(sid=sid)
+            for session in cache.get(cache_key, ()):
+                engine = import_module(settings.SESSION_ENGINE)
+                engine.SessionStore(session).delete(session)
+            cache.delete(cache_key)
+
         return HttpResponse()
 
     def logout(self) -> HttpResponseRedirect:
         endpoint = self.oidc_config().get('end_session_endpoint')
         params = {'post_logout_redirect_uri':
                   self.strategy.build_absolute_uri(reverse('logout'))}
-        id_token = self.strategy.session_get('id_token', None)
-        if id_token is not None:
-            params['id_token_hint'] = id_token
+        id_token_hint = self.strategy.session_get('id_token_hint', None)
+        if id_token_hint is not None:
+            params['id_token_hint'] = id_token_hint
 
         logout(self.strategy.request)
 

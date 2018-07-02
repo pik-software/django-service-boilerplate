@@ -6,7 +6,9 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission, Group
 from django.contrib.contenttypes.models import ContentType
 from django.http import Http404
+
 from requests import Response, HTTPError
+from rest_framework import status
 
 from contacts.models import Contact
 
@@ -74,7 +76,7 @@ def test_correct_token_api(oidc_request_mock):
     oidc_request_mock.side_effect = side_effect
 
     response = make_api_request()
-    assert response.status_code == 200
+    assert response.status_code == status.HTTP_200_OK
     assert response.json() == dict(
         count=0, page=1, page_next=None, page_previous=None, page_size=20,
         pages=1, results=[])
@@ -101,7 +103,8 @@ def test_wrong_token_api(oidc_request_mock):
                 'is expired, revoked, malformed, or invalid '
                 'for other reasons')}))
     resp = make_api_request()
-    assert resp.status_code == 403
+    assert resp.status_code in (status.HTTP_401_UNAUTHORIZED,
+                                status.HTTP_403_FORBIDDEN)
     assert resp.json() == {
         'code': 'invalid_token',
         'message': ('The access token provided is expired, revoked, '

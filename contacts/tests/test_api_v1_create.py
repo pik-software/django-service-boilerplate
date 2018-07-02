@@ -27,13 +27,15 @@ def api_client():
 
 def test_api_unauthorized(client):
     res = client.get('/api/v1/')
-    assert res.status_code == status.HTTP_401_UNAUTHORIZED
+    assert res.status_code in (status.HTTP_401_UNAUTHORIZED,
+                               status.HTTP_403_FORBIDDEN)
 
 
 def test_api_create_contact_unauthorized(client):  # noqa: pylint=invalid-name
     data = {'name': get_random_string()}
     res = client.post('/api/v1/contact-list/', data=data)
-    assert res.status_code == status.HTTP_401_UNAUTHORIZED
+    assert res.status_code in (status.HTTP_401_UNAUTHORIZED,
+                               status.HTTP_403_FORBIDDEN)
 
 
 def test_api_create_contact_without_name(api_client):  # noqa: pylint=invalid-name
@@ -69,7 +71,8 @@ def test_api_create_bulk_contact(api_client):
 def test_api_create_comment_unauthorized(client):  # noqa: pylint=invalid-name
     data = {'message': get_random_string()}
     res = client.post('/api/v1/comment-list/', data=data)
-    assert res.status_code == status.HTTP_401_UNAUTHORIZED
+    assert res.status_code in (status.HTTP_401_UNAUTHORIZED,
+                               status.HTTP_403_FORBIDDEN)
 
 
 def test_api_create_comment_without_contact(api_client):  # noqa: pylint=invalid-name

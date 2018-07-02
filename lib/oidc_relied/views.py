@@ -70,5 +70,5 @@ def _do_save_session_login(backend: OAuthAuth, user, social_user) -> None:
     """ Login user with saving result token to session link in order to provide
     backchannel logut """
     _do_login(backend, user, social_user)
-    if hasattr(backend, 'save_token_session'):
-        backend.save_token_session()
+    if hasattr(backend, 'save_logout_artefacts'):
+        backend.save_logout_artefacts()
