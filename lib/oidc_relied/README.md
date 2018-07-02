@@ -44,9 +44,11 @@ MIDDLEWARE = [
 
 2.3 Импортировать настройки:
 
-```
+```patch
+...
 + # OPENID Relied conf
 + from lib.oidc_relied.settings import *
+...
 ```
 
 2.4 Подключить `PIKOpenIdConnectAuth` в `AUTHENTICATION_BACKENDS`
@@ -61,7 +63,7 @@ AUTHENTICATION_BACKENDS = [
 
 2.5 Добавить `SocialAuthentication` `REST_FRAMEWORK.DEFAULT_AUTHENTICATION_CLASSES`:
 
-```
+```patch
 REST_FRAMEWORK = {
     ...
     DEFAULT_AUTHENTICATION_CLASSES: {
@@ -75,13 +77,13 @@ REST_FRAMEWORK = {
 3 Указать OIDC_PIK_ENDPOINT, OIDC_PIK_CLIENT_ID, OIDC_PIK_CLIENT_SECRET в
 настройках или ENV переменных.
 
-``` python
-OIDC_PIK_ENDPOINT = http://auth.pik-software.ru/openid
-OIDC_PIK_CLIENT_ID = 42
-OIDC_PIK_CLIENT_SECRET = SOMESECRET
+```python
+OIDC_PIK_ENDPOINT = 'http://auth.pik-software.ru/openid'
+OIDC_PIK_CLIENT_ID = '42'
+OIDC_PIK_CLIENT_SECRET = 'SOMESECRET'
 ```
 
-``` bash
+```bash
 dokku config:set django-service-boilerplate \
 OIDC_PIK_ENDPOINT = http://auth.pik-software.ru/openid \
 OIDC_PIK_CLIENT_ID = 42 \
