@@ -54,3 +54,9 @@ if ssh root@${HOST} -C docker ps | grep -q dd-agent; then
     # link to dd-agent
     ssh dokku@${HOST} -C docker-options:add $SERVICE_NAME build,deploy,run "--link dd-agent:dd-agent"
 fi
+
+# add docker syslog driver to use with gc logs
+ssh dokku@${HOST} -C docker-options:add $SERVICE_NAME deploy,run '--log-driver syslog'
+ssh dokku@${HOST} -C docker-options:add $SERVICE_NAME deploy,run '--log-opt tag="{{.Name}}/{{.ID}}"'
+ssh dokku@${HOST} -C docker-options:add $SERVICE_NAME deploy,run '--log-opt labels="{{.ImageName}}"'
+ssh dokku@${HOST} -C docker-options:add $SERVICE_NAME deploy,run '--log-opt env=SERVICE_NAME,DYNO,RELEASE_DATE'
