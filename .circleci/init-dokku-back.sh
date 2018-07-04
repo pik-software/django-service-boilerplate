@@ -59,4 +59,4 @@ fi
 ssh dokku@${HOST} -C docker-options:add $SERVICE_NAME deploy,run '--log-driver syslog'
 ssh dokku@${HOST} -C docker-options:add $SERVICE_NAME deploy,run '--log-opt tag="{{.Name}}/{{.ID}}"'
 ssh dokku@${HOST} -C docker-options:add $SERVICE_NAME deploy,run '--log-opt labels="{{.ImageName}}"'
-ssh dokku@${HOST} -C docker-options:add $SERVICE_NAME deploy,run '--log-opt env=SERVICE_NAME,DYNO,RELEASE_DATE'
+ssh dokku@${HOST} -C docker-options:add $SERVICE_NAME deploy,run '--log-opt env=ENVIRONMENT,SERVICE_NAME,DYNO,RELEASE_DATE'
