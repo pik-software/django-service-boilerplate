@@ -9,7 +9,7 @@ from simple_history.manager import HistoryManager
 from ..models import Subscription
 from ..utils import _pack_history_instance, _get_event_names
 from .serializer import _check_serialize_problem, \
-    SerializeHistoricalInstanceError, serialize
+    ReplicatorSerializeError, serialize
 from .utils import _has_field
 
 LOGGER = logging.getLogger(__name__)
@@ -85,7 +85,7 @@ def check_replication(user, settings=None):
             last_obj = model.objects.last()
             if last_obj:
                 serialize(user, settings, last_obj)
-        except SerializeHistoricalInstanceError as exc:
+        except ReplicatorSerializeError as exc:
             result[_type] = f'ERROR: {exc}'
     return result
 

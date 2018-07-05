@@ -9,7 +9,7 @@ from core.api.viewsets import StandardizedReadOnlyModelViewSet
 from eventsourcing.replicator.registry import _get_replication_model, \
     check_replication
 from eventsourcing.replicator.serializer import _check_serialize_problem, \
-    SerializeHistoricalInstanceError
+    ReplicatorSerializeError
 from ...consts import WEBHOOK_SUBSCRIPTION, ACTIONS
 from ...models import Subscription, subscribe
 
@@ -115,7 +115,7 @@ class _SubscriptionSerializer(StandardizedModelSerializer):
         _type = event.split('.', 1)[0]
         try:
             _check_serialize_problem(user, settings, _type)
-        except SerializeHistoricalInstanceError:
+        except ReplicatorSerializeError:
             raise serializers.ValidationError(
                 f'serialize "{event}" event problem', code='serialize'
             )

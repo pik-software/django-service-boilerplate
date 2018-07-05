@@ -12,8 +12,10 @@ from ..utils import _get_splitted_event_name
 LOGGER = logging.getLogger(__name__)
 
 
-class SerializeHistoricalInstanceError(Exception):
-    pass
+class ReplicatorSerializeError(Exception):
+    def __init__(self, message: str, ctx: Optional[dict] = None) -> None:
+        self.ctx = ctx or {}
+        super().__init__(message)
 
 
 def serialize(user, settings: dict, historical_instance) -> str:
@@ -24,7 +26,7 @@ def serialize(user, settings: dict, historical_instance) -> str:
     status, content = _process_fake_request(
         user, 'get', history_url, data={'history_id': history_id})
     if status != 200:
-        raise SerializeHistoricalInstanceError(
+        raise ReplicatorSerializeError(
             f'serialize api status = {status}')
     return content
 
@@ -36,10 +38,10 @@ def _check_serialize_problem(user, settings: dict, _type):
     status, content = _process_fake_request(
         user, 'get', history_url)
     if status != 200:
-        raise SerializeHistoricalInstanceError(
+        raise ReplicatorSerializeError(
             f'serialize api status = {status}')
     if not content:
-        raise SerializeHistoricalInstanceError('serialize api no content')
+        raise ReplicatorSerializeError('serialize api no content')
 
 
 def _process_fake_request(

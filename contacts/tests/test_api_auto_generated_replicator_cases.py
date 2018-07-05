@@ -345,7 +345,7 @@ def test_replicate_history_call_process_webhook(
     subscribe = _create_subscription(model, options)
     process_webhook = mocker.patch(
         'eventsourcing.replicator.tasks._process_webhook_subscription')
-    mocker.patch('eventsourcing.replicator.tasks._run_request_to_webhook')
+    mocker.patch('eventsourcing.replicator.tasks.deliver')
 
     # create event
     obj = factory.create()
@@ -393,16 +393,15 @@ def test_process_webhook_ok(api_model, mocker, celery_worker):
     step1_serialize = mocker.patch(
         'eventsourcing.replicator.tasks.serialize')
     step1_serialize.return_value = result
-    step2_run_webhook_request = mocker.patch(
-        'eventsourcing.replicator.tasks._run_request_to_webhook')
-    step2_run_webhook_request.return_value = 200, ''
+    step2_deliver = mocker.patch(
+        'eventsourcing.replicator.tasks.deliver')
 
     r = _process_webhook_subscription.delay(subscription.pk, packed_history)
 
     assert r.get(timeout=10) == 'ok'
     step1_serialize.assert_called_once_with(
         subscription.user, subscription.settings, hist1)
-    step2_run_webhook_request.assert_called_once_with(
+    step2_deliver.assert_called_once_with(
         subscription.user, subscription.settings, result)
 
 
