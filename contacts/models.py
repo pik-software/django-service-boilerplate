@@ -5,6 +5,7 @@ from pik.core.models import BaseHistorical, BasePHistorical, Owned
 
 from eventsourcing.replicator import replicating
 
+
 @replicating('contact')
 class Contact(BaseHistorical):
     UID_PREFIX = 'CON'
