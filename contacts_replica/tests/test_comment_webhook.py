@@ -52,7 +52,7 @@ def _get_webhook_data(user=None):
 def test_receive_webhook_without_user(api_client: APIClient):
     data = _get_webhook_data()
     ContactReplicaFactory.create(uid=CONTACT_UID)
-    r = api_client.post(f'/api/v1/webhook/', data=data)
+    r = api_client.post(f'/api/v1/callback/', data=data)
     print(r.json())
     assert r.status_code == status.HTTP_409_CONFLICT
     assert r.json() == {
@@ -63,7 +63,7 @@ def test_receive_webhook_without_user(api_client: APIClient):
 
 def test_receive_webhook_without_contact(api_client: APIClient):
     data = _get_webhook_data(api_client.user)
-    r = api_client.post(f'/api/v1/webhook/', data=data)
+    r = api_client.post(f'/api/v1/callback/', data=data)
     print(r.json())
     assert r.status_code == status.HTTP_409_CONFLICT
     assert r.json() == {
@@ -75,7 +75,7 @@ def test_receive_webhook_without_contact(api_client: APIClient):
 def test_receive_webhook(api_client: APIClient):
     pyload = _get_webhook_data(api_client.user)
     ContactReplicaFactory.create(uid=CONTACT_UID)
-    r = api_client.post(f'/api/v1/webhook/', data=pyload)
+    r = api_client.post(f'/api/v1/callback/', data=pyload)
     print(r.json())
     assert r.status_code == status.HTTP_200_OK
     assert r.json() == {'status': 'ok'}
@@ -84,11 +84,11 @@ def test_receive_webhook(api_client: APIClient):
 def test_receive_webhook_more_then_one_time(api_client: APIClient):
     data = _get_webhook_data(api_client.user)
     ContactReplicaFactory.create(uid=CONTACT_UID)
-    r = api_client.post(f'/api/v1/webhook/', data=data)
+    r = api_client.post(f'/api/v1/callback/', data=data)
     assert r.status_code == 200
-    r = api_client.post(f'/api/v1/webhook/', data=data)
+    r = api_client.post(f'/api/v1/callback/', data=data)
     assert r.status_code == 200
-    r = api_client.post(f'/api/v1/webhook/', data=data)
+    r = api_client.post(f'/api/v1/callback/', data=data)
     assert r.status_code == 200
 
     last = CommentReplica.objects.last()

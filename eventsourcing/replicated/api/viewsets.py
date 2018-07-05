@@ -11,7 +11,7 @@ from ..processor import _process_historical_record, \
 
 class _WebhookProcessingError(APIException):
     status_code = status.HTTP_409_CONFLICT
-    default_detail = _('ReplicatedWebhookViewSet processing error')
+    default_detail = _('WebhookCallbackViewSet processing error')
     default_code = "webhook_processing_error"
 
 
@@ -35,7 +35,7 @@ class _HistorySerializer(serializers.Serializer):
     results = serializers.ListField(child=_HistoryListItem())
 
 
-class ReplicatedWebhookViewSet(StandardizedGenericViewSet):
+class WebhookCallbackViewSet(StandardizedGenericViewSet):
     serializer_class = _HistorySerializer
 
     def list(self, request, *args, **kwargs):

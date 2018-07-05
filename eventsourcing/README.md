@@ -87,12 +87,12 @@ Each historical event record has:
 ```python
 from rest_framework.routers import DefaultRouter
 
-from eventsourcing.replicated import ReplicatedWebhookViewSet
+from eventsourcing.replicated import WebhookCallbackViewSet
 from eventsourcing.replicator import SubscriptionViewSet
 
 webhook = DefaultRouter()
 webhook.register(
-    'webhook', ReplicatedWebhookViewSet, base_name='webhook')
+    'callback', WebhookCallbackViewSet, base_name='callback')
 webhook.register(
     'subscriptions', SubscriptionViewSet, base_name='subscription')
 

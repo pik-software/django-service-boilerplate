@@ -34,7 +34,7 @@ def api_client():
 
 
 def test_receive_webhook_data(api_client: APIClient):
-    r = api_client.post(f'/api/v1/webhook/', data=WEBHOOK_DATA)
+    r = api_client.post(f'/api/v1/callback/', data=WEBHOOK_DATA)
     assert r.status_code == 200
     assert r.json() == {"status": "ok"}
 
@@ -43,11 +43,11 @@ def test_receive_webhook_data(api_client: APIClient):
 
 
 def test_receive_webhook_more_then_one_time(api_client: APIClient):
-    r = api_client.post(f'/api/v1/webhook/', data=WEBHOOK_DATA)
+    r = api_client.post(f'/api/v1/callback/', data=WEBHOOK_DATA)
     assert r.status_code == 200
-    r = api_client.post(f'/api/v1/webhook/', data=WEBHOOK_DATA)
+    r = api_client.post(f'/api/v1/callback/', data=WEBHOOK_DATA)
     assert r.status_code == 200
-    r = api_client.post(f'/api/v1/webhook/', data=WEBHOOK_DATA)
+    r = api_client.post(f'/api/v1/callback/', data=WEBHOOK_DATA)
     assert r.status_code == 200
 
     last = ContactReplica.objects.last()

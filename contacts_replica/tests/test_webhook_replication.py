@@ -59,7 +59,7 @@ def _create_subscribe(user: AbstractUser, password, model, options, base_url):
         'name': get_random_string(),
         'settings': {
             'api_version': options['version'],
-            'webhook_url': f'{base_url}/api/v1/webhook/',
+            'webhook_url': f'{base_url}/api/v1/callback/',
             'webhook_auth': [user.get_username(), password],
         },
         'user': user,

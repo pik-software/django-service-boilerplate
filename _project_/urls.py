@@ -11,7 +11,7 @@ from core.api.router import StandardizedRouter
 from core.api.schema import SchemaView
 from core.views import task_result_api_view
 from contacts.api import ContactViewSet, CommentViewSet
-from eventsourcing.replicated import ReplicatedWebhookViewSet
+from eventsourcing.replicated import WebhookCallbackViewSet
 from eventsourcing.replicator import SubscriptionViewSet
 
 router = StandardizedRouter()  # noqa: pylint=invalid-name
@@ -22,7 +22,7 @@ router.register(
 
 webhook = DefaultRouter()  # noqa: pylint=invalid-name
 webhook.register(
-    'webhook', ReplicatedWebhookViewSet, base_name='webhook')
+    'callback', WebhookCallbackViewSet, base_name='callback')
 webhook.register(
     'subscriptions', SubscriptionViewSet, base_name='subscription')
 
