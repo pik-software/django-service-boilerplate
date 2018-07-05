@@ -11,17 +11,12 @@ to replicate this model to others services.
 
 ```python
 
-    from simple_history.models import HistoricalRecords
-
-    from core.models import Versioned, Uided
+    from pik.core.models import BasePHistorical
     from eventsourcing.replicator import replicating
 
     @replicating('contract')
-    class Contract(Uided, Versioned):
+    class Contract(BasePHistorical):
         number = models.CharField(max_length=255)
-        ...
-
-        history = HistoricalRecords()
         ...
 
 ```
@@ -34,11 +29,11 @@ to have `replicated` model in other service.
 
 ```python
 
-    from core.models import Versioned, Uided
+    from pik.core.models import BasePHistorical
     from eventsourcing.replicated import replicated
 
     @replicated('contract')
-    class ContractReplica(Uided, Versioned):
+    class ContractReplica(BasePHistorical):
         number = models.CharField(max_length=255)
         ...
 

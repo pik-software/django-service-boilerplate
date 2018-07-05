@@ -3,21 +3,18 @@ import logging
 from django.contrib.postgres.fields import JSONField, ArrayField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from simple_history.models import HistoricalRecords
+from pik.core.models import BasePHistorical, Owned
 
-from core.models import Dated, PUided, Versioned, Owned
 from .consts import SUBSCRIPTION_TYPES
 
 LOGGER = logging.getLogger(__name__)
 
 
-class Subscription(PUided, Dated, Versioned, Owned):
+class Subscription(BasePHistorical, Owned):
     name = models.CharField(max_length=255)
     type = models.IntegerField(choices=SUBSCRIPTION_TYPES)
     settings = JSONField()
     events = ArrayField(models.CharField(max_length=200))
-
-    history = HistoricalRecords()
 
     class Meta:
         unique_together = (('name', 'type'), )

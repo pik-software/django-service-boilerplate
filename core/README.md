@@ -89,16 +89,13 @@ REST_FRAMEWORK = {
 ```
 from django.db import models
 from django.utils.translation import ugettext as _
-from simple_history.models import HistoricalRecords
 
-from core.models import Dated, Uided, Versioned
+from pik.core.models import BaseHistorical
 
-class <Organization>(Uided, Dated, Versioned):
+class <Organization>(BaseHistorical):
     UID_PREFIX = <'ORG'>
     name = models.CharField(_(<'Наименование'>), max_length=255)
     ...
-
-    history = HistoricalRecords()
 
     def __str__(self):
         return f'{self.name}'
