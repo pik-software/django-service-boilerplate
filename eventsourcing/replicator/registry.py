@@ -36,16 +36,17 @@ def replicating(_type: str):
         if content_type != _type:
             raise ValueError(f'Use @replicating("{content_type}", ...)')
 
+        # Prevent double replication
+        if model in _REPLICATING_MODEL_SET:
+            raise ValueError('Model is already replicating')
+        _REPLICATING_MODEL_SET.add(model)
+
         if not hasattr(model, 'history'):
             raise ValueError('Model should have Model.history object')
         if not isinstance(model.history, HistoryManager):
             raise ValueError('Model.history is not a HistoryManager object')
 
         historical = model.history.model
-        if historical in _REPLICATING_MODEL_SET:
-            raise ValueError('Model is already replicating')
-
-        _REPLICATING_MODEL_SET.add(historical)
         _REPLICATING_MODEL_STORAGE[_type] = historical
         post_save.connect(_post_save_historical_model, sender=historical)
         return model
