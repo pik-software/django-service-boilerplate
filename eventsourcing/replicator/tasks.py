@@ -55,7 +55,7 @@ def _process_webhook_subscription(
         LOGGER.error('retry webhook %r: serialize error %r; retry=%s',
                      subscription.name, exc, retry)
         raise self.retry()
-    except Exception as exc:
+    except Exception as exc:  # noqa: pylint=broad-except
         LOGGER.exception(
             'webhook %r: error: %s; retry=%s', subscription.name, exc, retry)
         client.captureException()
@@ -72,7 +72,7 @@ def _process_webhook_subscription(
             'retry webhook %r: remote response status!=200; retry=%s',
             subscription.name, retry)
         raise self.retry()
-    except Exception as exc:
+    except Exception as exc:  # noqa: pylint=broad-except
         LOGGER.exception(
             'webhook %r: error: %s; retry=%s', subscription.name, exc, retry)
         client.captureException()
