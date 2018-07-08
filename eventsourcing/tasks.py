@@ -1,2 +1,2 @@
-from eventsourcing.replicator import tasks
+from .replicator import tasks
 assert tasks

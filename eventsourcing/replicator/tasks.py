@@ -6,11 +6,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from raven.contrib.django.raven_compat.models import client
 
 from core.monitoring import alert
-from ..utils import _get_splitted_event_name, \
-    _unpack_history_instance, _get_event_names, _pack_history_instance
+from ..utils import HistoryObject
 from ..consts import WEBHOOK_SUBSCRIPTION, ACTIONS
 from ..models import Subscription
-from .registry import _get_replication_model
+from .registry import _get_replication_model, _to_hist_obj
 from .deliverer import deliver, ReplicatorDeliveryError
 from .serializer import serialize, ReplicatorSerializeError
 
@@ -24,7 +23,7 @@ def _process_webhook_subscription(
     try:
         subscription = Subscription.objects.select_related('user') \
             .get(pk=subscription_pk)
-        hist_obj = _unpack_history_instance(packed_history)
+        hist_obj = HistoryObject.unpack(*packed_history)
     except Subscription.DoesNotExist:
         LOGGER.warning(
             "try to process does not exist subscription %s", subscription_pk)
@@ -35,16 +34,17 @@ def _process_webhook_subscription(
         return 'object_does_not_exist'
 
     retry = self.request.retries
-    _type, _action, _uid = _get_splitted_event_name(hist_obj)
-    _version = hist_obj.version
+    _type, _h_type, _uid = hist_obj.get_event_parts()
+    _version = hist_obj._version
     ctx = {
         'name': subscription.name, 'user_pk': subscription.user.pk,
         'user_username': subscription.user.get_username(),
-        '_type': _type, '_action': _action, '_uid': _uid,
+        '_type': _type, '_h_type': _h_type, '_uid': _uid,
         'retry': retry}
 
-    LOGGER.info('webhook %r %s.%s.%s (v=%s) retry=%s',
-                subscription.name, _type, _action, _uid, _version, retry)
+    LOGGER.info('webhook %r %s.%s.%s [hist_id=%s, v=%s] retry=%s',
+                subscription.name, _type, _h_type, _uid,
+                hist_obj.history_id, _version, retry)
 
     try:
         data = serialize(subscription.user, subscription.settings, hist_obj)
@@ -94,17 +94,17 @@ def _replicate_to_webhook_subscribers(
     """
     retry = self.request.retries
     try:
-        hist_obj = _unpack_history_instance(packed_history)
-        events = _get_event_names(hist_obj)
-        subscribers = Subscription.objects.filter(
-            events__overlap=events, type=WEBHOOK_SUBSCRIPTION)
+        hist_obj = HistoryObject.unpack(*packed_history)
+        subscribers = hist_obj.get_subscribers(WEBHOOK_SUBSCRIPTION)
     except Exception as exc:
         LOGGER.exception('replicate_to_webhook error: %r', exc)
         client.captureException()
         raise self.retry(exc=exc)
 
-    LOGGER.info('replicate_to_webhook %s (v=%s) retry=%s',
-                events[-1], hist_obj.version, retry)
+    _type, _h_type, _uid = hist_obj.get_event_parts()
+    LOGGER.info('webhooks %s.%s.%s [hist_id=%s, v=%s] retry=%s',
+                _type, _h_type, _uid, hist_obj.history_id, hist_obj._version,
+                retry)
 
     for subscriber in subscribers:
         try:
@@ -162,7 +162,7 @@ def _re_replicate_webhook_subscription(
             q_set = q_set.filter(uid=splitted[2])
 
         for instance in q_set:
-            packed_history = _pack_history_instance(instance)
+            packed_history = _to_hist_obj(instance).pack()
             _process_webhook_subscription.delay(
                 subscription.pk, packed_history)
     return 'ok'

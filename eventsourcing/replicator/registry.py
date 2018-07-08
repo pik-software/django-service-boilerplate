@@ -1,13 +1,11 @@
 import logging
 
-from django.contrib.contenttypes.models import ContentType
 from django.db.models import Model
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, post_delete
 from django.conf import settings as dj_settings
 from simple_history.manager import HistoryManager
 
-from ..models import Subscription
-from ..utils import _pack_history_instance, _get_event_names
+from ..utils import HistoryObject
 from .serializer import _check_serialize_problem, \
     ReplicatorSerializeError, serialize
 from .utils import _has_field
@@ -15,15 +13,16 @@ from .utils import _has_field
 LOGGER = logging.getLogger(__name__)
 
 _LATEST_API_VERSION_SETTING = 'REST_FRAMEWORK_LATEST_API_VERSION'
-_REPLICATING_MODEL_STORAGE = {}
+_HISTORY_TYPE_TO_MODEL = {}
+_MODEL_TO_HISTORY_TYPE = {}
 _REPLICATING_MODEL_SET = set()
 
 
 def replicating(_type: str):
-    if _type in _REPLICATING_MODEL_STORAGE:
+    if _type in _HISTORY_TYPE_TO_MODEL:
         raise ValueError('Model with same name already exists')
 
-    _REPLICATING_MODEL_STORAGE[_type] = None
+    _HISTORY_TYPE_TO_MODEL[_type] = None
 
     def wrapper(model, _type=_type):
         if not issubclass(model, Model):
@@ -41,24 +40,33 @@ def replicating(_type: str):
             raise ValueError('Model is already replicating')
         _REPLICATING_MODEL_SET.add(model)
 
-        if not hasattr(model, 'history'):
-            raise ValueError('Model should have Model.history object')
-        if not isinstance(model.history, HistoryManager):
-            raise ValueError('Model.history is not a HistoryManager object')
+        is_historical = (
+            hasattr(model, 'history') and
+            isinstance(model.history, HistoryManager))
 
-        historical = model.history.model
-        _REPLICATING_MODEL_STORAGE[_type] = historical
-        post_save.connect(_post_save_historical_model, sender=historical)
+        if is_historical:
+            hook_model = model.history.model
+            post_save_hook = _post_save_historical_model
+            post_delete_hook = _post_delete_historical_model
+        else:
+            hook_model = model
+            post_save_hook = _post_save_model
+            post_delete_hook = _post_delete_model
+
+        _HISTORY_TYPE_TO_MODEL[_type] = hook_model
+        _MODEL_TO_HISTORY_TYPE[hook_model] = _type
+        post_save.connect(post_save_hook, sender=hook_model)
+        post_delete.connect(post_delete_hook, sender=hook_model)
         return model
     return wrapper
 
 
-def replicate(instance) -> None:
+def replicate(hist_obj: HistoryObject) -> None:
     from . import _replicate_to_webhook_subscribers  # noqa
 
-    packed_history = _pack_history_instance(instance)
+    packed_hist_obj = hist_obj.pack()
     _replicate_to_webhook_subscribers.apply_async(
-        args=(packed_history, ), countdown=0.5)
+        args=(packed_hist_obj, ), countdown=0.5)
 
 
 def re_replicate(subscription, events):
@@ -69,8 +77,7 @@ def re_replicate(subscription, events):
 
 
 def is_replicating(model) -> bool:
-    content_type = ContentType.objects.get_for_model(model)
-    return content_type.model in _REPLICATING_MODEL_STORAGE
+    return model in _REPLICATING_MODEL_SET
 
 
 def check_replication(user, settings=None):
@@ -79,32 +86,71 @@ def check_replication(user, settings=None):
         settings = {'api_version': version}
 
     result = {}
-    for _type, model in _REPLICATING_MODEL_STORAGE.items():
+    for _type, model in _HISTORY_TYPE_TO_MODEL.items():
         try:
             result[_type] = 'OK'
             _check_serialize_problem(user, settings, _type)
             last_obj = model.objects.last()
             if last_obj:
-                serialize(user, settings, last_obj)
+                serialize(user, settings, _to_hist_obj(last_obj))
         except ReplicatorSerializeError as exc:
             result[_type] = f'ERROR: {exc}'
     return result
 
 
+def _to_hist_obj(instance, *, history_id=None, history_type=None):
+    return HistoryObject(
+        instance, history_id, history_type,
+        *_get_event_parts(instance))
+
+
+def _get_event_parts(instance):
+    _uid = str(instance.uid)
+    _type = _MODEL_TO_HISTORY_TYPE[instance._meta.concrete_model]  # noqa
+    _version = instance.version
+    return _uid, _type, _version
+
+
 def _get_replication_model(_type):
-    return _REPLICATING_MODEL_STORAGE.get(_type)
+    return _HISTORY_TYPE_TO_MODEL.get(_type)
 
 
 def _get_all_replication_models():
-    return list(_REPLICATING_MODEL_STORAGE.items())
+    return list(_HISTORY_TYPE_TO_MODEL.items())
+
+
+# SIGNAL LISTENERS
 
 
 def _post_save_historical_model(sender, instance, created, **kwargs):
     if not created:
         raise RuntimeError('Historical changes detected! WTF?')
 
-    events = _get_event_names(instance)
-    subscribers = Subscription.objects.filter(events__overlap=events)
-    if subscribers.exists():
-        LOGGER.info('replicate %s [hist=%s]', events[-1], instance.history_id)
-        replicate(instance)
+    _uid, _type, _version = _get_event_parts(instance)
+    hist_obj = HistoryObject(
+        instance, None, instance.history_type,
+        _uid, _type, _version)
+
+    hist_obj.replicate()
+
+
+def _post_delete_historical_model(sender, instance, **kwargs):
+    raise RuntimeError('Historical delete detected! WTF?')
+
+
+def _post_save_model(sender, instance, created, **kwargs):
+    _uid, _type, _version = _get_event_parts(instance)
+    hist_obj = HistoryObject(
+        instance, None, '+' if created else '~',
+        _uid, _type, _version)
+
+    hist_obj.replicate()
+
+
+def _post_delete_model(sender, instance, **kwargs):
+    _uid, _type, _version = _get_event_parts(instance)
+    hist_obj = HistoryObject(
+        instance, None, '-',
+        _uid, _type, _version)
+
+    hist_obj.replicate()
