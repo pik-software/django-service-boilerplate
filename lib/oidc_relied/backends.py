@@ -3,7 +3,6 @@ from calendar import timegm
 from importlib import import_module
 from typing import Any, Tuple
 
-import six
 from jwkest.jws import JWS
 from jwkest import JWKESTException
 
@@ -85,14 +84,16 @@ class PIKOpenIdConnectAuth(OpenIdConnectAuth):  # noqa: abstract-method
         return id_token
 
     def validate_logout_claims(self, id_token: dict) -> None:
-        """ Validated logout_token claims """
+        """ Validated logout_token claims
+            http://openid.net/specs/openid-connect-backchannel-1_0.html#LogoutToken
+         """
 
         if id_token['iss'] != self.id_token_issuer():
             raise AuthTokenError(self, 'Invalid issuer')
 
         client_id, _ = self.get_key_and_secret()
 
-        if isinstance(id_token['aud'], six.string_types):
+        if isinstance(id_token['aud'], str):
             id_token['aud'] = [id_token['aud']]
 
         if client_id not in id_token['aud']:
