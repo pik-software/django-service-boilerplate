@@ -1,8 +1,11 @@
 # Реализация ПИК-Комфорт OpenID Connect
 
 Данная библиотека реализует механизм авторизации пользователей сервисов
-ПИК-Комфорт по протоколу OpenID Connect, включая реализацию протокола
-Back-channel logout. В данный момент поддерживаются два механизма:
+ПИК-Комфорт по протоколу [OpenID Connect](http://openid.net/developers/specs/), 
+включая реализацию протокола 
+[Back-channel logout](http://openid.net/specs/openid-connect-backchannel-1_0.html). 
+В данный момент поддерживаются 
+[два механизма](http://openid.net/specs/oauth-v2-multiple-response-types-1_0.html):
 
 - Code (Authorization Code Flow) для авторизации классических приложений,
 - id_token token (Implicit Flow) для авторизации SPA.
