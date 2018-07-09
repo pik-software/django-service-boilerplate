@@ -13,6 +13,8 @@ from celery.contrib.testing import worker, tasks  # noqa: pylint=unused-import
 from _project_ import celery_app as django_celery_app
 
 
+# Transaction rollback emulation
+# http://docs.djangoproject.com/en/2.0/topics/testing/overview/#rollback-emulation
 TransactionTestCase.serialized_rollback = True
 
 
