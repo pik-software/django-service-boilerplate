@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 from pik.core.models import BasePHistorical
 
 
@@ -9,5 +10,5 @@ class Cors(BasePHistorical):
         return self.cors
 
     class Meta:
-        verbose_name = "Разрешение на кросс-доменные запросы"
-        verbose_name_plural = "Разрешения на кросс-доменные запросы"
+        verbose_name = _("Разрешение на кросс-доменные запросы")
+        verbose_name_plural = _("Разрешения на кросс-доменные запросы")
