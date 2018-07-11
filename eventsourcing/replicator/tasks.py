@@ -9,9 +9,9 @@ from core.monitoring import alert
 from ..utils import HistoryObject
 from ..consts import WEBHOOK_SUBSCRIPTION, ACTIONS
 from ..models import Subscription
-from .registry import _get_replication_model, _to_hist_obj
-from .deliverer import deliver, ReplicatorDeliveryError
-from .serializer import serialize, ReplicatorSerializeError
+from .registry import get_replicating_model, _to_hist_obj
+from .deliverer import ReplicatorDeliveryError
+from .serializer import ReplicatorSerializeError
 
 LOGGER = logging.getLogger(__name__)
 
@@ -47,7 +47,7 @@ def _process_webhook_subscription(
                 hist_obj.history_id, _version, retry)
 
     try:
-        data = serialize(subscription.user, subscription.settings, hist_obj)
+        data = hist_obj.serialize(subscription)
     except ReplicatorSerializeError as exc:
         ctx.update(exc.ctx)
         ctx.update({'error': exc})
@@ -62,7 +62,7 @@ def _process_webhook_subscription(
         return 'unknown_serialize_error'
 
     try:
-        deliver(subscription.user, subscription.settings, data)
+        hist_obj.deliver(subscription, data)
         return 'ok'
     except ReplicatorDeliveryError as exc:
         ctx.update(exc.ctx)
@@ -118,7 +118,7 @@ def _replicate_to_webhook_subscribers(
 def _check_events(events):
     for event in events:
         splitted = event.split('.')
-        model = _get_replication_model(splitted[0])
+        model = get_replicating_model(splitted[0])
         if not model:
             raise ValueError('invalid_event_type')
         if len(splitted) >= 2 and splitted[1] not in ACTIONS:
@@ -155,7 +155,7 @@ def _re_replicate_webhook_subscription(
 
     for event in events:
         splitted = event.split('.')
-        q_set = _get_replication_model(splitted[0]).objects.order_by('pk')
+        q_set = get_replicating_model(splitted[0]).objects.order_by('pk')
         if len(splitted) >= 2:
             q_set = q_set.filter(history_type=splitted[1])
         if len(splitted) >= 3:

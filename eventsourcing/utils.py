@@ -68,25 +68,39 @@ class HistoryObject:
         return HistoryObject(
             instance, history_id, history_type, _uid, _type, _version)
 
-    def get_subscribers(self, subscription_type=None):
+    def get_subscribers(self, subscription_type: Optional[int] = None):
         events = self.get_event_names()
         subscribers = Subscription.objects.filter(events__overlap=events)
         if subscription_type:
             subscribers = subscribers.filter(type=subscription_type)
         return subscribers
 
-    def replicate(self):
-        from .replicator import replicate
+    def replicate(self, subscription=None):
+        from .replicator.replicator import _replicate
 
-        events = self.get_event_names()
-        subscribers = self.get_subscribers()
-        if subscribers.exists():
-            LOGGER.info('replicate %s [hist_id=%s, v=%s]',
-                        events[-1], self.history_id, self._version)
-            replicate(self)
+        if subscription:
+            assert self.get_subscribers().filter(pk=subscription.pk).exists()
+            _replicate(self, subscription)
+        else:
+            events = self.get_event_names()
+            subscribers = self.get_subscribers()
+            if subscribers.exists():
+                LOGGER.info('replicate %s [hist_id=%s, v=%s]',
+                            events[-1], self.history_id, self._version)
+                _replicate(self)
 
-    @staticmethod
-    def re_replicate(subscription, events):
-        from .replicator import re_replicate
+    @classmethod
+    def re_replicate(cls, subscription: Subscription, events: List[str]):
+        from .replicator.replicator import _re_replicate
 
-        re_replicate(subscription, events)
+        _re_replicate(subscription, events)
+
+    def serialize(self, subscription):
+        from .replicator.serializer import _serialize
+
+        return _serialize(subscription.user, subscription.settings, self)
+
+    def deliver(self, subscription, serialized_data):
+        from .replicator.deliverer import _deliver
+
+        _deliver(subscription.user, subscription.settings, serialized_data)

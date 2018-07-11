@@ -17,7 +17,7 @@ class ReplicatorSerializeError(Exception):
         super().__init__(message)
 
 
-def serialize(user, settings: dict, hist_obj: HistoryObject) -> str:
+def _serialize(user, settings: dict, hist_obj: HistoryObject) -> str:
     _type = hist_obj._type
     api_version = settings['api_version']
     history_url = f'/api/v{api_version}/{_type}-list/history/'
@@ -30,7 +30,7 @@ def serialize(user, settings: dict, hist_obj: HistoryObject) -> str:
 
 
 def _check_serialize_problem(user, settings: dict, _type):
-    # TODO: really we should check the serialize API schema here!
+    # TODO(pahaz): really we should check the serialize API schema here!
     api_version = settings['api_version']
     history_url = f'/api/v{api_version}/{_type}-list/history/'
     status, content = _process_fake_request(

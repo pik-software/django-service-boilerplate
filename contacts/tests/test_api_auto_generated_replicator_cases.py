@@ -3,7 +3,6 @@
 # pylint: disable=unused-variable
 import json
 from pprint import pprint
-from unittest.mock import call
 
 import pytest
 from celery import exceptions
@@ -15,11 +14,12 @@ from rest_framework.test import APIClient
 
 from core.tasks.fixtures import create_user
 from eventsourcing.models import Subscription
-from eventsourcing.replicator import serialize
-from eventsourcing.replicator.registry import check_replication, _to_hist_obj
+from eventsourcing.replicator.serializer import _serialize
+from eventsourcing.replicator.registry import _to_hist_obj
+from eventsourcing.replicator.replicator import _get_subscription_statuses
 from eventsourcing.replicator.serializer import _process_fake_request
-from eventsourcing.replicator.tasks import _replicate_to_webhook_subscribers, \
-    _process_webhook_subscription
+from eventsourcing.replicator.tasks import _replicate_to_webhook_subscribers
+from eventsourcing.replicator.tasks import _process_webhook_subscription
 from eventsourcing.utils import HistoryObject
 from ..models import Contact, Comment
 from ..tests.factories import ContactFactory, CommentFactory
@@ -92,15 +92,6 @@ def _create_subscription(model, options):
             'webhook_url': 'http://localhost/'},
         'user': user,
     })
-
-
-def _assert_history_object(hist_obj, type_, event_, uid_):
-    _type = hist_obj.history_object._meta.model_name  # noqa
-    _event = hist_obj.history_type
-    _uid = hist_obj.history_object.uid
-    assert _type == type_
-    assert _event == event_
-    assert _uid == uid_
 
 
 def _assert_api_res(res, code, result):
@@ -240,55 +231,23 @@ def test_api_subscription_status_ok(api_client, api_model):
     assert res.json()[_type] == 'OK'
 
 
-def test_pack_unpack_history(api_model):
-    model, factory, options = api_model
-    obj = _create_few_models(factory)
-    hist = obj.history.last()
-    app_label, model_name = hist._meta.app_label, hist._meta.model_name  # noqa
-
-    packed_history = _pack_history_instance(hist)
-    assert packed_history[0:3] == (app_label, model_name, hist.pk)
-
-    hist1_unpacked = _unpack_history_instance(packed_history)
-    assert hist == hist1_unpacked
-
-
-def test_replicate_events(api_model, mocker):
+def test_replicate_call_on_create_update_delete(api_model, mocker):
     model, factory, options = api_model
     _create_subscription(model, options)
-    _type = ContentType.objects.get_for_model(model).model
+    model_type = ContentType.objects.get_for_model(model).model
 
-    obj = factory.create()
-    history = obj.history.all()
-    _uid = obj.uid
+    call_list = []
 
-    hist_obj = history.first()
+    def mock_replicate(hist_obj, subscription=None):
+        if model_type == hist_obj._type:
+            call_list.append([hist_obj.history_type, hist_obj._uid])
 
-    # create event
-    _assert_history_object(hist_obj, _type, '+', _uid)
-
-    # change event
-    obj.version += 10
-    obj.save()
-    hist_obj = history.first()
-
-    _assert_history_object(hist_obj, _type, '~', _uid)
-
-    # delete event
-    obj.delete()
-    hist_obj = history.first()
-
-    _assert_history_object(hist_obj, _type, '-', _uid)
-
-
-def test_replicate(api_model, mocker):
-    model, factory, options = api_model
-    _create_subscription(model, options)
-
-    repl = mocker.patch.object(HistoryObject, 'replicate')
+    repl = mocker.patch.object(HistoryObject, 'replicate', autospec=True)
+    repl.side_effect = mock_replicate
 
     # create
     obj = factory.create()
+    obj_pk = str(obj.uid)
 
     # change event
     obj.version += 10
@@ -297,10 +256,10 @@ def test_replicate(api_model, mocker):
     # delete event
     obj.delete()
 
-    assert repl.call_args_list == [call(), call(), call()]
+    assert call_list == [['+', obj_pk], ['~', obj_pk], ['-', obj_pk]]
 
 
-def test_do_async_fake_request(api_model):
+def test_serializer_process_fake_request(api_model):
     model, factory, options = api_model
     _type = ContentType.objects.get_for_model(model).model
     obj = _create_few_models(factory)
@@ -324,13 +283,13 @@ def test_do_async_fake_request(api_model):
     assert content_json['results'][0]['_version'] == obj.version
 
 
-def test_serialize(api_model):
+def test_serializer_serialize(api_model):
     model, factory, options = api_model
     _type = ContentType.objects.get_for_model(model).model
     obj = _create_few_models(factory)
     hist_obj = _to_hist_obj(obj.history.first())
     subscribe = _create_subscription(model, options)
-    content = serialize(subscribe.user, subscribe.settings, hist_obj)
+    content = _serialize(subscribe.user, subscribe.settings, hist_obj)
 
     assert isinstance(content, str)
     content_json = json.loads(content)
@@ -342,13 +301,13 @@ def test_serialize(api_model):
     assert content_json['results'][0]['_version'] == obj.version
 
 
-def test_replicate_history_call_process_webhook(
+def test_task_replicate_to_webhook_subscribers(
         api_model, mocker, celery_worker):
     model, factory, options = api_model
     subscribe = _create_subscription(model, options)
     process_webhook = mocker.patch(
         'eventsourcing.replicator.tasks._process_webhook_subscription')
-    mocker.patch('eventsourcing.replicator.tasks.deliver')
+    mocker.patch.object(HistoryObject, 'deliver', autospec=True)
 
     # create event
     obj = factory.create()
@@ -390,22 +349,20 @@ def test_process_webhook_ok(api_model, mocker, celery_worker):
     instance = history.first()
     subscription = _create_subscription(model, options)
     hist_obj = _to_hist_obj(instance)
-    packed_history = _pack_history_instance(instance)
+    packed_history = hist_obj.pack()
     result = get_random_string()
 
-    step1_serialize = mocker.patch(
-        'eventsourcing.replicator.tasks.serialize')
+    step1_serialize = mocker.patch.object(
+        HistoryObject, 'serialize', autospec=True)
     step1_serialize.return_value = result
-    step2_deliver = mocker.patch(
-        'eventsourcing.replicator.tasks.deliver')
+    step2_deliver = mocker.patch.object(
+        HistoryObject, 'deliver', autospec=True)
 
     r = _process_webhook_subscription.delay(subscription.pk, packed_history)
 
     assert r.get(timeout=10) == 'ok'
-    step1_serialize.assert_called_once_with(
-        subscription.user, subscription.settings, hist_obj)
-    step2_deliver.assert_called_once_with(
-        subscription.user, subscription.settings, result)
+    step1_serialize.assert_called_once_with(hist_obj, subscription)
+    step2_deliver.assert_called_once_with(hist_obj, subscription, result)
 
 
 def test_process_webhook_retry(api_model, celery_worker):
@@ -426,6 +383,6 @@ def test_check_model_replicating(api_model):
     model, factory, options = api_model
     _create_few_models(factory)
     subs = _create_subscription(model, options)
-    statuses = check_replication(subs.user, subs.settings)
+    statuses = _get_subscription_statuses(subs.user, subs.settings)
     _type = subs.events[0]
     assert statuses[_type] == 'OK'

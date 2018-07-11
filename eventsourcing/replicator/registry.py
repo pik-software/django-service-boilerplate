@@ -1,18 +1,15 @@
 import logging
+from typing import List, Tuple
 
 from django.db.models import Model
 from django.db.models.signals import post_save, post_delete
-from django.conf import settings as dj_settings
 from simple_history.manager import HistoryManager
 
-from ..utils import HistoryObject
-from .serializer import _check_serialize_problem, \
-    ReplicatorSerializeError, serialize
 from .utils import _has_field
+from ..utils import HistoryObject
 
 LOGGER = logging.getLogger(__name__)
 
-_LATEST_API_VERSION_SETTING = 'REST_FRAMEWORK_LATEST_API_VERSION'
 _HISTORY_TYPE_TO_MODEL = {}
 _MODEL_TO_HISTORY_TYPE = {}
 _REPLICATING_MODEL_SET = set()
@@ -61,47 +58,16 @@ def replicating(_type: str):
     return wrapper
 
 
-def replicate(hist_obj: HistoryObject) -> None:
-    from . import _replicate_to_webhook_subscribers  # noqa
-
-    packed_hist_obj = hist_obj.pack()
-    _replicate_to_webhook_subscribers.apply_async(
-        args=(packed_hist_obj, ), countdown=0.5)
-
-
-def re_replicate(subscription, events):
-    from . import _re_replicate_webhook_subscription  # noqa
-
-    _re_replicate_webhook_subscription.apply_async(
-        args=(subscription.pk, events), countdown=0.5)
-
-
-def is_replicating(model) -> bool:
+def is_replicating(model: Model) -> bool:
     return model in _REPLICATING_MODEL_SET
 
 
-def check_replication(user, settings=None):
-    if not settings:
-        version = getattr(dj_settings, _LATEST_API_VERSION_SETTING, '1')
-        settings = {'api_version': version}
-
-    result = {}
-    for _type, model in _HISTORY_TYPE_TO_MODEL.items():
-        try:
-            result[_type] = 'OK'
-            _check_serialize_problem(user, settings, _type)
-            last_obj = model.objects.last()
-            if last_obj:
-                serialize(user, settings, _to_hist_obj(last_obj))
-        except ReplicatorSerializeError as exc:
-            result[_type] = f'ERROR: {exc}'
-    return result
+def get_replicating_model(_type: str) -> Model:
+    return _HISTORY_TYPE_TO_MODEL.get(_type)
 
 
-def _to_hist_obj(instance, *, history_id=None, history_type=None):
-    return HistoryObject(
-        instance, history_id, history_type,
-        *_get_event_parts(instance))
+def get_all_replicating_models() -> List[Tuple[str, Model]]:
+    return list(_HISTORY_TYPE_TO_MODEL.items())
 
 
 def _get_event_parts(instance):
@@ -111,12 +77,10 @@ def _get_event_parts(instance):
     return _uid, _type, _version
 
 
-def _get_replication_model(_type):
-    return _HISTORY_TYPE_TO_MODEL.get(_type)
-
-
-def _get_all_replication_models():
-    return list(_HISTORY_TYPE_TO_MODEL.items())
+def _to_hist_obj(instance, *, history_id=None, history_type=None):
+    return HistoryObject(
+        instance, history_id, history_type,
+        *_get_event_parts(instance))
 
 
 # SIGNAL LISTENERS

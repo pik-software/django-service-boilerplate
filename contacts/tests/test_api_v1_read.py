@@ -6,8 +6,8 @@ from django.contrib.contenttypes.models import ContentType
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from contacts.models import Contact, Comment
 from core.tasks.fixtures import create_user
+from ..models import Contact, Comment
 from ..tests.factories import ContactFactory, CommentFactory
 
 

@@ -6,8 +6,8 @@ from core.api.filters import StandardizedSearchFilter
 from core.api.mixins import BulkCreateModelMixin
 from core.api.serializers import StandardizedModelSerializer
 from core.api.viewsets import StandardizedReadOnlyModelViewSet
-from eventsourcing.replicator.registry import _get_replication_model, \
-    check_replication
+from eventsourcing.replicator import get_replicating_model
+from eventsourcing.replicator.replicator import _get_subscription_statuses
 from eventsourcing.replicator.serializer import _check_serialize_problem, \
     ReplicatorSerializeError
 from ...consts import WEBHOOK_SUBSCRIPTION, ACTIONS
@@ -81,7 +81,7 @@ class _SubscriptionSerializer(StandardizedModelSerializer):
     def _check_event_name(self, event):
         splitted_event = event.split('.')
         _type = splitted_event[0]
-        if not _get_replication_model(_type):
+        if not get_replicating_model(_type):
             raise serializers.ValidationError(
                 'wrong event name',
                 code='wrong_event',
@@ -101,7 +101,7 @@ class _SubscriptionSerializer(StandardizedModelSerializer):
 
     def _check_event_permission(self, event):
         _type = event.split('.', 1)[0]
-        model = _get_replication_model(_type)
+        model = get_replicating_model(_type)
         opts = model._meta  # noqa: pylint=protected-access
         codename = f'{opts.app_label}.view_{opts.model_name}'
         user = self.context['request'].user
@@ -184,5 +184,5 @@ class SubscriptionViewSet(
     @action(methods=['GET'], detail=False)
     def status(self, request, version, **kwargs):
         settings = {'api_version': version}
-        statuses = check_replication(request.user, settings)
+        statuses = _get_subscription_statuses(request.user, settings)
         return Response(statuses)

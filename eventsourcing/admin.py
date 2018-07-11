@@ -1,13 +1,14 @@
 from django.contrib import admin
 
-from .replicator.registry import _get_all_replication_models, re_replicate
+from .replicator import get_all_replicating_models
+from .utils import HistoryObject
 from .models import Subscription
 
 
 def _make_send_events_action(name, model):
     def _send_history(modeladmin, request, subscriptions):
         for subscription in subscriptions:
-            re_replicate(subscription, [name])
+            HistoryObject.re_replicate(subscription, [name])
     return _send_history, f'send_{name}_events', f"Send all {name} events"
 
 
@@ -24,7 +25,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
     def get_actions(self, request):
         actions = super().get_actions(request)
-        for name, model in _get_all_replication_models():
+        for name, model in get_all_replicating_models():
             actions[f'send_{name}_events'] = _make_send_events_action(
                 name, model)
         return actions

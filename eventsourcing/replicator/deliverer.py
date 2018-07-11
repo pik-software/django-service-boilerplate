@@ -12,7 +12,7 @@ class ReplicatorDeliveryError(Exception):
         super().__init__(message)
 
 
-def deliver(user, settings, serialized_data) -> None:
+def _deliver(user, settings, serialized_data) -> None:
     url, kwargs = _prepare_webhook_request_kwargs(settings)
     data = serialized_data.encode('utf-8')
     LOGGER.info('do webhook request url="%s"; %r', url, kwargs)
