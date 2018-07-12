@@ -94,7 +94,6 @@ from simple_history.models import HistoricalRecords
 from core.models import Dated, Uided, Versioned
 
 class <Organization>(Uided, Dated, Versioned):
-    UID_PREFIX = <'ORG'>
     name = models.CharField(_(<'Наименование'>), max_length=255)
     ...
 

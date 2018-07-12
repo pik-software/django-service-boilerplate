@@ -36,7 +36,6 @@ def test_critical_model_protocol(critical_model_and_factory):
     model, _ = critical_model_and_factory
     fields = [f.name for f in model._meta.get_fields()]  # noqa: pylint=protected-access
     assert hasattr(model, 'history')
-    assert model.UID_PREFIX != 'OBJ'
     assert 'uid' in fields
     assert 'version' in fields
     assert 'created' in fields
