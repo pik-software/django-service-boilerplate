@@ -99,4 +99,13 @@ urlpatterns = [
 
 Use `/api/v1/subscriptions` to subscribe on events.
 
+# History object lifecycle #
+
+ 1. Each `@replicating(Model)` has `post_delete`, `post_save` signal listeners
+ 2. Signal listener create `hist_obj = HistoryObject(instance, ...)`
+ 3. Signal listener run `hist_obj.replicate()`
+ 4. `HistoryObject.replicate()` create async Celery task
+ 5. Async task run `serialized_data = hist_obj.serialize(subscription)`
+ 6. Async task run `hist_obj.delivery(subscription, serialized_data)`
+
 [1]: https://martinfowler.com/articles/201701-event-driven.html
