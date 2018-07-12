@@ -296,7 +296,7 @@ def test_serializer_serialize(api_model):
     assert content_json['count'] == 1
     assert content_json['results'][0]["history_type"] == '+'
     assert content_json['results'][0]["history_id"] == hist_obj.history_id
-    assert content_json['results'][0]["_uid"] == hist_obj._uid
+    assert content_json['results'][0]["_uid"] == hist_obj.instance_uid
     assert content_json['results'][0]["_type"] == _type
     assert content_json['results'][0]['_version'] == obj.version
 
