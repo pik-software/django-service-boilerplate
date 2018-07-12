@@ -39,26 +39,27 @@ class HistoryObject:
                 history_type = '+'
         self.history_id = history_id
         self.history_type = history_type
-        self._uid = _uid
-        self._type = _type
-        self._version = _version
+        self.instance_uid = _uid
+        self.instance_type = _type
+        self.instance_version = _version
         self.instance = instance
 
     def __repr__(self):
-        app_label, model, pk, _h_id, _h_type, _uid, _type, _version = \
+        app_label, model, key, _h_id, _h_type, _uid, _type, _version = \
             self.pack()
-        return f'<HistoryObject({app_label}.{model}.{pk}, ' \
+        return f'<HistoryObject({app_label}.{model}.{key}, ' \
                f'{_h_id!r}, {_h_type!r}, {_uid!r}, {_type!r}, {_version!r})>'
 
     def __eq__(self, other):
         return repr(self) == repr(other)
 
     def get_event_names(self) -> List[str]:
-        _type, _h_type, _uid = self._type, self.history_type, self._uid
+        _type, _h_type = self.instance_type, self.history_type
+        _uid = self.instance_uid
         return [f'{_type}', f'{_type}.{_h_type}', f'{_type}.{_h_type}.{_uid}']
 
     def get_event_parts(self) -> Tuple[str, str, str]:
-        return self._type, self.history_type, self._uid
+        return self.instance_type, self.history_type, self.instance_uid
 
     def pack(self) -> Tuple[str, str, Union[str, int],
                             int, str,
@@ -68,10 +69,10 @@ class HistoryObject:
         return (
             c_type.app_label, c_type.model, self.instance.pk,
             self.history_id, self.history_type,
-            self._uid, self._type, self._version)
+            self.instance_uid, self.instance_type, self.instance_version)
 
     @classmethod
-    def unpack(cls, app_label: str, model: str, pk: Union[str, int],
+    def unpack(cls, app_label: str, model: str, pk: Union[str, int],  # noqa: pylint=invalid-name
                history_id: int, history_type: str,
                _uid: str, _type: str, _version: Optional[int]) \
             -> 'HistoryObject':
@@ -100,7 +101,7 @@ class HistoryObject:
             subscribers = self.get_subscribers()
             if subscribers.exists():
                 LOGGER.info('replicate %s [hist_id=%s, v=%s]',
-                            events[-1], self.history_id, self._version)
+                            events[-1], self.history_id, self.instance_version)
                 _replicate(self)
 
     @classmethod

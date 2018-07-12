@@ -34,7 +34,7 @@ def _process_webhook_subscription(
 
     retry = self.request.retries
     _type, _h_type, _uid = hist_obj.get_event_parts()
-    _version = hist_obj._version
+    _version = hist_obj.instance_version
     ctx = {
         'name': subscription.name, 'user_pk': subscription.user.pk,
         'user_username': subscription.user.get_username(),
@@ -101,8 +101,9 @@ def _replicate_to_webhook_subscribers(
         raise self.retry(exc=exc)
 
     _type, _h_type, _uid = hist_obj.get_event_parts()
+    _version = hist_obj.instance_version
     LOGGER.info('webhooks %s.%s.%s [hist_id=%s, v=%s] retry=%s',
-                _type, _h_type, _uid, hist_obj.history_id, hist_obj._version,
+                _type, _h_type, _uid, hist_obj.history_id, _version,
                 retry)
 
     for subscriber in subscribers:

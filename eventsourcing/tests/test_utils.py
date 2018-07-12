@@ -17,9 +17,9 @@ def hist_obj():
 def test_pack_and_unpack(hist_obj: HistoryObject):
     unpacked = HistoryObject.unpack(*hist_obj.pack())
     assert hist_obj.instance == unpacked.instance
-    assert hist_obj._uid == unpacked._uid
-    assert hist_obj._type == unpacked._type
-    assert hist_obj._version == unpacked._version
+    assert hist_obj.instance_uid == unpacked.instance_uid
+    assert hist_obj.instance_type == unpacked.instance_type
+    assert hist_obj.instance_version == unpacked.instance_version
     assert hist_obj.history_type == unpacked.history_type
     assert hist_obj.history_id == unpacked.history_id
 
@@ -35,6 +35,7 @@ def test_get_event_parts(hist_obj: HistoryObject):
 
 
 def test_repr(hist_obj: HistoryObject):
-    assert repr(hist_obj) == f"<HistoryObject(auth.user.{hist_obj._uid}, " \
+    _uid = hist_obj.instance_uid
+    assert repr(hist_obj) == f"<HistoryObject(auth.user.{_uid}, " \
                              f"{hist_obj.history_id}, '+', " \
-                             f"'{hist_obj._uid}', 'user', 1)>"
+                             f"'{_uid}', 'user', 1)>"

@@ -12,7 +12,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def _serialize(user, settings: dict, hist_obj: HistoryObject) -> str:
-    _type = hist_obj._type
+    _type = hist_obj.instance_type
     api_version = settings['api_version']
     history_url = f'/api/v{api_version}/{_type}-list/history/'
     status, content = _process_fake_request(
