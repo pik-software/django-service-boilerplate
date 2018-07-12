@@ -4,7 +4,6 @@ from django.utils.translation import ugettext_lazy as _
 from pik.core.models import BaseHistorical, BasePHistorical, Owned
 
 
-
 class Contact(BaseHistorical):
     name = models.CharField(_('Наименование'), max_length=255)
     phones = ArrayField(
@@ -48,4 +47,3 @@ class Comment(BasePHistorical, Owned):
         permissions = (
             ("can_edit_comment", _("Может редактировать коментарий")),
         )
- 
