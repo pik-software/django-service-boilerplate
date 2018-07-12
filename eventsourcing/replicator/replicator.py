@@ -1,11 +1,10 @@
 from django.conf import settings as dj_settings
 
+from .registry import _to_hist_obj, get_all_replicating_models
+from .serializer import _check_serialize_problem
 from ..consts import WEBHOOK_SUBSCRIPTION
 from ..models import Subscription
-from ..utils import HistoryObject
-from .registry import _to_hist_obj, get_all_replicating_models
-from .serializer import _check_serialize_problem, ReplicatorSerializeError
-
+from ..utils import HistoryObject, ReplicatorSerializeError
 
 _LATEST_API_VERSION_SETTING = 'REST_FRAMEWORK_LATEST_API_VERSION'
 

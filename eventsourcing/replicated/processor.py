@@ -1,9 +1,8 @@
 import logging
 
-from ..consts import UPDATED_ACTION, DELETED_ACTION, CREATED_ACTION
-from .utils import _get_fields, _has_field
 from .registry import _get_replicated_model
-
+from ..consts import UPDATED_ACTION, DELETED_ACTION, CREATED_ACTION
+from ..utils import _has_field, _get_fields
 
 LOGGER = logging.getLogger(__name__)
 

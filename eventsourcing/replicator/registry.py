@@ -5,8 +5,7 @@ from django.db.models import Model
 from django.db.models.signals import post_save, post_delete
 from simple_history.manager import HistoryManager
 
-from .utils import _has_field
-from ..utils import HistoryObject
+from ..utils import HistoryObject, _has_field
 
 LOGGER = logging.getLogger(__name__)
 

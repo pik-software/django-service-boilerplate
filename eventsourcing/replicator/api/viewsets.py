@@ -6,12 +6,12 @@ from core.api.filters import StandardizedSearchFilter
 from core.api.mixins import BulkCreateModelMixin
 from core.api.serializers import StandardizedModelSerializer
 from core.api.viewsets import StandardizedReadOnlyModelViewSet
-from eventsourcing.replicator import get_replicating_model
-from eventsourcing.replicator.replicator import _get_subscription_statuses
-from eventsourcing.replicator.serializer import _check_serialize_problem, \
-    ReplicatorSerializeError
+from ..registry import get_replicating_model
+from ..replicator import _get_subscription_statuses
+from ..serializer import _check_serialize_problem
 from ...consts import WEBHOOK_SUBSCRIPTION, ACTIONS
 from ...models import Subscription, subscribe
+from ...utils import ReplicatorSerializeError
 
 
 class _SubscriptionSerializer(StandardizedModelSerializer):

@@ -1,20 +1,14 @@
-from typing import Tuple, Optional
 import logging
+from typing import Tuple, Optional
 
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.test import RequestFactory
 from django.urls import resolve
 
-from ..utils import HistoryObject
+from ..utils import ReplicatorSerializeError, HistoryObject
 
 LOGGER = logging.getLogger(__name__)
-
-
-class ReplicatorSerializeError(Exception):
-    def __init__(self, message: str, ctx: Optional[dict] = None) -> None:
-        self.ctx = ctx or {}
-        super().__init__(message)
 
 
 def _serialize(user, settings: dict, hist_obj: HistoryObject) -> str:

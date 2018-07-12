@@ -1,15 +1,10 @@
-from typing import Optional
 import logging
 
 import requests
 
+from ..utils import ReplicatorDeliveryError
+
 LOGGER = logging.getLogger(__name__)
-
-
-class ReplicatorDeliveryError(Exception):
-    def __init__(self, message: str, ctx: Optional[dict] = None) -> None:
-        self.ctx = ctx or {}
-        super().__init__(message)
 
 
 def _deliver(user, settings, serialized_data) -> None:

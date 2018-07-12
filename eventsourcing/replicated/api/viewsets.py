@@ -4,9 +4,9 @@ from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 
 from core.api.viewsets import StandardizedGenericViewSet
-from ...consts import ACTIONS
 from ..processor import _process_historical_record, \
     _ProcessHistoricalRecordError
+from ...consts import ACTIONS
 
 
 class _WebhookProcessingError(APIException):

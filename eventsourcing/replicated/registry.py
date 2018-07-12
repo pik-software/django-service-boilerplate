@@ -1,6 +1,6 @@
 from django.db.models import Model
 
-from .utils import _has_field
+from ..utils import _has_field
 
 _REPLICATED_MODEL_STORAGE = {}
 
