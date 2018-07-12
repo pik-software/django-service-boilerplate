@@ -132,7 +132,7 @@ def test_api_history_create_and_change(api_client, api_model):  # noqa: invalid-
 
 
 def test_history_events(api_model):
-    model, factory, options = api_model
+    model, factory, _ = api_model
     _type = ContentType.objects.get_for_model(model).model
 
     # create event

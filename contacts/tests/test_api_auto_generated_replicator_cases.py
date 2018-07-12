@@ -238,9 +238,9 @@ def test_replicate_call_on_create_update_delete(api_model, mocker):
 
     call_list = []
 
-    def mock_replicate(hist_obj, subscription=None):
-        if model_type == hist_obj._type:
-            call_list.append([hist_obj.history_type, hist_obj._uid])
+    def mock_replicate(hist_obj: HistoryObject, subscription=None):
+        if model_type == hist_obj.instance_type:
+            call_list.append([hist_obj.history_type, hist_obj.instance_uid])
 
     repl = mocker.patch.object(HistoryObject, 'replicate', autospec=True)
     repl.side_effect = mock_replicate
@@ -346,10 +346,9 @@ def test_process_webhook_ok(api_model, mocker, celery_worker):
     model, factory, options = api_model
     obj = _create_few_models(factory)
     history = obj.history.all()
-    instance = history.first()
-    subscription = _create_subscription(model, options)
-    hist_obj = _to_hist_obj(instance)
+    hist_obj = _to_hist_obj(history.first())
     packed_history = hist_obj.pack()
+    subscription = _create_subscription(model, options)
     result = get_random_string()
 
     step1_serialize = mocker.patch.object(
