@@ -1,9 +1,8 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from simple_history.models import HistoricalRecords
+from pik.core.models import BaseHistorical, BasePHistorical, Owned
 
-from core.models import Versioned, Uided, Dated, PUided, Owned
 
 
 class Contact(Uided, Dated, Versioned):
@@ -20,8 +19,6 @@ class Contact(Uided, Dated, Versioned):
         help_text=_('E-mail адреса вводятся через запятую'))
 
     order_index = models.IntegerField(_('Индекс для сортировки'), default=100)
-
-    history = HistoricalRecords()
 
     def __str__(self):
         return f'{self.name}'
@@ -40,8 +37,6 @@ class Comment(PUided, Dated, Versioned, Owned):
         Contact, related_name='comments',
         on_delete=models.CASCADE)
     message = models.TextField(_('Сообщение'))
-
-    history = HistoricalRecords()
 
     def __str__(self):
         return f'{self.user}: {self.message}'
