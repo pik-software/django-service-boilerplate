@@ -4,7 +4,7 @@ from pik.core.models import BasePHistorical
 
 
 class Cors(BasePHistorical):
-    cors = models.CharField(max_length=255, unique=True,help_text=_(
+    cors = models.CharField(max_length=255, unique=True, help_text=_(
         "Название домена допущенного делать междоменные запросы, например: "
         "staff-front.pik-software.ru или localhost:3000"))
 
