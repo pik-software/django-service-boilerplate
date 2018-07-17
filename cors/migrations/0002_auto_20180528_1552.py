@@ -23,11 +23,11 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='cors',
             name='cors',
-            field=models.CharField(max_length=255, unique=True),
+            field=models.CharField(max_length=255, help_text='Название домена допущенного делать междоменные запросы, например: staff-front.pik-software.ru или localhost:3000', unique=True),
         ),
         migrations.AlterField(
             model_name='historicalcors',
             name='cors',
-            field=models.CharField(db_index=True, max_length=255),
+            field=models.CharField(db_index=True, help_text='Название домена допущенного делать междоменные запросы, например: staff-front.pik-software.ru или localhost:3000', max_length=255),
         ),
     ]
