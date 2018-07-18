@@ -1,6 +1,10 @@
 import os
 
 
+_CONFLICT_SETTINGS = [
+    'SOCIAL_AUTH_PIPELINE'
+]
+
 _REQUIRED_SETTINGS = [
     'INSTALLED_APPS',
     'MIDDLEWARE',
@@ -16,20 +20,26 @@ class RequiredSettingMissing(Exception):
     pass
 
 
-class RequiredItemMissing(Exception):
+class ConflictSetting(Exception):
     pass
 
 
-class ItemAlreadyExists(Exception):
+class RequiredSequenceItemMissing(Exception):
     pass
 
 
-def _to_list(sequence):
+class SequenceAlreadyDefined(Exception):
+    pass
+
+
+def _to_list(sequence, name):
     if isinstance(sequence, list):
         return sequence
     if isinstance(sequence, tuple):
         return list(sequence)
-    raise UnknownSequenceType(type(sequence))
+    raise UnknownSequenceType(
+        f'Unknown sequence type {type(sequence)} of {name}, '
+        f'list or tuple expected')
 
 
 def _to_original(sequence, result):
@@ -40,9 +50,9 @@ def _to_original(sequence, result):
 
 def _append(settings, name, value):
     sequence = settings.get(name, ())
-    result = _to_list(sequence)
+    result = _to_list(sequence, name)
     if name in result:
-        raise ItemAlreadyExists(name)
+        raise SequenceAlreadyDefined(f'Sequence is {name} already defined')
 
     result.append(value)
     if isinstance(sequence, tuple):
@@ -53,9 +63,9 @@ def _append(settings, name, value):
 
 def _prepend(settings, name, value):
     sequence = settings.get(name, ())
-    result = _to_list(sequence)
+    result = _to_list(sequence, name)
     if name in result:
-        raise ItemAlreadyExists(name)
+        raise SequenceAlreadyDefined(f'Sequence is {name} already defined')
 
     result.insert(0, value)
     settings[name] = _to_original(sequence, result)
@@ -63,13 +73,13 @@ def _prepend(settings, name, value):
 
 def _insert(settings, name, after, value):
     sequence = settings.get(name, ())
-    result = _to_list(sequence)
+    result = _to_list(sequence, name)
     if name in result:
-        raise ItemAlreadyExists(name)
+        raise SequenceAlreadyDefined(f'Sequence is {name} already defined')
 
     index = sequence.index(after)
     if index is None:
-        raise RequiredItemMissing(after)
+        raise RequiredSequenceItemMissing(after)
 
     result.insert(index, value)
     settings[name] = _to_original(sequence, result)
@@ -88,7 +98,15 @@ def _check_required_settings(settings):
     for setting in _REQUIRED_SETTINGS:
         if setting in settings:
             continue
-        raise RequiredSettingMissing(setting)
+        raise RequiredSettingMissing(
+            f'Explicit settings.{setting} definition required')
+
+    for setting in _CONFLICT_SETTINGS:
+        if setting not in settings:
+            continue
+        raise ConflictSetting(
+            f"Setting {setting} have to be defined by set_oidc_settings() "
+            f"only")
 
 
 def set_oidc_settings(settings):
@@ -104,7 +122,10 @@ def set_oidc_settings(settings):
             'lib.oidc_relied.backends.PIKOpenIdConnectAuth')
 
     if 'rest_framework' in settings['INSTALLED_APPS']:
-        settings.setdefault('REST_FRAMEWORK', dict())
+        if 'DEFAULT_AUTHENTICATION_CLASSES' not in settings['REST_FRAMEWORK']:
+            raise RequiredSettingMissing(
+                'Explicit REST_FRAMEWORK[\'DEFAULT_AUTHENTICATION_CLASSES\'] '
+                'definition expected')
         _append(
             settings['REST_FRAMEWORK'], 'DEFAULT_AUTHENTICATION_CLASSES',
             'rest_framework_social_oauth2.authentication.SocialAuthentication')
