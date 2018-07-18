@@ -125,6 +125,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'cors.middleware.CachedCorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -372,8 +373,8 @@ except ImportError:
 
 
 try:
-    from lib.oidc_relied.settings import apply_oidc_settings
+    from lib.oidc_relied.settings import set_oidc_settings
 except ImportError:
     pass
 else:
-    apply_oidc_settings(globals())
+    set_oidc_settings(globals())
