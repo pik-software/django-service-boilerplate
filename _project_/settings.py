@@ -91,6 +91,7 @@ INSTALLED_APPS = [
     'simple_history',
 
     # API
+    'cors',
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
@@ -115,12 +116,6 @@ INSTALLED_APPS = [
 
     'bootstrapform',  # sexy form in _project_/templates
 
-    # OIDC
-    'social_django',
-
-    # API
-    'cors',
-
     # DEV
     'debug_toolbar',
     'django_extensions',
@@ -130,8 +125,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'cors.middleware.CachedCorsMiddleware',
-    'lib.oidc_relied.middleware.OIDCExceptionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -145,9 +138,7 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
-# OPENID Relied conf
-from lib.oidc_relied.settings import *  # noqa
-
+# CORS
 CORS_ORIGIN_WHITELIST = os.environ.get('CORS_ORIGIN_WHITELIST', '').split()
 CORS_URLS_REGEX = r'^/(api|openid)/.*$'
 CORS_MODEL = 'cors.Cors'
@@ -254,7 +245,6 @@ INDEX_STAFF_REDIRECT_URL = '/admin/'
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     # 'core.ldap.RemoteUserBackend',
-    'lib.oidc_relied.backends.PIKOpenIdConnectAuth',  # OIDC relied backend
 ]
 
 # Celery
@@ -286,7 +276,6 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
-        'rest_framework_social_oauth2.authentication.SocialAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -380,3 +369,11 @@ try:
     from .settings_local import *  # noqa: pylint=unused-wildcard-import, pylint=wildcard-import
 except ImportError:
     pass
+
+
+try:
+    from lib.oidc_relied.settings import apply_oidc_settings
+except ImportError:
+    pass
+else:
+    apply_oidc_settings(globals())
