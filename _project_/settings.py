@@ -84,7 +84,9 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'django.contrib.gis',
 
-    # MAIN APPS
+    '_project_',
+
+    # APPS
     'contacts',
 
     # HISTORY
@@ -298,7 +300,6 @@ GS_PROJECT_ID = os.environ.get('FILE_STORAGE_PROJECT_ID', None)
 GS_CREDENTIALS = None
 if _STORAGE == 'gcloud' and _CREDENTIALS and GS_BUCKET_NAME and GS_PROJECT_ID:
     DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-    # GS_AUTO_CREATE_BUCKET = True
     GS_CREDENTIALS = service_account.Credentials.from_service_account_info(
         json.loads(base64.b64decode(_CREDENTIALS), strict=False))
 else:
@@ -320,7 +321,7 @@ LOGGING = {
     },
     'handlers': {
         'console': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.StreamHandler',
             'stream': sys.stdout,
             'formatter': 'verbose'
@@ -333,27 +334,23 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'handlers': ['console'],
             'propagate': True,
         },
-        'django.template': {
-            'level': 'ERROR',
-            'handlers': ['console'],
-            'propagate': False,
-        },
         'raven': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'handlers': ['console'],
             'propagate': False,
         },
         'sentry.errors': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'handlers': ['console'],
             'propagate': False,
         },
     },
 }
+
 
 try:
     from .settings_local import *  # noqa: pylint=unused-wildcard-import, pylint=wildcard-import
