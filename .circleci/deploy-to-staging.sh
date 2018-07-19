@@ -32,11 +32,11 @@ INIT_LETSENCRYPT=false
 
 if ! ssh dokku@${HOST} -C apps:list | grep -qFx ${SERVICE_NAME}; then
     echo "Init ${SERVICE_NAME} on ${HOST}"
-    ./init-dokku-back.sh ${HOST} ${SERVICE_NAME} ${BRANCH}
+    ./init-dokku-back.sh ${HOST} ${SERVICE_NAME} ${BRANCH} staging
     INIT_LETSENCRYPT=true
 fi
 
-./reconfigure-dokku-back.sh ${HOST} ${SERVICE_NAME} ${BRANCH}
+./reconfigure-dokku-back.sh ${HOST} ${SERVICE_NAME} ${BRANCH} staging
 
 git push ssh://dokku@${HOST}/${SERVICE_NAME} ${BRANCH}:master
 
