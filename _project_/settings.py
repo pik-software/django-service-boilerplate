@@ -372,9 +372,5 @@ except ImportError:
     pass
 
 
-try:
-    from lib.oidc_relied.settings import set_oidc_settings
-except ImportError:
-    pass
-else:
-    set_oidc_settings(globals())
+from lib.oidc_relied.settings import set_oidc_settings
+set_oidc_settings(globals())
