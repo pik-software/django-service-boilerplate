@@ -24,7 +24,29 @@
 
 2 В settings.py
 
-2.1 Подключить приложение `social_django` в `INSTALLED_APPS`
+Для удобства интеграции предусмотрено два способа подключения необходимых настроек:
+
+- `set_oidc_settings()`,
+- ручная настройка.
+
+2.1 set_oidc_settings
+
+В конец settings.py нужно добавить:
+
+```python
+
+from lib.oidc_relied.settings import set_oidc_settings
+set_oidc_settings(globals())
+
+```
+
+2.2 Ручная настройка
+
+В случае необходимости тонкой настройки OIDC потребуется применение настроек 
+врунчную. Описанная ниже последовательность приведет settings к тому же 
+состоянию, что и вызов `set_oidc_settings`.
+
+2.2.1 Подключить приложение `social_django` в `INSTALLED_APPS`
 
 ```patch
     INSTALLED_APPS = [
@@ -33,7 +55,7 @@
     ]
 ```
 
-2.2  Подключить `MIDDLEWARE` `OIDCExceptionMiddleware`, для правильного вывода
+2.2.2  Подключить `MIDDLEWARE` `OIDCExceptionMiddleware`, для правильного вывода
 ошибок
 
 ```patch
@@ -45,7 +67,7 @@ MIDDLEWARE = [
 ]
 ```
 
-2.3 Импортировать настройки:
+2.2.3 Импортировать настройки:
 
 ```patch
 ...
@@ -54,7 +76,7 @@ MIDDLEWARE = [
 ...
 ```
 
-2.4 Подключить `PIKOpenIdConnectAuth` в `AUTHENTICATION_BACKENDS`
+2.2.4 Подключить `PIKOpenIdConnectAuth` в `AUTHENTICATION_BACKENDS`
 
 
 ```
@@ -64,7 +86,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 ```
 
-2.5 Добавить `SocialAuthentication` `REST_FRAMEWORK.DEFAULT_AUTHENTICATION_CLASSES`:
+2.2.5 Добавить `SocialAuthentication` `REST_FRAMEWORK.DEFAULT_AUTHENTICATION_CLASSES`:
 
 ```patch
 REST_FRAMEWORK = {

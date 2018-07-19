@@ -28,11 +28,27 @@ class RequiredSequenceItemMissing(Exception):
     pass
 
 
-class SequenceAlreadyDefined(Exception):
+class SequenceItemAlreadyDefined(Exception):
     pass
 
 
 def _to_list(sequence, name):
+    """ Cast sequence to list
+
+    >>> _to_list((), 'TEST')
+    []
+
+    >>> _to_list([], 'TEST')
+    []
+
+    >>> _to_list(set(), 'TEST')
+    Traceback (most recent call last):
+        ...
+    settings.UnknownSequenceType: Unknown sequence type \
+<class 'set'> of TEST, list or tuple expected
+
+    """
+
     if isinstance(sequence, list):
         return sequence
     if isinstance(sequence, tuple):
@@ -43,16 +59,51 @@ def _to_list(sequence, name):
 
 
 def _to_original(sequence, result):
+    """ Cast result into the same type
+
+    >>> _to_original([], ())
+    []
+
+    >>> _to_original((), [])
+    ()
+
+    """
+
     if isinstance(sequence, tuple):
         return tuple(result)
+    if isinstance(sequence, list):
+        return list(result)
+
     return result
 
 
 def _append(settings, name, value):
+    """ Prepend item into the settings sequence
+
+    >>> settings = {'TEST': ['b', 'c']}
+    >>> _append(settings, 'TEST', 'a')
+    >>> settings
+    {'TEST': ['b', 'c', 'a']}
+
+    >>> settings = {'TEST': ('b', 'c')}
+    >>> _append(settings, 'TEST', 'a')
+    >>> settings
+    {'TEST': ('b', 'c', 'a')}
+
+    >>> settings = {'TEST': ['b', 'c']}
+    >>> _append(settings, 'TEST', 'c')
+    Traceback (most recent call last):
+        ...
+    settings.SequenceItemAlreadyDefined: Sequence c value is \
+already defined in setting TEST
+
+    """
+
     sequence = settings.get(name, ())
     result = _to_list(sequence, name)
-    if name in result:
-        raise SequenceAlreadyDefined(f'Sequence is {name} already defined')
+    if value in result:
+        raise SequenceItemAlreadyDefined(f'Sequence {value} value is already '
+                                         f'defined in setting {name}')
 
     result.append(value)
     if isinstance(sequence, tuple):
@@ -62,39 +113,138 @@ def _append(settings, name, value):
 
 
 def _prepend(settings, name, value):
+    """ Prepend item into the settings sequence
+
+    >>> settings = {'TEST': ['b', 'c']}
+    >>> _prepend(settings, 'TEST', 'a')
+    >>> settings
+    {'TEST': ['a', 'b', 'c']}
+
+    >>> settings = {'TEST': ('b', 'c')}
+    >>> _prepend(settings, 'TEST', 'a')
+    >>> settings
+    {'TEST': ('a', 'b', 'c')}
+
+    >>> settings = {'TEST': ['b', 'c']}
+    >>> _prepend(settings, 'TEST', 'c')
+    Traceback (most recent call last):
+        ...
+    settings.SequenceItemAlreadyDefined: Sequence c value \
+is already defined in setting TEST
+
+    """
+
     sequence = settings.get(name, ())
     result = _to_list(sequence, name)
-    if name in result:
-        raise SequenceAlreadyDefined(f'Sequence is {name} already defined')
+    if value in result:
+        raise SequenceItemAlreadyDefined(f'Sequence {value} value is already '
+                                         f'defined in setting {name}')
 
     result.insert(0, value)
     settings[name] = _to_original(sequence, result)
 
 
 def _insert(settings, name, after, value):
+    """ Insert item into sequence setting
+
+    >>> settings = {'TEST': ['a']}
+    >>> _insert(settings, 'TEST', 'a', 'b')
+    >>> settings
+    {'TEST': ['a', 'b']}
+
+    >>> settings = {'TEST': ('a', )}
+    >>> _insert(settings, 'TEST', 'a', 'b')
+    >>> settings
+    {'TEST': ('a', 'b')}
+
+    >>> settings = {'TEST': ['a']}
+    >>> _insert(settings, 'TEST', 'c', 'b')
+    Traceback (most recent call last):
+        ...
+    settings.RequiredSequenceItemMissing: Required item c \
+missing form setting TEST
+
+    >>> settings = {'TEST': ['a', 'b']}
+    >>> _insert(settings, 'TEST', 'a', 'b')
+    Traceback (most recent call last):
+        ...
+    settings.SequenceItemAlreadyDefined: Sequence item b \
+is already defined in setting TEST
+
+    """
+
     sequence = settings.get(name, ())
     result = _to_list(sequence, name)
-    if name in result:
-        raise SequenceAlreadyDefined(f'Sequence is {name} already defined')
+    if value in result:
+        raise SequenceItemAlreadyDefined(f'Sequence item {value} is '
+                                         f'already defined in setting {name}')
 
-    index = sequence.index(after)
-    if index is None:
-        raise RequiredSequenceItemMissing(after)
+    try:
+        index = sequence.index(after) + 1
+    except ValueError:
+        raise RequiredSequenceItemMissing(f'Required item {after} '
+                                          f'missing form setting {name}')
 
     result.insert(index, value)
     settings[name] = _to_original(sequence, result)
 
-    settings[name] = result
 
+def _set_from_env(settings, name, default=None, delimiter=None):
+    """ Extract setting from ENV, predefined or default
 
-def _set_from_env(settings, name, default=None, delimiter=' ', multiple=False):
+    >>> settings = {}
+    >>> _set_from_env(settings, 'test', 'default')
+    >>> settings
+    {'test': 'default'}
+
+    >>> settings = {'test': '1,2'}
+    >>> _set_from_env(settings, 'test', 'default', delimiter=',')
+    >>> settings
+    {'test': ['1', '2']}
+
+    >>> settings = {'test': 'predefined'}
+    >>> _set_from_env(settings, 'test', 'default')
+    >>> settings
+    {'test': 'predefined'}
+
+    >>> settings = {}
+    >>> os.environ['test'] = 'env'
+    >>> _set_from_env(settings, 'test', 'default')
+    >>> settings
+    {'test': 'env'}
+
+     """
+
     value = os.environ.get(name, settings.get(name, default))
-    if multiple:
+    if delimiter is not None:
         value = value.split(delimiter)
     settings[name] = value
 
 
-def _check_required_settings(settings):
+def _check_settings(settings):
+    """ Check settings compatibility
+
+    >>> _check_settings({})
+    Traceback (most recent call last):
+        ...
+    settings.RequiredSettingMissing: Explicit settings.INSTALLED_APPS \
+definition required
+
+    >>> _check_settings({'INSTALLED_APPS': [], 'AUTHENTICATION_BACKENDS': [],
+    ...                  'MIDDLEWARE': [], 'SOCIAL_AUTH_PIPELINE': []})
+    Traceback (most recent call last):
+        ...
+    settings.ConflictSetting: Setting SOCIAL_AUTH_PIPELINE have to be \
+defined by set_oidc_settings() only
+
+    >>> _check_settings({'INSTALLED_APPS': [], 'MIDDLEWARE': [],
+    ...                  'AUTHENTICATION_BACKENDS': []})
+
+
+
+    :param settings:
+    :return:
+    """
     for setting in _REQUIRED_SETTINGS:
         if setting in settings:
             continue
@@ -110,7 +260,7 @@ def _check_required_settings(settings):
 
 
 def set_oidc_settings(settings):
-    _check_required_settings(settings)
+    _check_settings(settings)
 
     _append(settings, 'INSTALLED_APPS', 'social_django')
 
