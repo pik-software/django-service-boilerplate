@@ -372,5 +372,5 @@ except ImportError:
     pass
 
 
-from lib.oidc_relied.settings import set_oidc_settings
+from lib.oidc_relied.settings import set_oidc_settings  # noqa: pylint=wrong-import-position
 set_oidc_settings(globals())
