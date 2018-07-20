@@ -22,5 +22,10 @@ ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} RELEASE_DATE="'"${R
 ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} ENVIRONMENT=staging
 
 # gcloud file storage
+#ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} FILE_STORAGE_BACKEND=
+#ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} FILE_STORAGE_BUCKET_NAME=
+#ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} FILE_STORAGE_PROJECT_ID=
+#ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} FILE_STORAGE_BACKEND_CREDENTIALS=
 
 # sentry
+#ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} RAVEN_DSN=
