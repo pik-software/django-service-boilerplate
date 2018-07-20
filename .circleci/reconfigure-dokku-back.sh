@@ -8,6 +8,7 @@ echo "$(date +%Y-%m-%d-%H-%M-%S) - reconfigure-dokku-back.sh $@"
 HOST=$1
 SERVICE_NAME=$2
 BRANCH=$3
+DEPLOYMENT_PLACE=$4
 
 if [[ -z "$HOST" ]]; then
     echo "Use: $0 <HOST>"
@@ -22,16 +23,12 @@ if [[ -z "$BRANCH" ]]; then
     exit 1
 fi
 
-case "$BRANCH" in
-    master)
-        ENVIRONMENT="production"
-        RELEASE_DATE=$( date '+%Y-%m-%d-%H-%M-%S' )
+# CONFIGS
+case "$DEPLOYMENT_PLACE" in
+    production)
+        ./set-configs-to-prod.sh ${HOST} ${SERVICE_NAME} ${BRANCH}
         ;;
-    *)
-        ENVIRONMENT="staging"
-        RELEASE_DATE=$( date '+%Y-%m-%d-%H-%M-%S' )
+    staging)
+        ./set-configs-to-staging.sh ${HOST} ${SERVICE_NAME} ${BRANCH}
         ;;
 esac
-
-ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} RELEASE_DATE="'"${RELEASE_DATE}"'"
-ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} ENVIRONMENT=${ENVIRONMENT}
