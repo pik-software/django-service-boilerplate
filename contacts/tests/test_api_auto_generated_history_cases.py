@@ -46,10 +46,12 @@ def _create_few_models(factory):
 
 
 def _create_history_permission(user, model):
-    content_type = ContentType.objects.get_for_model(model.history.model)
+    model = model.history.model
+    opts = model._meta  # noqa: pylint=protected-access
+    content_type = ContentType.objects.get_for_model(model)
     permission = Permission.objects.get(
         content_type=content_type,
-        codename__startswith='view_')
+        codename=f'view_{opts.model_name}')
     user.user_permissions.add(permission)
 
 
