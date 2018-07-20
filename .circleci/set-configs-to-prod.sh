@@ -21,8 +21,6 @@ ssh dokku@${HOST} -C config:set --no-restart $SERVICE_NAME DOKKU_LETSENCRYPT_EMA
 ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} RELEASE_DATE="'"${RELEASE_DATE}"'"
 ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} ENVIRONMENT=production
 
-ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} SELENIUM_WEB_DRIVER_SERVER_URL=http://10.156.0.5:4444/wd/hub
-
 # gcloud file storage
 
 # sentry

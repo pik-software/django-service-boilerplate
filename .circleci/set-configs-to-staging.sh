@@ -19,6 +19,7 @@ ssh dokku@${HOST} -C config:set --no-restart $SERVICE_NAME DOKKU_DOCKER_STOP_TIM
 ssh dokku@${HOST} -C config:set --no-restart $SERVICE_NAME DOKKU_LETSENCRYPT_EMAIL=pik-software-team@pik-comfort.ru
 
 ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} RELEASE_DATE="'"${RELEASE_DATE}"'"
+ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} ENVIRONMENT=staging
 
 # gcloud file storage
 
