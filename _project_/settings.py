@@ -91,6 +91,7 @@ INSTALLED_APPS = [
     'simple_history',
 
     # API
+    'cors',
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
@@ -124,6 +125,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'cors.middleware.CachedCorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -136,6 +138,11 @@ MIDDLEWARE = [
     # DEV
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+
+# CORS
+CORS_ORIGIN_WHITELIST = os.environ.get('CORS_ORIGIN_WHITELIST', '').split()
+CORS_URLS_REGEX = r'^/(api|openid)/.*$'
+CORS_MODEL = 'cors.Cors'
 
 WSGI_APPLICATION = '_project_.wsgi.application'
 ROOT_URLCONF = '_project_.urls'
@@ -165,7 +172,11 @@ TEMPLATES = [
 DATABASES = {
     'default': dj_database_url.parse(
         DATABASE_URL,
-        engine='django.contrib.gis.db.backends.postgis')
+        engine='django.contrib.gis.db.backends.postgis'
+    ),
+    'TEST': {
+        'SERIALIZE': False,
+    },
 }
 
 CACHES = {
@@ -263,8 +274,8 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser'
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
@@ -359,3 +370,7 @@ try:
     from .settings_local import *  # noqa: pylint=unused-wildcard-import, pylint=wildcard-import
 except ImportError:
     pass
+
+
+from lib.oidc_relied.settings import set_oidc_settings  # noqa: pylint=wrong-import-position
+set_oidc_settings(globals())

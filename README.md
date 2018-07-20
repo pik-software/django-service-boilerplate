@@ -56,3 +56,16 @@ Database transfer with dumpfile:
 
     # The command for restore dump from file (on server)
     pg_restore dump.dmp
+
+Run tests:
+
+    # Execute tests with predefined `test.ini` project settings
+    
+    pytest
+
+    # WARNING! By default `--reuse-db` is on, it means that test database is 
+    # saved between test sessions. To override this behaviour or in case of 
+    # problems like "Permission already exists" or similar, use `--create-db` 
+    # option for db recreation forcing.
+    
+    pytest --create-db
