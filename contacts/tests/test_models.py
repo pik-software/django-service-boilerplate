@@ -44,3 +44,14 @@ def test_critical_model_protocol(critical_model_and_factory):
     assert hasattr(model._meta, 'verbose_name')  # noqa
     assert hasattr(model._meta, 'verbose_name_plural')  # noqa
     assert '__str__' in model.__dict__.keys()  # noqa
+
+
+def test_increment_version(critical_model_and_factory):
+    _, factory = critical_model_and_factory
+    obj = factory.create()
+    version1 = obj.version
+    obj.save()
+    version2 = obj.version
+    obj.save()
+    version3 = obj.version
+    assert version1 < version2 < version3
