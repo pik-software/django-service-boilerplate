@@ -2,6 +2,6 @@ import pytest
 
 
 @pytest.mark.selenium
-def test_index(base_url, selenium):
-    selenium.get(base_url)
-    assert selenium.title == 'Войти'
+def test_login(base_url, selenium):
+    selenium.get(f'{base_url}/login')
+    assert selenium.title == 'Войти | Сервис'

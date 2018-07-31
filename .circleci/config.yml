@@ -35,6 +35,7 @@ jobs:
           command: |
             python3 -m venv .venv
             . .venv/bin/activate
+            pip install --upgrade pip
             pip install --upgrade setuptools
             pip install --exists-action w -r requirements.txt
 
@@ -53,9 +54,9 @@ jobs:
             python manage.py migrate
             python manage.py collectstatic
             python manage.py check
-            pytest --doctest-modules --selenium --durations=0 -vvvs --ignore=contacts --ignore=contacts_replica
-            pytest --doctest-modules --durations=0 -vvvs contacts
-            pytest --doctest-modules --durations=0 -vvvs contacts_replica
+            pytest --ignore=contacts --ignore=contacts_replica --cov .
+            pytest --cov . contacts
+            pytest --cov . contacts_replica
             prospector --profile-path . --profile .prospector.yaml .
 
   deploy-staging:

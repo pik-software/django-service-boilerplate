@@ -39,6 +39,7 @@ urlpatterns = [  # noqa: pylint=invalid-name
     url(r'^$', index, name='index'),
     url(r'^favicon.ico$', serve, {
         'document_root': settings.STATIC_ROOT, 'path': 'favicon.ico'}),
+    url(r'', include('lib.oidc_relied.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^status/', include('health_check.urls')),
     url(r'^accounts/', include('registration.auth_urls')),

@@ -108,4 +108,33 @@ Use `/api/v1/subscriptions` to subscribe on events.
  5. Async task run `serialized_data = hist_obj.serialize(subscription)`
  6. Async task run `hist_obj.delivery(subscription, serialized_data)`
 
+# Tricky replication #
+
+We have a not a historical model `Role` and we want to replicate it.
+We understand that without history we can miss some state changes and
+it's OK for us.
+
+We need to determine the following points:
+ - how to serialize this model
+ - how to deliver serialized data
+
+```
+
+    from pik.core.models import PUided, Versioned
+    from eventsourcing.replicator import replicating
+
+    @replicating('role')
+    class Role(PUided, Versioned):
+        name = models.CharField(max_length=255)
+
+        @staticmethod
+        def serialize_history_event(history_type, user, settings, instance):
+            pass
+
+        @staticmethod
+        def deliver_history_event(user, settings, serialized_data):
+            pass
+
+```
+
 [1]: https://martinfowler.com/articles/201701-event-driven.html
