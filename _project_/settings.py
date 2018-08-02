@@ -238,10 +238,10 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_URL = '/media/'
-# TODO(GregEremeev) MEDIUM: At this moment, we use common gCloud
+# TODO(GregEremeev) MEDIUM: At this moment, we use a common gCloud
 # storage for all services. That's why we need to use some service specific
 # path prefix(MEDIA_ROOT_PROJECT_PATH_PREFIX)
-# to share storage with all services without collisions
+# to share the storage with all services without collisions
 MEDIA_ROOT_PROJECT_PATH_PREFIX = os.environ.get('SERVICE_NAME', 'boilerplate')
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(DATA_DIR, 'media'))
 
