@@ -50,3 +50,6 @@ if ssh root@${HOST} -C docker ps | grep -q dd-agent; then
     # link to dd-agent
     ssh dokku@${HOST} -C docker-options:add $SERVICE_NAME build,deploy,run "--link dd-agent:dd-agent"
 fi
+
+ssh dokku@${HOST} -C docker-options:add $SERVICE_NAME deploy,run "--memory=1Gb"
+ssh dokku@${HOST} -C docker-options:add $SERVICE_NAME build "--memory=2Gb"
