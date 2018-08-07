@@ -5,7 +5,6 @@ from pik.core.models import BaseHistorical, BasePHistorical, Owned
 
 
 class Contact(BaseHistorical):
-    UID_PREFIX = 'CON'
     name = models.CharField(_('Наименование'), max_length=255)
     phones = ArrayField(
         models.CharField(max_length=30), blank=True, default=list,
@@ -33,7 +32,6 @@ class Contact(BaseHistorical):
 
 
 class Comment(BasePHistorical, Owned):
-    UID_PREFIX = 'COM'
     contact = models.ForeignKey(
         Contact, related_name='comments',
         on_delete=models.CASCADE)
