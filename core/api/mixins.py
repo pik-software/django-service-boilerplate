@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
-from django_filters import filterset
+from django.db.models import DateTimeField
+from django_filters import filterset, IsoDateTimeFilter
 from rest_framework.decorators import action
 from rest_framework import status
 from rest_framework.mixins import CreateModelMixin
@@ -92,6 +93,9 @@ class HistoryViewSetMixin:
                     'history_date': ['exact', 'gt', 'gte', 'lt', 'lte', 'in'],
                     self.lookup_field: [
                         'exact', 'gt', 'gte', 'lt', 'lte', 'in', 'isnull'],
+                }
+                filter_overrides = {
+                    DateTimeField: {'filter_class': IsoDateTimeFilter},
                 }
 
         query_params = self.request.query_params.copy()
