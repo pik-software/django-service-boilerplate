@@ -1,5 +1,6 @@
 from collections import OrderedDict
 
+import django_filters
 from django.db.models import DateTimeField
 from django_filters import filterset, IsoDateTimeFilter
 from rest_framework.decorators import action
@@ -84,6 +85,16 @@ class HistoryViewSetMixin:
 
     def filter_history_queryset(self, queryset):
         class AutoFilterSet(filterset.FilterSet):
+            only_last_version = django_filters.BooleanFilter(
+                method='filter_only_last_version')
+
+            @staticmethod
+            def filter_only_last_version(queryset, name, value):
+                if not value:
+                    return queryset
+                queryset = queryset.order_by('-id', '-updated').distinct('id')
+                return queryset
+
             class Meta(object):
                 model = queryset.model
                 fields = {
