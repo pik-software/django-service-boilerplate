@@ -1,12 +1,11 @@
 from collections import OrderedDict
 
-import django_filters
 from django.db.models import DateTimeField
-from django_filters import filterset, IsoDateTimeFilter
 from rest_framework.decorators import action
 from rest_framework import status
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.response import Response
+from rest_framework_filters import BooleanFilter, IsoDateTimeFilter, filterset
 
 
 class BulkCreateModelMixin(CreateModelMixin):
@@ -85,15 +84,14 @@ class HistoryViewSetMixin:
 
     def filter_history_queryset(self, queryset):
         class AutoFilterSet(filterset.FilterSet):
-            only_last_version = django_filters.BooleanFilter(
+            only_last_version = BooleanFilter(
                 method='filter_only_last_version')
 
             @staticmethod
             def filter_only_last_version(queryset, name, value):
                 if not value:
                     return queryset
-                queryset = queryset.order_by('-id', '-updated').distinct('id')
-                return queryset
+                return queryset.order_by('-id', '-updated').distinct('id')
 
             class Meta(object):
                 model = queryset.model
