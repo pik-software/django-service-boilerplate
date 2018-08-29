@@ -101,6 +101,7 @@ def test_api_create_comment(api_client):
     assert res.data == {
         '_uid': res.data['_uid'],
         '_type': 'comment',
+        '_version': 1,
         'user': api_client.user.pk,
         'message': data['message'],
         'contact': {
@@ -122,11 +123,13 @@ def test_api_create_comment_simple(api_client):
     assert res.data == {
         '_uid': res.data['_uid'],
         '_type': 'comment',
+        '_version': 1,        
         'user': api_client.user.pk,
         'message': data['message'],
         'contact': {
             '_uid': contact.uid,
             '_type': 'contact',
+            '_version': 1,            
             'name': contact.name,
             'phones': contact.phones,
             'emails': contact.emails,
