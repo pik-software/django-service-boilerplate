@@ -107,6 +107,7 @@ def test_api_create_comment(api_client):
         'contact': {
             '_uid': contact.uid,
             '_type': 'contact',
+            '_version': 1,
             'name': contact.name,
             'phones': contact.phones,
             'emails': contact.emails,
