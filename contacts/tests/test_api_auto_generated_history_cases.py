@@ -57,11 +57,13 @@ def _create_history_permission(user, model):
 
 def _assert_history_object(hist_obj, type_, event_, uid_):
     _type = hist_obj.history_object._meta.model_name  # noqa
+    _hist_type = hist_obj._meta.model_name  # noqa
     _event = hist_obj.history_type
     _uid = hist_obj.history_object.uid
     assert _type == type_
     assert _event == event_
     assert _uid == uid_
+    assert _hist_type == 'historical' + type_
 
 
 def test_api_history_access_denied(api_client, api_model):
@@ -102,7 +104,7 @@ def test_api_history_filter_by_uid(api_client, api_model):
     first_result = res.data['results'][0]
     assert count == 1
     assert first_result['_uid'] == last_obj.uid
-    assert first_result['_type'] == _type
+    assert first_result['_type'] == 'historical' + _type
     assert first_result['_version'] >= 1
     assert first_result['history_change_reason'] is None
     assert first_result['history_type'] == "+"
