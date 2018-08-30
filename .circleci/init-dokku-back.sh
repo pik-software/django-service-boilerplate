@@ -7,6 +7,8 @@ echo "$(date +%Y-%m-%d-%H-%M-%S) - init-dokku-back.sh $@"
 
 HOST=$1
 SERVICE_NAME=$2
+BRANCH=$3
+DEPLOYMENT_PLACE=$4
 
 if [[ -z "$HOST" ]]; then
     echo "Use: $0 <HOST>"
@@ -22,8 +24,6 @@ if ssh dokku@${HOST} -C apps:list | grep -qFx ${SERVICE_NAME}; then
     exit 2
 fi
 
-SECRET_KEY=$( openssl rand -base64 18 )
-
 ssh root@${HOST} -C dokku apps:create $SERVICE_NAME
 
 # postgres (root required!)
@@ -35,22 +35,21 @@ ssh dokku@${HOST} -C redis:create $SERVICE_NAME
 ssh dokku@${HOST} -C redis:link $SERVICE_NAME $SERVICE_NAME
 
 # CONFIGS
-
-# base
-ssh dokku@${HOST} -C config:set --no-restart $SERVICE_NAME SERVICE_NAME=$SERVICE_NAME
-ssh dokku@${HOST} -C config:set --no-restart $SERVICE_NAME DOKKU_APP_TYPE=dockerfile
-ssh dokku@${HOST} -C config:set --no-restart $SERVICE_NAME SECRET_KEY=$SECRET_KEY
-
-# environment
-ssh dokku@${HOST} -C config:set --no-restart $SERVICE_NAME ENVIRONMENT=staging
-
-# lets encrypt
-ssh dokku@${HOST} -C config:set --no-restart $SERVICE_NAME DOKKU_LETSENCRYPT_EMAIL=it-services@pik-comfort.ru
+case "$DEPLOYMENT_PLACE" in
+    production)
+        ./set-configs-to-prod.sh ${HOST} ${SERVICE_NAME} ${BRANCH}
+        ;;
+    staging)
+        ./set-configs-to-staging.sh ${HOST} ${SERVICE_NAME} ${BRANCH}
+        ;;
+esac
 
 ssh dokku@${HOST} -C ps:set-restart-policy $SERVICE_NAME always
-ssh dokku@${HOST} -C ps:scale $SERVICE_NAME worker=1 beat=1
 
 if ssh root@${HOST} -C docker ps | grep -q dd-agent; then
     # link to dd-agent
     ssh dokku@${HOST} -C docker-options:add $SERVICE_NAME build,deploy,run "--link dd-agent:dd-agent"
 fi
+
+ssh dokku@${HOST} -C docker-options:add $SERVICE_NAME deploy,run "--memory=1Gb"
+ssh dokku@${HOST} -C docker-options:add $SERVICE_NAME build "--memory=2Gb"

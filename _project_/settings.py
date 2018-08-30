@@ -84,13 +84,16 @@ INSTALLED_APPS = [
     'django.contrib.postgres',
     'django.contrib.gis',
 
-    # MAIN APPS
+    '_project_',
+
+    # APPS
     'contacts',
 
     # HISTORY
     'simple_history',
 
     # API
+    'cors',
     'rest_framework',
     'rest_framework.authtoken',
     'django_filters',
@@ -124,6 +127,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'cors.middleware.CachedCorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -136,6 +140,11 @@ MIDDLEWARE = [
     # DEV
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
+
+# CORS
+CORS_ORIGIN_WHITELIST = os.environ.get('CORS_ORIGIN_WHITELIST', '').split()
+CORS_URLS_REGEX = r'^/(api|openid)/.*$'
+CORS_MODEL = 'cors.Cors'
 
 WSGI_APPLICATION = '_project_.wsgi.application'
 ROOT_URLCONF = '_project_.urls'
@@ -165,8 +174,11 @@ TEMPLATES = [
 DATABASES = {
     'default': dj_database_url.parse(
         DATABASE_URL,
-        engine='django.contrib.gis.db.backends.postgis')
+        engine='django.contrib.gis.db.backends.postgis'
+    )
 }
+DATABASES['default']['ATOMIC_REQUESTS'] = True
+
 
 CACHES = {
     "default": {
@@ -226,6 +238,11 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_URL = '/media/'
+# TODO(GregEremeev) MEDIUM: At this moment, we use a common gCloud
+# storage for all services. That's why we need to use some service specific
+# path prefix(MEDIA_ROOT_PROJECT_PATH_PREFIX)
+# to share the storage with all services without collisions
+MEDIA_ROOT_PROJECT_PATH_PREFIX = os.environ.get('SERVICE_NAME', 'boilerplate')
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(DATA_DIR, 'media'))
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
@@ -263,8 +280,8 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser'
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
@@ -291,6 +308,7 @@ REST_FRAMEWORK = {
 }
 
 # storage
+GS_FILE_OVERWRITE = False
 _STORAGE = os.environ.get('FILE_STORAGE_BACKEND', 'local')
 _CREDENTIALS = os.environ.get('FILE_STORAGE_BACKEND_CREDENTIALS', None)
 GS_BUCKET_NAME = os.environ.get('FILE_STORAGE_BUCKET_NAME', None)
@@ -298,7 +316,6 @@ GS_PROJECT_ID = os.environ.get('FILE_STORAGE_PROJECT_ID', None)
 GS_CREDENTIALS = None
 if _STORAGE == 'gcloud' and _CREDENTIALS and GS_BUCKET_NAME and GS_PROJECT_ID:
     DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
-    # GS_AUTO_CREATE_BUCKET = True
     GS_CREDENTIALS = service_account.Credentials.from_service_account_info(
         json.loads(base64.b64decode(_CREDENTIALS), strict=False))
 else:
@@ -320,7 +337,7 @@ LOGGING = {
     },
     'handlers': {
         'console': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'class': 'logging.StreamHandler',
             'stream': sys.stdout,
             'formatter': 'verbose'
@@ -333,29 +350,29 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'handlers': ['console'],
             'propagate': True,
         },
-        'django.template': {
-            'level': 'ERROR',
-            'handlers': ['console'],
-            'propagate': False,
-        },
         'raven': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'handlers': ['console'],
             'propagate': False,
         },
         'sentry.errors': {
-            'level': 'DEBUG',
+            'level': 'INFO',
             'handlers': ['console'],
             'propagate': False,
         },
     },
 }
 
+
 try:
     from .settings_local import *  # noqa: pylint=unused-wildcard-import, pylint=wildcard-import
 except ImportError:
     pass
+
+
+from lib.oidc_relied.settings import set_oidc_settings  # noqa: pylint=wrong-import-position
+set_oidc_settings(globals())

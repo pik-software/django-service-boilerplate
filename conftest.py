@@ -3,10 +3,19 @@ import os
 
 from selenium import webdriver
 import pytest
+
 import django
+from django.core.cache import caches
+from django.test import TransactionTestCase
+
 from celery.contrib.testing import worker, tasks  # noqa: pylint=unused-import
 
 from _project_ import celery_app as django_celery_app
+
+
+# Transaction rollback emulation
+# http://docs.djangoproject.com/en/2.0/topics/testing/overview/#rollback-emulation
+TransactionTestCase.serialized_rollback = True
 
 
 def pytest_configure():
@@ -17,6 +26,12 @@ def pytest_configure():
 @pytest.fixture(scope='session')
 def base_url(live_server):
     return live_server.url
+
+
+@pytest.fixture(autouse=True)
+def clear_caches():
+    for cache in caches.all():
+        cache.clear()
 
 
 # CELERY

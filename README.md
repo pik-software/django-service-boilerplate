@@ -21,7 +21,7 @@ Create new project, virtualenv and install requirements:
 
     git clone git@github.com:pik-software/<repo>.git <project-name>
     cd <project-name>
-    mkvirtualenv --python=$(which python3.5) <project-name>
+    mkvirtualenv --python=$(which python3.6) <project-name>
     pip install -r requirements.txt  # install python requirements
 
 Create file `settings_local.py` in `_project_` and setup DATABASE and some local settings:
@@ -56,3 +56,16 @@ Database transfer with dumpfile:
 
     # The command for restore dump from file (on server)
     pg_restore dump.dmp
+
+Run tests:
+
+    # Execute tests with predefined `test.ini` project settings
+    
+    pytest
+
+    # WARNING! By default `--reuse-db` is on, it means that test database is 
+    # saved between test sessions. To override this behaviour or in case of 
+    # problems like "Permission already exists" or similar, use `--create-db` 
+    # option for db recreation forcing.
+    
+    pytest --create-db
