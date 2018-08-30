@@ -1,6 +1,7 @@
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 import pytest
+from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.test import APIClient
 
@@ -112,14 +113,12 @@ def test_api_history_filter_by_uid(api_client, api_model):
 
 def test_api_history_filter_by_date(api_client, api_model):
     model, factory, options = api_model
-    last_obj = _create_few_models(factory)
+    _create_few_models(factory)
+    with freeze_time("2000-01-01"):
+        factory.create()
     url = _url(model, options)
 
     _create_history_permission(api_client.user, model)
-    last_obj.save()
-    history = last_obj.history.last()
-    history.history_date = '2000-01-01 00:00:00'
-    history.save()
 
     res = api_client.get(f'{url}?history_date__lt=2000-01-01T00:00:01')
     assert res.status_code == status.HTTP_200_OK
@@ -127,7 +126,7 @@ def test_api_history_filter_by_date(api_client, api_model):
 
     res = api_client.get(f'{url}?history_date__gt=2000-01-01T00:00:01')
     assert res.status_code == status.HTTP_200_OK
-    assert res.data['count'] == 6
+    assert res.data['count'] == BATCH_MODELS + 1
 
     res = api_client.get(f'{url}?history_date__lt=2000-01-01 00:00:01')
     assert res.status_code == status.HTTP_200_OK
@@ -135,7 +134,7 @@ def test_api_history_filter_by_date(api_client, api_model):
 
     res = api_client.get(f'{url}?history_date__gt=2000-01-01 00:00:01')
     assert res.status_code == status.HTTP_200_OK
-    assert res.data['count'] == 6
+    assert res.data['count'] == BATCH_MODELS + 1
 
 
 def test_api_history_create_and_change(api_client, api_model):  # noqa: invalid-name (pylint bug)
