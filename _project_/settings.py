@@ -175,11 +175,10 @@ DATABASES = {
     'default': dj_database_url.parse(
         DATABASE_URL,
         engine='django.contrib.gis.db.backends.postgis'
-    ),
-    'TEST': {
-        'SERIALIZE': False,
-    },
+    )
 }
+DATABASES['default']['ATOMIC_REQUESTS'] = True
+
 
 CACHES = {
     "default": {
@@ -239,6 +238,11 @@ STATICFILES_DIRS = [
 ]
 
 MEDIA_URL = '/media/'
+# TODO(GregEremeev) MEDIUM: At this moment, we use a common gCloud
+# storage for all services. That's why we need to use some service specific
+# path prefix(MEDIA_ROOT_PROJECT_PATH_PREFIX)
+# to share the storage with all services without collisions
+MEDIA_ROOT_PROJECT_PATH_PREFIX = os.environ.get('SERVICE_NAME', 'boilerplate')
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(DATA_DIR, 'media'))
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
@@ -304,6 +308,7 @@ REST_FRAMEWORK = {
 }
 
 # storage
+GS_FILE_OVERWRITE = False
 _STORAGE = os.environ.get('FILE_STORAGE_BACKEND', 'local')
 _CREDENTIALS = os.environ.get('FILE_STORAGE_BACKEND_CREDENTIALS', None)
 GS_BUCKET_NAME = os.environ.get('FILE_STORAGE_BUCKET_NAME', None)
