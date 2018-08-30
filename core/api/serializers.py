@@ -23,7 +23,7 @@ class StandardizedModelSerializer(serializers.ModelSerializer):
             return None
         return ContentType.objects.get_for_model(type(obj)).model
 
-    def get__version(self, obj) -> int:  # noqa: pylint=no-self-use
+    def get__version(self, obj) -> Optional[int]:  # noqa: pylint=no-self-use
         if not hasattr(obj, 'version'):
-            return 1
+            return None
         return obj.version
