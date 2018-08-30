@@ -46,12 +46,24 @@ def _create_few_models(factory):
 
 
 def _create_history_permission(user, model):
+    model = model.history.model
     opts = model._meta  # noqa: pylint=protected-access
     content_type = ContentType.objects.get_for_model(model)
-    permission, _ = Permission.objects.get_or_create(
+    permission = Permission.objects.get(
         content_type=content_type,
-        codename=f'view_historical{opts.model_name}')
+        codename=f'view_{opts.model_name}')
     user.user_permissions.add(permission)
+
+
+def _assert_history_object(hist_obj, type_, event_, uid_):
+    _type = hist_obj.history_object._meta.model_name  # noqa
+    _hist_type = hist_obj._meta.model_name  # noqa
+    _event = hist_obj.history_type
+    _uid = hist_obj.history_object.uid
+    assert _type == type_
+    assert _event == event_
+    assert _uid == uid_
+    assert _hist_type == 'historical' + type_
 
 
 def test_api_history_access_denied(api_client, api_model):
@@ -93,6 +105,7 @@ def test_api_history_filter_by_uid(api_client, api_model):
     assert count == 1
     assert first_result['_uid'] == last_obj.uid
     assert first_result['_type'] == 'historical' + _type
+    assert first_result['_version'] >= 1
     assert first_result['history_change_reason'] is None
     assert first_result['history_type'] == "+"
 
@@ -144,3 +157,30 @@ def test_api_history_create_and_change(api_client, api_model):  # noqa: invalid-
     assert second_result['_uid'] == last_obj.uid
     assert second_result['history_change_reason'] is None
     assert second_result['history_type'] == "+"
+
+
+def test_history_events(api_model):
+    model, factory, _ = api_model
+    _type = ContentType.objects.get_for_model(model).model
+
+    # create event
+    obj = factory.create()
+
+    history = obj.history.all()
+    _uid = obj.uid
+
+    hist_obj = history.first()
+    _assert_history_object(hist_obj, _type, '+', _uid)
+
+    # change event
+    obj.version += 10
+    obj.save()
+
+    hist_obj = history.first()
+    _assert_history_object(hist_obj, _type, '~', _uid)
+
+    # delete event
+    obj.delete()
+
+    hist_obj = history.first()
+    _assert_history_object(hist_obj, _type, '-', _uid)
