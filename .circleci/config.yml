@@ -38,6 +38,7 @@ jobs:
             pip install --upgrade pip
             pip install --upgrade setuptools
             pip install --exists-action w -r requirements.txt
+            pip check
 
       - type: cache-save
         key: pik-python-{{ arch }}-{{ .Branch }}-{{ checksum "requirements.txt" }}

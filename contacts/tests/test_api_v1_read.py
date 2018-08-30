@@ -84,7 +84,7 @@ def test_api_contact_history(api_client):
     assert res.status_code == status.HTTP_200_OK
     _assert_api_object_list(res, [{
         '_uid': str(obj.uid),
-        '_type': 'contact',
+        '_type': 'historical' + 'contact',
         '_version': obj.version,
         'emails': obj.emails,
         'name': obj.name,
@@ -152,7 +152,7 @@ def test_api_comment_history(api_client):
     assert res.status_code == status.HTTP_200_OK
     _assert_api_object_list(res, [{
         '_uid': str(obj.uid),
-        '_type': 'comment',
+        '_type': 'historical' + 'comment',
         '_version': obj.version,
         'contact': {
             '_uid': str(obj.contact.uid),

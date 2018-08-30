@@ -53,17 +53,17 @@ def _create_history_permission(user, model):
         content_type=content_type,
         codename=f'view_{opts.model_name}')
     user.user_permissions.add(permission)
-    assert user.has_perm(
-        f'{content_type.app_label}.view_{opts.model_name}')
 
 
 def _assert_history_object(hist_obj, type_, event_, uid_):
     _type = hist_obj.history_object._meta.model_name  # noqa
+    _hist_type = hist_obj._meta.model_name  # noqa
     _event = hist_obj.history_type
     _uid = hist_obj.history_object.uid
     assert _type == type_
     assert _event == event_
     assert _uid == uid_
+    assert _hist_type == 'historical' + type_
 
 
 def test_api_history_access_denied(api_client, api_model):
@@ -104,10 +104,38 @@ def test_api_history_filter_by_uid(api_client, api_model):
     first_result = res.data['results'][0]
     assert count == 1
     assert first_result['_uid'] == last_obj.uid
-    assert first_result['_type'] == _type
+    assert first_result['_type'] == 'historical' + _type
     assert first_result['_version'] >= 1
     assert first_result['history_change_reason'] is None
     assert first_result['history_type'] == "+"
+
+
+def test_api_history_filter_by_date(api_client, api_model):
+    model, factory, options = api_model
+    last_obj = _create_few_models(factory)
+    url = _url(model, options)
+
+    _create_history_permission(api_client.user, model)
+    last_obj.save()
+    history = last_obj.history.last()
+    history.history_date = '2000-01-01 00:00:00'
+    history.save()
+
+    res = api_client.get(f'{url}?history_date__lt=2000-01-01T00:00:01')
+    assert res.status_code == status.HTTP_200_OK
+    assert res.data['count'] == 1
+
+    res = api_client.get(f'{url}?history_date__gt=2000-01-01T00:00:01')
+    assert res.status_code == status.HTTP_200_OK
+    assert res.data['count'] == 6
+
+    res = api_client.get(f'{url}?history_date__lt=2000-01-01 00:00:01')
+    assert res.status_code == status.HTTP_200_OK
+    assert res.data['count'] == 1
+
+    res = api_client.get(f'{url}?history_date__gt=2000-01-01 00:00:01')
+    assert res.status_code == status.HTTP_200_OK
+    assert res.data['count'] == 6
 
 
 def test_api_history_create_and_change(api_client, api_model):  # noqa: invalid-name (pylint bug)

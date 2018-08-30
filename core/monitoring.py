@@ -1,4 +1,5 @@
 import logging
+
 from raven.contrib.django.models import client
 
 

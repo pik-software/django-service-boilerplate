@@ -2,12 +2,14 @@ from collections import OrderedDict
 
 from django_filters import filterset
 from django.utils.translation import ugettext_lazy as _
+from django.db.models import DateTimeField
 from rest_framework.decorators import action
 from rest_framework import status
 from rest_framework.exceptions import APIException
 from rest_framework.mixins import CreateModelMixin
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
+from rest_framework_filters import BooleanFilter, IsoDateTimeFilter, filterset
 
 
 _HISTORY_FIELD_NAMES = [
@@ -91,9 +93,6 @@ class HistoryViewSetMixin:
                     except Exception:  # noqa: pylint=broad-except
                         continue
 
-                # change _type (historicalcontact -> contact)
-                if '_type' in ret and ret['_type'].startswith('historical'):
-                    ret['_type'] = ret['_type'][10:]
                 return ret
         return HistorySerializer
 
@@ -106,6 +105,15 @@ class HistoryViewSetMixin:
 
     def filter_history_queryset(self, queryset):
         class AutoFilterSet(filterset.FilterSet):
+            only_last_version = BooleanFilter(
+                method='filter_only_last_version')
+
+            @staticmethod
+            def filter_only_last_version(queryset, name, value):
+                if not value:
+                    return queryset
+                return queryset.order_by('-id', '-updated').distinct('id')
+
             class Meta(object):
                 model = queryset.model
                 fields = {
@@ -115,6 +123,9 @@ class HistoryViewSetMixin:
                     'history_date': ['exact', 'gt', 'gte', 'lt', 'lte', 'in'],
                     self.lookup_field: [
                         'exact', 'gt', 'gte', 'lt', 'lte', 'in', 'isnull'],
+                }
+                filter_overrides = {
+                    DateTimeField: {'filter_class': IsoDateTimeFilter},
                 }
 
         query_params = self.request.query_params.copy()

@@ -1,4 +1,5 @@
-from typing import Optional
+from typing import Optional, Union
+from uuid import UUID
 
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Model
@@ -10,7 +11,7 @@ class StandardizedModelSerializer(serializers.ModelSerializer):
     _type = serializers.SerializerMethodField()
     _version = serializers.SerializerMethodField()
 
-    def get__uid(self, obj) -> Optional[str]:  # noqa: pylint=no-self-use
+    def get__uid(self, obj) -> Optional[Union[str, UUID]]:  # noqa: pylint=no-self-use
         if not hasattr(obj, 'uid'):
             if not hasattr(obj, 'pk'):
                 return None
