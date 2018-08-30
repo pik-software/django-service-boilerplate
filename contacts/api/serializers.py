@@ -7,10 +7,11 @@ class ContactSerializer(StandardizedModelSerializer):
     class Meta:
         model = Contact
         read_only_fields = (
-            '_uid', '_type',
+            '_uid', '_type', '_version',
         )
         fields = (
-            '_uid', '_type', 'name', 'phones', 'emails', 'order_index',
+            '_uid', '_type', '_version', 'name', 'phones', 'emails',
+            'order_index',
         )
 
 
@@ -23,8 +24,8 @@ class CommentSerializer(StandardizedModelSerializer):
     class Meta:
         model = Comment
         read_only_fields = (
-            '_uid', '_type', 'user',
+            '_uid', '_type', '_version', 'user',
         )
         fields = (
-            '_uid', '_type', 'user', 'contact', 'message',
+            '_uid', '_type', '_version', 'user', 'contact', 'message',
         )
