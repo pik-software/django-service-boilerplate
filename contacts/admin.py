@@ -7,7 +7,7 @@ from core.admin import SecuredVersionedModelAdmin, SecuredAdminInline
 from .models import Contact, Comment
 
 
-class SetUserMixin(object):
+class SetUserMixin:
     def save_model(self, request, obj, form, change):
         if hasattr(obj, 'user_id') and not obj.user_id:
             obj.user_id = request.user.pk
@@ -26,8 +26,7 @@ class CommentInline(SecuredAdminInline):
     model = Comment
 
     permitted_fields = {
-        'contacts.change_comment': [
-            'message', ]
+        'contacts.change_comment': ('message', )
     }
 
 
@@ -39,16 +38,13 @@ class ContactAdmin(SetUserMixin, SecuredVersionedModelAdmin):
 
     fieldsets = ((
         None,
-        {'fields': (
-            'name', 'phones', 'emails', 'order_index'
-        )}),
+        {'fields': ('name', 'phones', 'emails', 'order_index')}),
     )
 
     inlines = (CommentInline, )
 
     permitted_fields = {
-        'contacts.change_contact': [
-            'name', 'phones', 'emails', 'order_index']
+        'contacts.change_contact': ('name', 'phones', 'emails', 'order_index')
     }
 
     def display_emails(self, obj):  # noqa: pylint=no-self-use
