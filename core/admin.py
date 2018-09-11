@@ -56,10 +56,9 @@ class PermittedFieldsMixIn:
             return False
         for permission, _fields in self.permitted_fields.items():
             meta = self.model._meta  # noqa: protected-access
-            permission = permission.format(app_label=meta.app_label,
-                                           model_name=meta.object_name)
-            has_perm = (field in self.permitted_fields[permission]
-                        and request.user.has_perm(permission))
+            permission = permission.format(app_label=meta.app_label.lower(),
+                                           model_name=meta.object_name.lower())
+            has_perm = (field in _fields and request.user.has_perm(permission))
             if has_perm:
                 return True
         return False
