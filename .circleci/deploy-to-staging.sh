@@ -44,7 +44,4 @@ if ${INIT_LETSENCRYPT}; then
     ssh dokku@${HOST} -C letsencrypt $SERVICE_NAME
 fi
 
-# run migrations
-ssh dokku@${HOST} -C run $SERVICE_NAME python manage.py migrate
-
 echo "open !!! http://${SERVICE_NAME}.pik-software.ru/"
