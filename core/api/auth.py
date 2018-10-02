@@ -46,4 +46,5 @@ class StandardizedObtainAuthToken(ObtainAuthToken):
     serializer_class = AuthTokenSerializer
     schema = StandardizedAutoSchema()
 
+
 OBTAIN_AUTH_TOKEN = StandardizedObtainAuthToken.as_view()
