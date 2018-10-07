@@ -10,7 +10,13 @@ class StandardizedGenericViewSet(ViewSetMixin, generics.GenericAPIView):
     but does include the base set of generic view behavior, such as
     the `get_object` and `get_queryset` methods.
     """
-    pass
+    select_related_fields = ()
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.select_related_fields:
+            queryset = queryset.select_related(*self.select_related_fields)
+        return queryset
 
 
 class StandardizedReadOnlyModelViewSet(
