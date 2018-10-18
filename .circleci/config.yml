@@ -51,8 +51,8 @@ jobs:
             echo -e "SECRET_KEY = 'not so sectret!'\n" > ./_project_/settings_local.py
             . .venv/bin/activate
             sleep 1
-            python manage.py makemigrations --check
             python manage.py migrate
+            python manage.py makemigrations --check
             python manage.py collectstatic
             python manage.py check
             pytest --cov .
