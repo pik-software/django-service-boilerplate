@@ -10,8 +10,10 @@ class CharArrayFilter(filters.BaseCSVFilter, filters.CharFilter):
 
 
 class ContactFilter(filters.FilterSet):
-    phones__contains = CharArrayFilter(name='phones', lookup_expr='contains')
-    emails__contains = CharArrayFilter(name='emails', lookup_expr='contains')
+    phones__contains = CharArrayFilter(
+        field_name='phones', lookup_expr='contains')
+    emails__contains = CharArrayFilter(
+        field_name='emails', lookup_expr='contains')
 
     class Meta:
         model = Contact

@@ -34,7 +34,7 @@ urlpatterns = [  # noqa: pylint=invalid-name
     url(r'^api/task/result/(.+)/', task_result_api_view),
     url(r'^api/v(?P<version>[1-9])/schema/',
         SchemaView.as_view(), name='api_schema'),
-    url(r'^api/v(?P<version>[1-9])/', include(router.urls, namespace='api')),
+    url(r'^api/v(?P<version>[1-9])/', include((router.urls, 'api'))),
     url(r'^api-token-auth/', OBTAIN_AUTH_TOKEN),
 ]
 
