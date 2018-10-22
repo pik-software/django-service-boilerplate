@@ -323,6 +323,10 @@ else:
     logging.warning('!! DEFAULT_FILE_STORAGE="FileSystemStorage"')
 
 
+ONLY_LAST_VERSION_ALLOWED_DAYS_RANGE = os.environ.get(
+    'ONLY_LAST_VERSION_ALLOWED_DAYS_RANGE', 1)
+
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
