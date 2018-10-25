@@ -93,7 +93,7 @@ class HistoryViewSetMixin:
                     return queryset
                 return queryset.order_by('-id', '-updated').distinct('id')
 
-            class Meta(object):
+            class Meta:
                 model = queryset.model
                 fields = {
                     'history_id': ['exact', 'gt', 'gte', 'lt', 'lte', 'in'],
