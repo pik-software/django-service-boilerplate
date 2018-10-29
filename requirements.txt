@@ -7,7 +7,7 @@ openpyxl==2.5.2
 google_cloud==0.32.0
 ddtrace==0.11.1
 datadog==0.20.0
-pik-django-utils==1.0.5
+pik-django-utils==1.0.11
 
 Django==1.11.15
 
