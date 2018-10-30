@@ -1,4 +1,4 @@
-FROM quay.io/pik-software/base:v1.6
+FROM quay.io/pik-software/base:v1.9
 
 ENV PYTHONUNBUFFERED 1
 

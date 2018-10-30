@@ -8,7 +8,7 @@ jobs:
     docker:
       # specify the version you desire here
       # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
-      - image: quay.io/pik-software/base:v1.6
+      - image: quay.io/pik-software/base:v1.9
 
       - image: mdillon/postgis:9.6
         environment:
@@ -60,7 +60,7 @@ jobs:
 
   deploy-staging:
     docker:
-      - image: quay.io/pik-software/base:v1.6
+      - image: quay.io/pik-software/base:v1.9
     working_directory: ~/repo
     steps:
       - checkout
@@ -74,7 +74,7 @@ jobs:
 
   deploy-prod:
     docker:
-      - image: quay.io/pik-software/base:v1.6
+      - image: quay.io/pik-software/base:v1.9
     working_directory: ~/repo
     steps:
       - checkout
