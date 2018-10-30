@@ -1,7 +1,15 @@
 from collections import OrderedDict
 
-from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination, CursorPagination
+
+
+class StandardizedCursorPagination(CursorPagination):
+
+    page_size_query_param = 'page_size'
+    page_size = 20
+    max_page_size = 1000
+    ordering = 'updated'
 
 
 class StandardizedPagination(PageNumberPagination):

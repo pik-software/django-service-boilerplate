@@ -75,7 +75,8 @@ def test_api_history_access_denied(api_client, api_model):
 
     assert res.status_code == status.HTTP_403_FORBIDDEN
     assert res.data == {
-        'code': 'permission_denied', 'message': 'Access denied'}
+        'code': 'permission_denied',
+        'message': 'У вас нет прав для выполнения этой операции.'}
 
 
 def test_api_history(api_client, api_model):
@@ -87,7 +88,7 @@ def test_api_history(api_client, api_model):
     res = api_client.get(url)
 
     assert res.status_code == status.HTTP_200_OK
-    assert res.data['count'] == BATCH_MODELS + 1
+    assert len(res.data['results']) == BATCH_MODELS + 1
 
 
 def test_api_history_filter_by_uid(api_client, api_model):
@@ -100,9 +101,8 @@ def test_api_history_filter_by_uid(api_client, api_model):
     res = api_client.get(f'{url}?_uid={last_obj.uid}')
 
     assert res.status_code == status.HTTP_200_OK
-    count = res.data['count']
     first_result = res.data['results'][0]
-    assert count == 1
+    assert len(res.data['results']) == 1
     assert first_result['_uid'] == last_obj.uid
     assert first_result['_type'] == 'historical' + _type
     assert first_result['_version'] >= 1
@@ -123,19 +123,19 @@ def test_api_history_filter_by_date(api_client, api_model):
 
     res = api_client.get(f'{url}?history_date__lt=2000-01-01T00:00:01')
     assert res.status_code == status.HTTP_200_OK
-    assert res.data['count'] == 1
+    assert len(res.data['results']) == 1
 
     res = api_client.get(f'{url}?history_date__gt=2000-01-01T00:00:01')
     assert res.status_code == status.HTTP_200_OK
-    assert res.data['count'] == 6
+    assert len(res.data['results']) == 6
 
     res = api_client.get(f'{url}?history_date__lt=2000-01-01 00:00:01')
     assert res.status_code == status.HTTP_200_OK
-    assert res.data['count'] == 1
+    assert len(res.data['results']) == 1
 
     res = api_client.get(f'{url}?history_date__gt=2000-01-01 00:00:01')
     assert res.status_code == status.HTTP_200_OK
-    assert res.data['count'] == 6
+    assert len(res.data['results']) == 6
 
 
 def test_api_history_create_and_change(api_client, api_model):  # noqa: invalid-name (pylint bug)
@@ -148,15 +148,16 @@ def test_api_history_create_and_change(api_client, api_model):  # noqa: invalid-
     res = api_client.get(f'{url}?_uid={last_obj.uid}')
 
     assert res.status_code == status.HTTP_200_OK
-    assert res.data['count'] == 2
+    assert len(res.data['results']) == 2
     first_result = res.data['results'][0]
     assert first_result['_uid'] == last_obj.uid
     assert first_result['history_change_reason'] is None
-    assert first_result['history_type'] == "~"
+
+    assert first_result['history_type'] == "+"
     second_result = res.data['results'][1]
     assert second_result['_uid'] == last_obj.uid
     assert second_result['history_change_reason'] is None
-    assert second_result['history_type'] == "+"
+    assert second_result['history_type'] == "~"
 
 
 def test_history_events(api_model):
