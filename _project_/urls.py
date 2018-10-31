@@ -50,6 +50,6 @@ if settings.DEBUG:
     import debug_toolbar  # noqa
 
     urlpatterns += [
-        path('__debug__', include(debug_toolbar.urls)),
+        path('__debug__/', include(debug_toolbar.urls)),
         path('explorer/', include('explorer.urls')),
     ]

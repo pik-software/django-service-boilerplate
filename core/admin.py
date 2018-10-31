@@ -1,4 +1,4 @@
-from django.contrib.gis import admin
+from django.contrib import admin
 from django.forms import modelform_factory, ALL_FIELDS
 from simple_history.admin import SimpleHistoryAdmin
 
