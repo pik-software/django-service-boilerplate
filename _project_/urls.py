@@ -31,7 +31,7 @@ urlpatterns = [  # noqa: pylint=invalid-name
     path('admin/', admin.site.urls),
     path('status/', include('health_check.urls')),
     path('accounts/', include('registration.auth_urls')),
-    re_path(r'^api/task/result/(.+)/', task_result_api_view),
+    path('api/task/result/<str:taskid>/', task_result_api_view),
     path('api/v<version>/schema/', SchemaView.as_view(), name='api_schema'),
     path('api/v<int:version>/', include((router.urls, 'api'))),
     path('api-token-auth/', OBTAIN_AUTH_TOKEN),
