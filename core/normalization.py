@@ -8,7 +8,7 @@ def normalize(text: str):
     >>> normalize("ООО  'ВЫМПЕЛКОМ' ")
     "ООО 'ВЫМПЕЛКОМ'"
     >>> normalize('ЗАО "ЮВЕЛИРНЫЙ завод')
-    'ЗАО "ЮВЕЛИРНЫИ завод'
+    'ЗАО "ЮВЕЛИРНЫЙ завод'
 
     :param text: some hand typed text
     :return: normalized text

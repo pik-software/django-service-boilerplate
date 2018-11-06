@@ -33,7 +33,7 @@ class PermittedFieldsMixIn:
             return not self.has_add_permission(request)
 
         return (self.has_view_permission(request, obj)
-                and not self._has_change_only_permission(request, obj))
+                and not self.has_change_permission(request, obj))
 
     def get_model_fields(self, obj):
         form_class = modelform_factory(self.model, self.form, ALL_FIELDS)
