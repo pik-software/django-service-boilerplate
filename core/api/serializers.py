@@ -5,8 +5,10 @@ from django.contrib.contenttypes.models import ContentType
 from django.db.models import Model
 from rest_framework import serializers
 
+from core.permitted_fields.api import PermittedFieldsSerializerMixIn
 
-class StandardizedModelSerializer(serializers.ModelSerializer):
+
+class StandardizedProtocolSerializer(serializers.ModelSerializer):
     _uid = serializers.SerializerMethodField()
     _type = serializers.SerializerMethodField()
     _version = serializers.SerializerMethodField()
@@ -27,3 +29,9 @@ class StandardizedModelSerializer(serializers.ModelSerializer):
         if not hasattr(obj, 'version'):
             return None
         return obj.version
+
+
+class StandardizedModelSerializer(StandardizedProtocolSerializer,
+                                  PermittedFieldsSerializerMixIn,
+                                  serializers.ModelSerializer):
+    pass

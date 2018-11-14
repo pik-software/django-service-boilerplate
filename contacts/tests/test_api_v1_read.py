@@ -1,35 +1,10 @@
 from pprint import pprint
 
-import pytest
-from django.contrib.auth.models import Permission
-from django.contrib.contenttypes.models import ContentType
 from rest_framework import status
-from rest_framework.test import APIClient
 
-from core.tasks.fixtures import create_user
+from core.tests.utils import add_permissions
 from ..models import Contact, Comment
 from ..tests.factories import ContactFactory, CommentFactory
-
-
-@pytest.fixture
-def api_client():
-    user = create_user()
-    client = APIClient()
-    client.force_login(user)
-    client.user = user
-    return client
-
-
-def _create_history_permission(user, model):
-    model = model.history.model
-    opts = model._meta  # noqa: pylint=protected-access
-    content_type = ContentType.objects.get_for_model(model)
-    permission = Permission.objects.get(
-        content_type=content_type,
-        codename=f'view_{opts.model_name}')
-    user.user_permissions.add(permission)
-    assert user.has_perm(
-        f'{content_type.app_label}.view_{opts.model_name}')
 
 
 def _assert_api_object_list(res, result):
@@ -44,7 +19,8 @@ def _assert_api_object(res, result):
     assert data == result
 
 
-def test_api_list_contact(api_client):  # noqa: pylint=invalid-name
+def test_api_list_contact(api_user, api_client):  # noqa: pylint=invalid-name
+    add_permissions(api_user, Contact, 'view')
     obj = ContactFactory.create()
     res = api_client.get('/api/v1/contact-list/')
     assert res.status_code == status.HTTP_200_OK
@@ -61,7 +37,8 @@ def test_api_list_contact(api_client):  # noqa: pylint=invalid-name
     ])
 
 
-def test_api_retrieve_contact(api_client):
+def test_api_retrieve_contact(api_user, api_client):
+    add_permissions(api_user, Contact, 'view')
     obj = ContactFactory.create()
     res = api_client.get(f'/api/v1/contact-list/{obj.uid}/')
     assert res.status_code == status.HTTP_200_OK
@@ -76,10 +53,10 @@ def test_api_retrieve_contact(api_client):
     })
 
 
-def test_api_contact_history(api_client):
+def test_api_contact_history(api_user, api_client):
     obj = ContactFactory.create()
     hist_obj = obj.history.last()
-    _create_history_permission(api_client.user, Contact)
+    add_permissions(api_user, Contact.history.model, 'view')
     res = api_client.get(f'/api/v1/contact-list/history/?_uid={obj.uid}')
     assert res.status_code == status.HTTP_200_OK
     _assert_api_object_list(res, [{
@@ -98,7 +75,8 @@ def test_api_contact_history(api_client):
     }])
 
 
-def test_api_list_comment(api_client):  # noqa: pylint=invalid-name
+def test_api_list_comment(api_user, api_client):  # noqa: pylint=invalid-name
+    add_permissions(api_user, Comment, 'view')
     obj = CommentFactory.create()
     res = api_client.get('/api/v1/comment-list/')
     assert res.status_code == status.HTTP_200_OK
@@ -122,7 +100,8 @@ def test_api_list_comment(api_client):  # noqa: pylint=invalid-name
     ])
 
 
-def test_api_retrieve_comment(api_client):
+def test_api_retrieve_comment(api_user, api_client):
+    add_permissions(api_user, Comment, 'view')
     obj = CommentFactory.create()
     res = api_client.get(f'/api/v1/comment-list/{obj.uid}/')
     assert res.status_code == status.HTTP_200_OK
@@ -144,10 +123,10 @@ def test_api_retrieve_comment(api_client):
     })
 
 
-def test_api_comment_history(api_client):
+def test_api_comment_history(api_user, api_client):
     obj = CommentFactory.create()
     hist_obj = obj.history.last()
-    _create_history_permission(api_client.user, Comment)
+    add_permissions(api_user, Comment.history.model, 'view')
     res = api_client.get(f'/api/v1/comment-list/history/?_uid={obj.uid}')
     assert res.status_code == status.HTTP_200_OK
     _assert_api_object_list(res, [{

@@ -1,6 +1,7 @@
 from contextlib import contextmanager
 import os
 
+from rest_framework.test import APIClient
 from selenium import webdriver
 import pytest
 
@@ -16,6 +17,28 @@ from _project_ import celery_app as django_celery_app
 # Transaction rollback emulation
 # http://docs.djangoproject.com/en/2.0/topics/testing/overview/#rollback-emulation
 TransactionTestCase.serialized_rollback = True
+
+
+@pytest.fixture()
+def anon_api_client():
+    return APIClient()
+
+
+@pytest.fixture
+def api_user():
+    from django.contrib.auth import get_user_model
+    user_model = get_user_model()
+    user = user_model(username='test', email='test@test.ru', is_active=True)
+    user.set_password('test_password')
+    user.save()
+    return user
+
+
+@pytest.fixture
+def api_client(api_user):
+    client = APIClient()
+    client.force_login(api_user)
+    return client
 
 
 def pytest_configure():

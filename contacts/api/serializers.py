@@ -1,3 +1,5 @@
+from rest_framework.fields import IntegerField
+
 from core.api.fields import PrimaryKeyModelSerializerField
 from core.api.serializers import StandardizedModelSerializer
 from ..models import Contact, Comment
@@ -18,8 +20,14 @@ class ContactSerializer(StandardizedModelSerializer):
 class CommentSerializer(StandardizedModelSerializer):
     contact = PrimaryKeyModelSerializerField(
         ContactSerializer,
-        allowed_objects=lambda serializer: serializer.Meta.model.objects.all()
-    )
+        allowed_objects=lambda serializer: serializer.Meta.model.objects.all())
+
+    user = IntegerField(source='user_id', required=False)
+
+    def create(self, validated_data):
+        if 'user' not in validated_data:
+            validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
 
     class Meta:
         model = Comment

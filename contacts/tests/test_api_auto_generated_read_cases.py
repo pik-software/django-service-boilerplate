@@ -1,9 +1,8 @@
 from django.contrib.contenttypes.models import ContentType
 import pytest
 from rest_framework import status
-from rest_framework.test import APIClient
 
-from core.tasks.fixtures import create_user
+from core.tests.utils import add_permissions
 from ..models import Contact, Comment
 from ..tests.factories import ContactFactory, CommentFactory
 
@@ -19,20 +18,6 @@ def api_model(request):
     return request.param
 
 
-@pytest.fixture()
-def client():
-    return APIClient()
-
-
-@pytest.fixture
-def api_client():
-    user = create_user()
-    client = APIClient()
-    client.force_login(user)
-    client.user = user
-    return client
-
-
 def _url(model, options, obj=None):
     _type = ContentType.objects.get_for_model(model).model
     if obj:
@@ -46,34 +31,35 @@ def _create_few_models(factory):
     return last_obj
 
 
-def test_api_unauthorized_list(client, api_model):
+def test_api_unauthorized_list(anon_api_client, api_model):
     model, factory, options = api_model
     _create_few_models(factory)
     url = _url(model, options)
 
-    res = client.get(url)
+    res = anon_api_client.get(url)
 
     assert res.status_code in (status.HTTP_401_UNAUTHORIZED,
                                status.HTTP_403_FORBIDDEN)
 
 
-def test_api_unauthorized_retrieve(client, api_model):
+def test_api_unauthorized_retrieve(anon_api_client, api_model):
     model, factory, options = api_model
     last_obj = _create_few_models(factory)
     url = _url(model, options, last_obj)
 
-    res = client.get(url)
+    res = anon_api_client.get(url)
 
     assert res.status_code in (status.HTTP_401_UNAUTHORIZED,
                                status.HTTP_403_FORBIDDEN)
 
 
-def test_api_list(api_client, api_model):
+def test_api_list(api_user, api_client, api_model):
     model, factory, options = api_model
     last_obj = _create_few_models(factory)
     url = _url(model, options)
     _type = ContentType.objects.get_for_model(model).model
 
+    add_permissions(api_user, model, 'view')
     res = api_client.get(url)
     assert res.status_code == status.HTTP_200_OK
     assert res.data['count'] > BATCH_MODELS
@@ -87,12 +73,13 @@ def test_api_list(api_client, api_model):
     assert len(res.data['results']) > BATCH_MODELS
 
 
-def test_api_retrieve(api_client, api_model):
+def test_api_retrieve(api_user, api_client, api_model):
     model, factory, options = api_model
     last_obj = _create_few_models(factory)
     url = _url(model, options, last_obj)
     _type = ContentType.objects.get_for_model(model).model
 
+    add_permissions(api_user, model, 'view')
     res = api_client.get(url)
     assert res.status_code == status.HTTP_200_OK
     assert res.data['_uid'] == last_obj.uid
@@ -100,12 +87,13 @@ def test_api_retrieve(api_client, api_model):
 
 
 def test_api_list_num_queries(
-        api_client, api_model,
+        api_user, api_client, api_model,
         assert_num_queries_lte
 ):
     model, factory, options = api_model
     _create_few_models(factory)
     url = _url(model, options)
+    add_permissions(api_user, model, 'view')
 
     with assert_num_queries_lte(options["queries"]):
         res = api_client.get(url)
