@@ -1,7 +1,6 @@
 from contextlib import contextmanager
 import os
 
-from rest_framework.test import APIClient
 from selenium import webdriver
 import pytest
 
@@ -21,6 +20,7 @@ TransactionTestCase.serialized_rollback = True
 
 @pytest.fixture()
 def anon_api_client():
+    from rest_framework.test import APIClient
     return APIClient()
 
 
@@ -36,6 +36,7 @@ def api_user():
 
 @pytest.fixture
 def api_client(api_user):
+    from rest_framework.test import APIClient
     client = APIClient()
     client.force_login(api_user)
     return client
