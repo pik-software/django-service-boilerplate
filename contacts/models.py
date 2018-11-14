@@ -56,5 +56,5 @@ class Comment(BasePHistorical, Owned):
         ordering = ['-created']
         permissions = (
             ("change_user_comment",
-             _("Может менять автора комментария")),
+             _("Может менять автора коментария")),
         )
