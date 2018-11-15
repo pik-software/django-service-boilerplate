@@ -44,9 +44,9 @@ class _StandardizedOpenApiSchemaGenerator(OpenApiSchemaGenerator):
 
         if issubclass(pager, StandardizedPagination):
             return FakeStandardizedPagination
-        elif issubclass(pager, (PageNumberPagination, LimitOffsetPagination)):
+        if issubclass(pager, (PageNumberPagination, LimitOffsetPagination)):
             return FakeListSerializer
-        elif issubclass(pager, CursorPagination):
+        if issubclass(pager, CursorPagination):
             return FakePrevNextListSerializer
 
         return BaseFakeListSerializer

@@ -57,8 +57,8 @@ DATADOG_TRACE = {
 }
 
 # SQL EXPLORER
-EXPLORER_CONNECTIONS = {'Default': 'readonly'}
-EXPLORER_DEFAULT_CONNECTION = 'readonly'
+EXPLORER_CONNECTIONS = {'Default': 'default'}
+EXPLORER_DEFAULT_CONNECTION = 'default'
 EXPLORER_SCHEMA_EXCLUDE_TABLE_PREFIXES = (
     'auth_', 'contenttypes_',
     'sessions_', 'admin_', 'health_',
@@ -74,7 +74,6 @@ EXPLORER_SCHEMA_EXCLUDE_TABLE_PREFIXES = (
 # Application definition
 
 INSTALLED_APPS = [
-    'admin_view_permission',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -96,6 +95,7 @@ INSTALLED_APPS = [
     'cors',
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_filters',
     'django_filters',
     'crispy_forms',  # sexy django_filters forms
     'drf_openapi',
@@ -285,6 +285,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
+        'core.api.permissions.DjangoModelViewPermission',
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_THROTTLE_CLASSES': (),

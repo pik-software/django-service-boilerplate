@@ -20,11 +20,6 @@ class ContactAdmin(SecuredVersionedModelAdmin):
         )}),
     )
 
-    permitted_fields = {
-        'contacts.change_contact': [
-            'name', 'phones', 'emails', 'order_index']
-    }
-
     def display_emails(self, obj):  # noqa: pylint=no-self-use
         return format_html_join(
             mark_safe('<br>'), '<a href="mailto:{0}">{0}</a>',
