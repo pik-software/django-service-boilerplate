@@ -13,19 +13,22 @@ class StandardizedProtocolSerializer(serializers.ModelSerializer):
     _type = serializers.SerializerMethodField()
     _version = serializers.SerializerMethodField()
 
-    def get__uid(self, obj) -> Optional[Union[str, UUID]]:  # noqa: pylint=no-self-use
+    @staticmethod
+    def get__uid(obj) -> Optional[Union[str, UUID]]:
         if not hasattr(obj, 'uid'):
             if not hasattr(obj, 'pk'):
                 return None
             return str(obj.pk)
         return obj.uid
 
-    def get__type(self, obj) -> Optional[str]:  # noqa: pylint=no-self-use
+    @staticmethod
+    def get__type(obj) -> Optional[str]:
         if not isinstance(obj, Model):
             return None
         return ContentType.objects.get_for_model(type(obj)).model
 
-    def get__version(self, obj) -> Optional[int]:  # noqa: pylint=no-self-use
+    @staticmethod
+    def get__version(obj) -> Optional[int]:
         if not hasattr(obj, 'version'):
             return None
         return obj.version

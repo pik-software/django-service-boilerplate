@@ -8,13 +8,9 @@ from ..models import Contact, Comment
 class ContactSerializer(StandardizedModelSerializer):
     class Meta:
         model = Contact
-        read_only_fields = (
-            '_uid', '_type', '_version',
-        )
         fields = (
             '_uid', '_type', '_version', 'name', 'phones', 'emails',
-            'order_index',
-        )
+            'order_index')
 
 
 class CommentSerializer(StandardizedModelSerializer):
@@ -31,9 +27,6 @@ class CommentSerializer(StandardizedModelSerializer):
 
     class Meta:
         model = Comment
-        read_only_fields = (
-            '_uid', '_type', '_version', 'user',
-        )
+        read_only_fields = ('user',)
         fields = (
-            '_uid', '_type', '_version', 'user', 'contact', 'message',
-        )
+            '_uid', '_type', '_version', 'user', 'contact', 'message')
