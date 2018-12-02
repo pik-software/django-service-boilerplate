@@ -8,6 +8,11 @@ from eventsourcing.replicator import replicating
 
 @replicating('contact')
 class Contact(BaseHistorical):
+    permitted_fields = {
+        '{app_label}.change_{model_name}': [
+            'name', 'phones', 'emails', 'order_index']
+    }
+
     name = models.CharField(_('Наименование'), max_length=255)
     phones = ArrayField(
         models.CharField(max_length=30), blank=True, default=list,
@@ -36,6 +41,11 @@ class Contact(BaseHistorical):
 
 @replicating('comment')
 class Comment(BasePHistorical, Owned):
+    permitted_fields = {
+        '{app_label}.change_{model_name}': ['message', 'contact'],
+        '{app_label}.change_user_{model_name}': ['user_id']
+    }
+
     contact = models.ForeignKey(
         Contact, related_name='comments',
         on_delete=models.CASCADE)
@@ -49,5 +59,6 @@ class Comment(BasePHistorical, Owned):
         verbose_name_plural = _('коментарии')
         ordering = ['-created']
         permissions = (
-            ("can_edit_comment", _("Может редактировать коментарий")),
+            ("change_user_comment",
+             _("Может менять автора коментария")),
         )

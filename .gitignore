@@ -7,6 +7,7 @@
 .coverage
 *.py[cod]
 *.log
+.python-version
 
 __data__/*
 _project_/settings_local.py

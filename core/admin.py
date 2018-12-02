@@ -1,6 +1,7 @@
 from django.contrib.gis import admin
-from django.forms import modelform_factory, ALL_FIELDS
 from simple_history.admin import SimpleHistoryAdmin
+
+from core.permitted_fields.admin import PermittedFieldsAdminMixIn
 
 
 class ReasonedMixIn:
@@ -25,46 +26,6 @@ class ReasonedMixIn:
         super().delete_model(request, obj)
 
 
-class PermittedFieldsMixIn:
-    permitted_fields = dict()
-
-    def _has_view_permission_only(self, request, obj):
-        if obj is None:
-            return not self.has_add_permission(request)
-
-        return (self.has_view_permission(request, obj)
-                and not self._has_change_only_permission(request, obj))
-
-    def get_model_fields(self, obj):
-        form_class = modelform_factory(self.model, self.form, ALL_FIELDS)
-        form = form_class(instance=obj)
-        return form.fields.keys()
-
-    def get_readonly_fields(self, request, obj=None):
-        if self._has_view_permission_only(request, obj):
-            return super().get_readonly_fields(request, obj)
-
-        fields = {
-            field
-            for field in self.get_model_fields(obj)
-            if not self.has_field_permission(request, field)
-        }
-        return list(set(super().get_readonly_fields(request, obj)) | fields)
-
-    def has_field_permission(self, request, field):
-        if not self.permitted_fields:
-            return False
-        for permission, _fields in self.permitted_fields.items():
-            meta = self.model._meta  # noqa: protected-access
-            permission = permission.format(app_label=meta.app_label,
-                                           model_name=meta.object_name)
-            has_perm = (field in self.permitted_fields[permission]
-                        and request.user.has_perm(permission))
-            if has_perm:
-                return True
-        return False
-
-
 class NonDeletableModelAdminMixIn:
     def has_delete_permission(self, request, obj=None):  # noqa: pylint=no-self-use
         return False
@@ -85,7 +46,8 @@ class StrictMixIn(NonAddableModelAdminMixIn, NonDeletableModelAdminMixIn):
     pass
 
 
-class SecuredModelAdmin(PermittedFieldsMixIn, ReasonedMixIn, admin.ModelAdmin):
+class SecuredModelAdmin(PermittedFieldsAdminMixIn, ReasonedMixIn,
+                        admin.ModelAdmin):
     pass
 
 
@@ -93,7 +55,7 @@ class StrictSecuredModelAdmin(StrictMixIn, SecuredModelAdmin):
     pass
 
 
-class SecuredAdminInline(PermittedFieldsMixIn, ReasonedMixIn,
+class SecuredAdminInline(PermittedFieldsAdminMixIn, ReasonedMixIn,
                          admin.TabularInline):
     extra = 0
 

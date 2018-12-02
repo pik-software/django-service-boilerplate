@@ -44,9 +44,9 @@ class _StandardizedOpenApiSchemaGenerator(OpenApiSchemaGenerator):
 
         if issubclass(pager, StandardizedPagination):
             return FakeStandardizedPagination
-        elif issubclass(pager, (PageNumberPagination, LimitOffsetPagination)):
+        if issubclass(pager, (PageNumberPagination, LimitOffsetPagination)):
             return FakeListSerializer
-        elif issubclass(pager, CursorPagination):
+        if issubclass(pager, CursorPagination):
             return FakePrevNextListSerializer
 
         return BaseFakeListSerializer
@@ -57,6 +57,24 @@ class _StandardizedOpenApiSchemaGenerator(OpenApiSchemaGenerator):
             return super().get_serializer_fields(
                 path, method, view, version, method_func)
         return []
+
+    def fallback_schema_from_field(self, field):
+
+        import coreschema
+        # Using django default `force_text` instead of inconsistent drf_openapi
+        from django.utils.encoding import force_text
+
+        title = force_text(field.label) if field.label else ''
+        description = force_text(field.help_text) if field.help_text else ''
+
+        if isinstance(field, (serializers.DictField, serializers.JSONField)):
+            return coreschema.Object(
+                properties={},
+                title=title,
+                description=description
+            )
+
+        return None
 
 
 class SchemaView(BaseSchemaView):

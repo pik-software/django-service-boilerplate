@@ -3,6 +3,8 @@ from rest_framework import serializers
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.compat import authenticate
 
+from core.api.inspectors import StandardizedAutoSchema
+
 
 class AuthTokenSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
@@ -42,6 +44,7 @@ class AuthTokenSerializer(serializers.Serializer):
 
 class StandardizedObtainAuthToken(ObtainAuthToken):
     serializer_class = AuthTokenSerializer
+    schema = StandardizedAutoSchema()
 
 
 OBTAIN_AUTH_TOKEN = StandardizedObtainAuthToken.as_view()
