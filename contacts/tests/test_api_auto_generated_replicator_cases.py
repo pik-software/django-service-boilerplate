@@ -75,8 +75,6 @@ def _create_history_permission(user, model):
         content_type=content_type,
         codename=f'view_{opts.model_name}')
     user.user_permissions.add(permission)
-    assert user.has_perm(
-        f'{content_type.app_label}.view_{opts.model_name}')
 
 
 def _create_subscription(model, options):
@@ -99,6 +97,16 @@ def _assert_api_res(res, code, result):
     pprint(data)
     assert res.status_code == code
     assert data == result
+
+
+def _assert_historical_instance(hist_obj, data):
+    assert isinstance(hist_obj, HistoryObject)
+    _type = hist_obj.instance_type
+    assert data["history_type"] == hist_obj.history_type
+    assert data["history_id"] == hist_obj.history_id
+    assert data["_uid"] == hist_obj.instance_uid
+    assert data["_type"] == 'historical' + _type or data["_type"] == _type
+    assert data['_version'] == hist_obj.instance_version
 
 
 def test_api_create_subscription_access_denied(api_client, api_model):
@@ -209,6 +217,16 @@ def test_api_create_subscription(api_client, api_model):
     })
 
 
+def test_api_subscription_status(api_client, api_model, mocker):
+    check = mocker.patch(
+        'eventsourcing.replicator.serialize._check_serialize_problem')
+    model, factory, options = api_model
+    url = _url(model, options) + 'status/'
+    _type = ContentType.objects.get_for_model(model).model
+
+    res = api_client.get(url)
+    check.as
+
 def test_api_subscription_status_error_403(api_client, api_model):
     model, factory, options = api_model
     url = _url(model, options) + 'status/'
@@ -263,7 +281,7 @@ def test_serializer_process_fake_request(api_model):
     model, factory, options = api_model
     _type = ContentType.objects.get_for_model(model).model
     obj = _create_few_models(factory)
-    hist_obj = obj.history.first()
+    hist_obj = _to_hist_obj(obj.history.first())
     user = create_user()
     history_url = f'/api/v{options["version"]}/{_type}-list/history/'
 
@@ -271,21 +289,14 @@ def test_serializer_process_fake_request(api_model):
     code, content = _process_fake_request(
         user, 'get', history_url, data={'history_id': hist_obj.history_id})
 
-    print(content)
     assert code == 200
-
     content_json = json.loads(content)
     assert content_json['count'] == 1
-    assert content_json['results'][0]["history_type"] == '+'
-    assert content_json['results'][0]["history_id"] == hist_obj.history_id
-    assert content_json['results'][0]["_uid"] == str(hist_obj.uid)
-    assert content_json['results'][0]["_type"] == _type
-    assert content_json['results'][0]['_version'] == obj.version
+    _assert_historical_instance(hist_obj, content_json['results'][0])
 
 
 def test_serializer_serialize(api_model):
     model, factory, options = api_model
-    _type = ContentType.objects.get_for_model(model).model
     obj = _create_few_models(factory)
     hist_obj = _to_hist_obj(obj.history.first())
     subscribe = _create_subscription(model, options)
@@ -294,11 +305,7 @@ def test_serializer_serialize(api_model):
     assert isinstance(content, str)
     content_json = json.loads(content)
     assert content_json['count'] == 1
-    assert content_json['results'][0]["history_type"] == '+'
-    assert content_json['results'][0]["history_id"] == hist_obj.history_id
-    assert content_json['results'][0]["_uid"] == hist_obj.instance_uid
-    assert content_json['results'][0]["_type"] == _type
-    assert content_json['results'][0]['_version'] == obj.version
+    _assert_historical_instance(hist_obj, content_json['results'][0])
 
 
 def test_task_replicate_to_webhook_subscribers(

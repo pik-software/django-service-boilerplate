@@ -109,6 +109,8 @@ def _process_updated_historical_record(
 
 def _process_historical_record(_type: str, _action: str, _uid: str,
                                _version: int, hist_record: dict):
+    if _type.startswith('historical'):
+        _type = _type[len('historical'):]
     ctx = _type, _action, _uid, _version
     model = _get_replicated_model(_type)
     if not model:

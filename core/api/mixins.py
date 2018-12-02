@@ -1,6 +1,5 @@
 from collections import OrderedDict
 
-from django_filters import filterset
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import DateTimeField
 from rest_framework.decorators import action
