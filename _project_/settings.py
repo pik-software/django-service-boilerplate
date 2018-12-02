@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import sys
+from datetime import timedelta
 
 import dj_database_url
 from google.oauth2 import service_account
@@ -315,6 +316,8 @@ _CREDENTIALS = os.environ.get('FILE_STORAGE_BACKEND_CREDENTIALS', None)
 GS_BUCKET_NAME = os.environ.get('FILE_STORAGE_BUCKET_NAME', None)
 GS_PROJECT_ID = os.environ.get('FILE_STORAGE_PROJECT_ID', None)
 GS_CREDENTIALS = None
+GS_EXPIRATION = os.environ.get(
+    'FILE_STORAGE_EXPIRATION_SECONDS', timedelta(seconds=7200))
 if _STORAGE == 'gcloud' and _CREDENTIALS and GS_BUCKET_NAME and GS_PROJECT_ID:
     DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
     GS_CREDENTIALS = service_account.Credentials.from_service_account_info(
