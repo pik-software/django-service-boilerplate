@@ -122,13 +122,13 @@ class HistoryViewSetMixin:
                     simplify_nested_serializer(field)
                     try:
                         attribute = field.get_attribute(instance)
-                    except Exception:  # noqa: pylint=broad-except
-                        continue
-                    try:
-                        value = field.to_representation(attribute)
-                        ret[field.field_name] = value
-                    except Exception:  # noqa: pylint=broad-except
-                        continue
+                        if attribute is not None:
+                            ret[field.field_name] = field.to_representation(
+                                attribute)
+                        else:
+                            ret[field.field_name] = None
+                    except AttributeError:
+                        ret[field.field_name] = None
 
                 return ret
 
