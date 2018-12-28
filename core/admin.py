@@ -85,3 +85,18 @@ class RequiredInlineMixIn:
     def get_formset(self, *args, **kwargs):  # noqa: pylint=arguments-differ
         return super().get_formset(validate_min=self.validate_min, *args,
                                    **kwargs)
+
+
+class AutoSetRequestUserMixIn:
+    def save_model(self, request, obj, form, change):
+        if hasattr(obj, 'user_id') and not obj.user_id:
+            obj.user_id = request.user.pk
+        super().save_model(request, obj, form, change)
+
+    def save_related(self, request, form, formsets, change):
+        for formset in formsets:
+            instances = formset.save(commit=False)
+            for instance in instances:
+                if hasattr(instance, 'user_id') and not instance.user_id:
+                    instance.user_id = request.user.pk
+        super().save_related(request, form, formsets, change)
