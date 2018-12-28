@@ -91,7 +91,7 @@ class HistoryPermission(BasePermission):
         return False
 
 
-def simplify_nested_serializer(serializer):
+def _simplify_nested_serializer(serializer):
     if isinstance(serializer, StandardizedModelSerializer):
         for _name, _field in list(serializer.fields.items()):
             if _name not in ('_uid', '_type'):
@@ -119,7 +119,7 @@ class HistoryViewSetMixin:
                         continue
 
                 for field in fields:
-                    simplify_nested_serializer(field)
+                    _simplify_nested_serializer(field)
                     try:
                         attribute = field.get_attribute(instance)
                         if attribute is not None:
