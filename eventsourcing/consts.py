@@ -1,0 +1,17 @@
+from django.utils.translation import ugettext_lazy as _
+
+CREATED_ACTION = '+'
+UPDATED_ACTION = '~'
+DELETED_ACTION = '-'
+ACTIONS = [CREATED_ACTION, UPDATED_ACTION, DELETED_ACTION]
+ACTION_TYPES = (
+    (CREATED_ACTION, _('Created')),
+    (UPDATED_ACTION, _('Updated')),
+    (DELETED_ACTION, _('Deleted')),
+)
+
+WEBHOOK_SUBSCRIPTION = 1
+SUBSCRIPTIONS = [WEBHOOK_SUBSCRIPTION]
+SUBSCRIPTION_TYPES = (
+    (WEBHOOK_SUBSCRIPTION, _("webhook")),
+)

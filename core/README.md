@@ -89,31 +89,21 @@ REST_FRAMEWORK = {
 ```
 from django.db import models
 from django.utils.translation import ugettext as _
-from simple_history.models import HistoricalRecords
 
-from core.models import Dated, Uided, Versioned
+from pik.core.models import BasePHistorical
 
-class <Organization>(Uided, Dated, Versioned):
+class <Organization>(BasePHistorical):
     UID_PREFIX = <'ORG'>
     name = models.CharField(_(<'Наименование'>), max_length=255)
     ...
-
-    history = HistoricalRecords()
 
     def __str__(self):
         return f'{self.name}'
 
     class Meta:
-        ordering = ['-id']
+        ordering = ['-created']
         verbose_name = _(<'организация'>)
         verbose_name_plural = _(<'организации'>)
-        permissions = (
-            (<"can_edit_organization">,
-             _(<"Может редактировать основную информацию об организации">)),
-            (<"can_get_api_<organization>_history">,
-             _("Может читать /api/v<X>/organization-list/history/")),
-            ...
-        )
 ```
 
 ## admin interface ##

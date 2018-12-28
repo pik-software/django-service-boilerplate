@@ -56,7 +56,9 @@ jobs:
             python manage.py migrate
             python manage.py collectstatic
             python manage.py check
-            pytest --cov .
+            pytest --ignore=contacts --ignore=contacts_replica --cov .
+            pytest --cov . contacts
+            pytest --cov . contacts_replica
             prospector --profile-path . --profile .prospector.yaml .
 
   deploy-staging:

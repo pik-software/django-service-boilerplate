@@ -3,18 +3,28 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.urls import path, include
+from django.views.static import serve
+from rest_framework.routers import DefaultRouter
 
 from core.api.auth import OBTAIN_AUTH_TOKEN
 from core.api.router import StandardizedRouter
 from core.api.schema import SchemaView
 from core.views import task_result_api_view
 from contacts.api import ContactViewSet, CommentViewSet
+from eventsourcing.replicated import WebhookCallbackViewSet
+from eventsourcing.replicator import SubscriptionViewSet
 
 router = StandardizedRouter()  # noqa: pylint=invalid-name
 router.register(
     'contact-list', ContactViewSet, base_name='contact')
 router.register(
     'comment-list', CommentViewSet, base_name='comment')
+
+webhook = DefaultRouter()  # noqa: pylint=invalid-name
+webhook.register(
+    'callback', WebhookCallbackViewSet, base_name='callback')
+webhook.register(
+    'subscriptions', SubscriptionViewSet, base_name='subscription')
 
 
 @login_required
@@ -34,6 +44,7 @@ urlpatterns = [  # noqa: pylint=invalid-name
     path('api/task/result/<str:taskid>/', task_result_api_view),
     path('api/v<version>/schema/', SchemaView.as_view(), name='api_schema'),
     path('api/v<int:version>/', include((router.urls, 'api'))),
+    path('api/v<int:version>/', include(webhook.urls)),
     path('api-token-auth/', OBTAIN_AUTH_TOKEN),
 ]
 

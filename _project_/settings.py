@@ -38,8 +38,11 @@ INTERNAL_IPS = ['127.0.0.1']
 # --- <SERVICES> --- #
 
 # SENTRY
-RAVEN_CONFIG = {
+SENTRY_CONFIG = {
     'dsn': os.environ.get('RAVEN_DSN', ''),
+    'tags': {'environment': ENVIRONMENT},
+    'include_versions': False,
+    'release': None,
     'CELERY_LOGLEVEL': logging.WARNING,
 }
 
@@ -88,9 +91,11 @@ INSTALLED_APPS = [
 
     # APPS
     'contacts',
+    'contacts_replica',
 
     # HISTORY
     'simple_history',
+    'eventsourcing',
 
     # API
     'cors',
@@ -270,6 +275,7 @@ CELERYBEAT_SCHEDULE_FILENAME = os.path.join(DATA_DIR, 'celerybeat.db')
 CELERYBEAT_SCHEDULE = {}
 
 # DRF
+REST_FRAMEWORK_LATEST_API_VERSION = '1'
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
@@ -336,7 +342,7 @@ LOGGING = {
     'disable_existing_loggers': False,
     'root': {
         'level': 'WARNING',
-        'handlers': ['sentry'],
+        'handlers': ['console', 'sentry'],
     },
     'formatters': {
         'verbose': {
@@ -353,7 +359,6 @@ LOGGING = {
         'sentry': {
             'level': 'WARNING',
             'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',  # noqa
-            'tags': {'environment': ENVIRONMENT},
         },
     },
     'loggers': {
@@ -372,6 +377,11 @@ LOGGING = {
             'handlers': ['console'],
             'propagate': False,
         },
+        'eventsourcing': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+            'propagate': False,
+        }
     },
 }
 

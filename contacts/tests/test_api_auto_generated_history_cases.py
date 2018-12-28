@@ -1,5 +1,6 @@
 from django.contrib.contenttypes.models import ContentType
 import pytest
+from freezegun import freeze_time
 from rest_framework import status
 
 from core.tests.utils import add_permissions
@@ -101,7 +102,7 @@ def test_api_history_filter_by_date(api_user, api_client, api_model):
 
     res = api_client.get(f'{url}?history_date__gt=2000-01-01T00:00:01')
     assert res.status_code == status.HTTP_200_OK
-    assert len(res.data['results']) == 6
+    assert len(res.data['results']) == BATCH_MODELS + 1
 
     res = api_client.get(f'{url}?history_date__lt=2000-01-01 00:00:01')
     assert res.status_code == status.HTTP_200_OK
@@ -109,7 +110,7 @@ def test_api_history_filter_by_date(api_user, api_client, api_model):
 
     res = api_client.get(f'{url}?history_date__gt=2000-01-01 00:00:01')
     assert res.status_code == status.HTTP_200_OK
-    assert len(res.data['results']) == 6
+    assert len(res.data['results']) == BATCH_MODELS + 1
 
 
 def test_api_history_create_and_change(api_user, api_client, api_model):  # noqa: invalid-name (pylint bug)
