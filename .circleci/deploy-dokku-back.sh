@@ -42,14 +42,14 @@ if [[ "$ENVIRONMENT" = "production" ]]; then
     CURRENT_BRANCH=$( git branch | grep -e "^*" | cut -d' ' -f 2 )
     HAS_RELEASE_TAG=$( git tag --points-at HEAD | grep -q "^v" && echo 1 || echo 0 )
 
-#    if [[ "$CURRENT_BRANCH" != "master" ]]; then
-#        echo "Deploy only master!"
-#        exit 1
-#    fi
-#    if [[ "$HAS_RELEASE_TAG" != "1" ]]; then
-#        echo "Release tag required!"
-#        exit 2
-#    fi
+    if [[ "$CURRENT_BRANCH" != "master" ]]; then
+        echo "Deploy only master!"
+        exit 1
+    fi
+    if [[ "$HAS_RELEASE_TAG" != "1" ]]; then
+        echo "Release tag required!"
+        exit 2
+    fi
 
     SERVICE_NAME="${REPO}"
 elif [[ "$ENVIRONMENT" = "staging" ]]; then
