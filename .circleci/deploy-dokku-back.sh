@@ -61,7 +61,7 @@ fi
 
 INIT_LETSENCRYPT=false
 
-# check ssh access
+echo "Check SSH access"
 ssh dokku@${HOST} help > /dev/null
 ssh root@${HOST} id > /dev/null
 
