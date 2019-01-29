@@ -83,7 +83,7 @@ jobs:
           name: deploy master
           command: |
             echo 'django-service-boilerplate.pik-software.ru ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFPXodJ4VrKP3YKaotYDle6krEX2M1qORWpEXm2yqLA5spRrIG7VEw7mvFzqWD9xfTaQr1l2uIuxXp6DFMZY4hc=' >> ~/.ssh/known_hosts
-            ./.circleci/deploy-to-prod.sh
+            ./.circleci/deploy-to-prod.sh ${CIRCLE_PROJECT_REPONAME}.pik-software.ru
 
 workflows:
   version: 2
