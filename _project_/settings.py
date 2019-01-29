@@ -144,7 +144,8 @@ MIDDLEWARE = [
 
 # CORS
 CORS_ORIGIN_WHITELIST = os.environ.get('CORS_ORIGIN_WHITELIST', '').split()
-CORS_URLS_REGEX = r'^/(api|openid)/.*$'
+CORS_ALLOW_CREDENTIALS = True
+CORS_URLS_REGEX = r'^/(api|openid).*$'
 CORS_MODEL = 'cors.Cors'
 
 WSGI_APPLICATION = '_project_.wsgi.application'

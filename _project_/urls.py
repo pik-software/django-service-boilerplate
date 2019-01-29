@@ -7,6 +7,7 @@ from django.urls import path, include
 from core.api.auth import OBTAIN_AUTH_TOKEN
 from core.api.router import StandardizedRouter
 from core.api.schema import SchemaView
+from core.api.user import USER_API_VIEW
 from core.views import task_result_api_view
 from contacts.api import ContactViewSet, CommentViewSet
 
@@ -35,6 +36,7 @@ urlpatterns = [  # noqa: pylint=invalid-name
     path('api/v<version>/schema/', SchemaView.as_view(), name='api_schema'),
     path('api/v<int:version>/', include((router.urls, 'api'))),
     path('api-token-auth/', OBTAIN_AUTH_TOKEN),
+    path('api-user/', USER_API_VIEW),
 ]
 
 urlpatterns += static(
