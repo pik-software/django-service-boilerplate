@@ -73,7 +73,7 @@ jobs:
             KNOWN_HOST_KEYS="ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBNJvPW0n0F2IjYLCBLaBNyLnO8TLAWL5WI5pAek6EJGN7MZtT1aVw1+B/juOusAshqKoTzTAR3I/q4ns7jMK7gc="
             if [[ "${CIRCLE_BRANCH}" == "deploy" || "${CIRCLE_BRANCH}" == "master" ]]; then
               echo "${HOST} ${KNOWN_HOST_KEYS}" >> ~/.ssh/known_hosts
-              echo -e "Host ${HOST}\n  HostName ${HOST}\n  Port ${PORT}\n" >> ~/.ssh/config
+              echo -e "\nHost ${HOST}\n  HostName ${HOST}\n  Port ${PORT}" >> ~/.ssh/config
               ./.circleci/deploy.sh "${HOST}" "${CIRCLE_PROJECT_REPONAME}" "${CIRCLE_BRANCH}" "staging"
             fi
 

@@ -61,6 +61,10 @@ fi
 
 INIT_LETSENCRYPT=false
 
+# check ssh access
+ssh dokku@${HOST} help > /dev/null
+ssh root@${HOST} id > /dev/null
+
 if ! ssh dokku@${HOST} -C apps:list | grep -qFx ${SERVICE_NAME}; then
     echo "Init SERVICE_NAME=${SERVICE_NAME} BRANCH=${BRANCH} ENVIRONMENT=${ENVIRONMENT} on ${HOST}"
     ./init.sh ${HOST} ${SERVICE_NAME} ${ENVIRONMENT}
