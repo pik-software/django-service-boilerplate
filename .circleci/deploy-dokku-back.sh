@@ -67,12 +67,12 @@ ssh root@${HOST} id > /dev/null
 
 if ! ssh dokku@${HOST} -C apps:list | grep -qFx ${SERVICE_NAME}; then
     echo "Init SERVICE_NAME=${SERVICE_NAME} BRANCH=${BRANCH} ENVIRONMENT=${ENVIRONMENT} on ${HOST}"
-    ./init.sh ${HOST} ${SERVICE_NAME} ${ENVIRONMENT}
+    ./init-dokku-back.sh ${HOST} ${SERVICE_NAME} ${ENVIRONMENT}
     INIT_LETSENCRYPT=true
 fi
 
 echo "Reconfigure SERVICE_NAME=${SERVICE_NAME} BRANCH=${BRANCH} ENVIRONMENT=${ENVIRONMENT} on ${HOST}"
-./reconfigure.sh ${HOST} ${SERVICE_NAME} ${BRANCH} ${ENVIRONMENT}
+./reconfigure-dokku-back.sh ${HOST} ${SERVICE_NAME} ${BRANCH} ${ENVIRONMENT}
 
 git push ssh://dokku@${HOST}/${SERVICE_NAME} ${BRANCH}:master
 

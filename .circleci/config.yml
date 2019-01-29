@@ -74,7 +74,7 @@ jobs:
             if [[ "${CIRCLE_BRANCH}" == "deploy" || "${CIRCLE_BRANCH}" == "master" ]]; then
               echo "${HOST} ${KNOWN_HOST_KEYS}" >> ~/.ssh/known_hosts
               echo -e "\nHost ${HOST}\n  HostName ${HOST}\n  Port ${PORT}" >> ~/.ssh/config
-              ./.circleci/deploy.sh "${HOST}" "${CIRCLE_PROJECT_REPONAME}" "${CIRCLE_BRANCH}" "staging"
+              ./.circleci/deploy-dokku-back.sh "${HOST}" "${CIRCLE_PROJECT_REPONAME}" "${CIRCLE_BRANCH}" "staging"
             fi
 
   deploy-prod:
@@ -87,7 +87,7 @@ jobs:
           name: deploy master
           command: |
             echo "boilerplate.pik-software.ru ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFPXodJ4VrKP3YKaotYDle6krEX2M1qORWpEXm2yqLA5spRrIG7VEw7mvFzqWD9xfTaQr1l2uIuxXp6DFMZY4hc=" >> ~/.ssh/known_hosts
-            ./.circleci/deploy.sh boilerplate.pik-software.ru ${CIRCLE_PROJECT_REPONAME} master production
+            ./.circleci/deploy-dokku-back.sh boilerplate.pik-software.ru ${CIRCLE_PROJECT_REPONAME} master production
 
 workflows:
   version: 2

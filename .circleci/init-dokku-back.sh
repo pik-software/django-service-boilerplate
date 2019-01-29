@@ -40,6 +40,9 @@ fi
 ssh dokku@${HOST} -C docker-options:add ${SERVICE_NAME} deploy,run "--memory=1Gb"
 ssh dokku@${HOST} -C docker-options:add ${SERVICE_NAME} build "--memory=2Gb"
 
+# DOKKU_SCALE
+ssh dokku@${HOST} -C ps:scale ${SERVICE_NAME} web=1 worker=1 beat=1
+
 # CONFIGS
 
 SECRET_KEY=$( openssl rand -base64 18 )
