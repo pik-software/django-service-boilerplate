@@ -62,8 +62,9 @@ fi
 INIT_LETSENCRYPT=false
 
 echo "Check SSH access"
-ssh dokku@${HOST} help > /dev/null
-ssh root@${HOST} id > /dev/null
+ssh dokku@${HOST} -C help > /dev/null
+ssh ${HOST} -C dokku help > /dev/null
+ssh ${HOST} -C docker ps > /dev/null
 
 if ! ssh dokku@${HOST} -C apps:list | grep -qFx ${SERVICE_NAME}; then
     echo "Init SERVICE_NAME=${SERVICE_NAME} BRANCH=${BRANCH} ENVIRONMENT=${ENVIRONMENT} on ${HOST}"

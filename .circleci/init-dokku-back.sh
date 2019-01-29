@@ -19,10 +19,10 @@ if ssh dokku@${HOST} -C apps:list | grep -qFx ${SERVICE_NAME}; then
     exit 2
 fi
 
-ssh root@${HOST} -C dokku apps:create ${SERVICE_NAME}
+ssh ${HOST} -C dokku apps:create ${SERVICE_NAME}
 
 # postgres (root required!)
-ssh root@${HOST} -C POSTGRES_IMAGE="mdillon/postgis" POSTGRES_IMAGE_VERSION="9.6" dokku postgres:create ${SERVICE_NAME}
+ssh ${HOST} -C POSTGRES_IMAGE="mdillon/postgis" POSTGRES_IMAGE_VERSION="9.6" dokku postgres:create ${SERVICE_NAME}
 ssh dokku@${HOST} -C postgres:link ${SERVICE_NAME} ${SERVICE_NAME}
 
 # redis
@@ -32,7 +32,7 @@ ssh dokku@${HOST} -C redis:link ${SERVICE_NAME} ${SERVICE_NAME}
 # dokku options
 ssh dokku@${HOST} -C ps:set-restart-policy ${SERVICE_NAME} always
 
-if ssh root@${HOST} -C docker ps | grep -q dd-agent; then
+if ssh ${HOST} -C docker ps | grep -q dd-agent; then
     # link to dd-agent
     ssh dokku@${HOST} -C docker-options:add ${SERVICE_NAME} build,deploy,run "--link dd-agent:dd-agent"
 fi
