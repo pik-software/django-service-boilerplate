@@ -3,7 +3,7 @@
 [[ "${TRACE}" = "1" ]] && set -x
 set -eo pipefail
 cd "$(dirname "$0")"
-echo "$(date +%Y-%m-%d-%H-%M-%S) - deploy.sh $@"
+echo "$(date +%Y-%m-%d-%H-%M-%S) - deploy-dokku-back.sh $@"
 
 HOST=$1
 REPO=$2

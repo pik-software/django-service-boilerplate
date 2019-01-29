@@ -3,7 +3,7 @@
 [[ "${TRACE}" = "1" ]] && set -x
 set -eo pipefail
 cd "$(dirname "$0")"
-echo "$(date +%Y-%m-%d-%H-%M-%S) - reconfigure.sh $@"
+echo "$(date +%Y-%m-%d-%H-%M-%S) - reconfigure-dokku-back.sh $@"
 
 HOST=$1
 SERVICE_NAME=$2
@@ -17,6 +17,8 @@ fi
 
 RELEASE_DATE=$( date '+%Y-%m-%d-%H-%M-%S' )
 ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} RELEASE_DATE="'"${RELEASE_DATE}"'"
+GIT_REV=$(git rev-parse ${BRANCH})
+ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} GIT_REV=${GIT_REV}
 
 # CONFIGS
 case "$ENVIRONMENT" in

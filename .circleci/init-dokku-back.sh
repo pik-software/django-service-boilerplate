@@ -3,7 +3,7 @@
 [[ "${TRACE}" = "1" ]] && set -x
 set -eo pipefail
 cd "$(dirname "$0")"
-echo "$(date +%Y-%m-%d-%H-%M-%S) - init.sh $@"
+echo "$(date +%Y-%m-%d-%H-%M-%S) - init-dokku-back.sh $@"
 
 HOST=$1
 SERVICE_NAME=$2
