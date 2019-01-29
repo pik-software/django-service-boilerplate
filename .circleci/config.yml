@@ -68,9 +68,13 @@ jobs:
       - run:
           name: deploy staging
           command: |
+            HOST=${CIRCLE_BRANCH}.${CIRCLE_PROJECT_REPONAME}.pik-software.ru
+            PORT=22501
+            KNOWN_HOST_KEYS=ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBNJvPW0n0F2IjYLCBLaBNyLnO8TLAWL5WI5pAek6EJGN7MZtT1aVw1+B/juOusAshqKoTzTAR3I/q4ns7jMK7gc=
             if [[ "${CIRCLE_BRANCH}" == "deploy" || "${CIRCLE_BRANCH}" == "master" ]]; then
-              echo "${CIRCLE_BRANCH}.${CIRCLE_PROJECT_REPONAME}.pik-software.ru ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBOY5bwhxoqupBaChSCncDXgY+EPJC5DbZzfBJyrGh9etF+L8+4TJJUtzyCHUj0HcOUY186WHa3alIsAf5/KWbW0=" >> ~/.ssh/known_hosts
-              ./.circleci/deploy.sh ${CIRCLE_BRANCH}.${CIRCLE_PROJECT_REPONAME}.pik-software.ru ${CIRCLE_PROJECT_REPONAME} ${CIRCLE_BRANCH} staging
+              echo "${HOST} ${KNOWN_HOST_KEYS}" >> ~/.ssh/known_hosts
+              echo -e "Host ${HOST}\n  HostName ${HOST}\n  Port ${PORT}\n" >> ~/.ssh/config
+              ./.circleci/deploy.sh ${HOST} ${CIRCLE_PROJECT_REPONAME} ${CIRCLE_BRANCH} staging
             fi
 
   deploy-prod:
@@ -89,10 +93,10 @@ workflows:
   version: 2
   build-deploy:
     jobs:
-      - build
+#      - build
       - deploy-staging:
-          requires:
-            - build
+#          requires:
+#            - build
       - staging-ok:
           type: approval
           requires:

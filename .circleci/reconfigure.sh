@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+[[ "${TRACE}" = "1" ]] && set -x
 set -eo pipefail
 cd "$(dirname "$0")"
 echo "$(date +%Y-%m-%d-%H-%M-%S) - reconfigure.sh $@"
