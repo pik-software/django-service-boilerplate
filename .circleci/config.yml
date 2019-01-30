@@ -27,37 +27,37 @@ jobs:
     steps:
       - checkout
 
-      - type: cache-restore
-        key: pik-python-{{ arch }}-{{ .Branch }}-{{ checksum "requirements.txt" }}
-
-      - run:
-          name: install dependencies
-          command: |
-            python3 -m venv .venv
-            . .venv/bin/activate
-            pip install --upgrade pip
-            pip install --upgrade setuptools
-            pip install --exists-action w -r requirements.txt
-            pip check
-
-      - type: cache-save
-        key: pik-python-{{ arch }}-{{ .Branch }}-{{ checksum "requirements.txt" }}
-        paths:
-          - "~/.cache/pip"
-
-      - run:
-          name: run tests
-          command: |
-            echo -e "SECRET_KEY = 'not so sectret!'\n" > ./_project_/settings_local.py
-            . .venv/bin/activate
-            sleep 1
-            python manage.py makemigrations explorer
-            python manage.py makemigrations --check
-            python manage.py migrate
-            python manage.py collectstatic
-            python manage.py check
-            pytest --cov .
-            prospector --profile-path . --profile .prospector.yaml .
+#      - type: cache-restore
+#        key: pik-python-{{ arch }}-{{ .Branch }}-{{ checksum "requirements.txt" }}
+#
+#      - run:
+#          name: install dependencies
+#          command: |
+#            python3 -m venv .venv
+#            . .venv/bin/activate
+#            pip install --upgrade pip
+#            pip install --upgrade setuptools
+#            pip install --exists-action w -r requirements.txt
+#            pip check
+#
+#      - type: cache-save
+#        key: pik-python-{{ arch }}-{{ .Branch }}-{{ checksum "requirements.txt" }}
+#        paths:
+#          - "~/.cache/pip"
+#
+#      - run:
+#          name: run tests
+#          command: |
+#            echo -e "SECRET_KEY = 'not so sectret!'\n" > ./_project_/settings_local.py
+#            . .venv/bin/activate
+#            sleep 1
+#            python manage.py makemigrations explorer
+#            python manage.py makemigrations --check
+#            python manage.py migrate
+#            python manage.py collectstatic
+#            python manage.py check
+#            pytest --cov .
+#            prospector --profile-path . --profile .prospector.yaml .
 
   deploy-staging:
     docker:
@@ -68,9 +68,17 @@ jobs:
       - run:
           name: deploy staging
           command: |
-            if [[ "${CIRCLE_BRANCH}" == "deploy" || "${CIRCLE_BRANCH}" == "master" ]]; then
-              echo 'staging.pik-software.ru ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBOY5bwhxoqupBaChSCncDXgY+EPJC5DbZzfBJyrGh9etF+L8+4TJJUtzyCHUj0HcOUY186WHa3alIsAf5/KWbW0=' >> ~/.ssh/known_hosts
-              ./.circleci/deploy-to-staging.sh staging.pik-software.ru ${CIRCLE_PROJECT_REPONAME} ${CIRCLE_BRANCH}
+            DOMAIN=pik-software.ru
+            REPO_NAME=$( git config --local remote.origin.url | sed -n 's#.*/\([^.]*\)\.git#\1#p' )
+            BRANCH_NAME=$( git branch | grep -e "^*" | cut -d' ' -f 2 )
+            SSH_HOST="${BRANCH_NAME}.${REPO_NAME}.${DOMAIN}"
+            SSH_PORT="22501"
+            SSH_USER="circleci-staging"
+            KNOWN_HOST_KEYS="ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBNJvPW0n0F2IjYLCBLaBNyLnO8TLAWL5WI5pAek6EJGN7MZtT1aVw1+B/juOusAshqKoTzTAR3I/q4ns7jMK7gc="
+            if [[ "${BRANCH_NAME}" == "deploy" || "${BRANCH_NAME}" == "master" ]]; then
+              echo "${SSH_HOST} ${KNOWN_HOST_KEYS}" >> ~/.ssh/known_hosts
+              echo -e "\nHost ${SSH_HOST}\n  HostName ${SSH_HOST}\n  Port ${SSH_PORT}\n  User ${SSH_USER}" >> ~/.ssh/config
+              ./.circleci/deploy-dokku-back.sh "${SSH_HOST}" "${DOMAIN}" "${REPO_NAME}" "${BRANCH_NAME}" "staging"
             fi
 
   deploy-prod:
@@ -82,8 +90,15 @@ jobs:
       - run:
           name: deploy master
           command: |
-            echo 'django-service-boilerplate.pik-software.ru ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFPXodJ4VrKP3YKaotYDle6krEX2M1qORWpEXm2yqLA5spRrIG7VEw7mvFzqWD9xfTaQr1l2uIuxXp6DFMZY4hc=' >> ~/.ssh/known_hosts
-            ./.circleci/deploy-to-prod.sh
+            DOMAIN=pik-software.ru
+            SSH_HOST="boilerplate.pik-software.ru"
+            SSH_PORT="22500"
+            SSH_USER="circleci-staging"
+            KNOWN_HOST_KEYS="ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBNJvPW0n0F2IjYLCBLaBNyLnO8TLAWL5WI5pAek6EJGN7MZtT1aVw1+B/juOusAshqKoTzTAR3I/q4ns7jMK7gc="
+            REPO_NAME=$( git config --local remote.origin.url | sed -n 's#.*/\([^.]*\)\.git#\1#p' )
+            echo "${SSH_HOST} ${KNOWN_HOST_KEYS}" >> ~/.ssh/known_hosts
+            echo -e "\nHost ${SSH_HOST}\n  HostName ${SSH_HOST}\n  Port ${SSH_PORT}\n  User ${SSH_USER}" >> ~/.ssh/config
+            ./.circleci/deploy-dokku-back.sh "${SSH_HOST}" "${DOMAIN}" "${REPO_NAME}" "master" "production"
 
 workflows:
   version: 2
