@@ -20,6 +20,7 @@ if ssh dokku@${HOST} -C apps:list | grep -qFx ${SERVICE_NAME}; then
 fi
 
 ssh ${HOST} -C dokku apps:create ${SERVICE_NAME}
+ssh dokku@${HOST} -C domains:set ${SERVICE_NAME} ${SERVICE_NAME}
 
 # postgres (root required!)
 ssh ${HOST} -C POSTGRES_IMAGE="mdillon/postgis" POSTGRES_IMAGE_VERSION="9.6" dokku postgres:create ${SERVICE_NAME}
@@ -29,19 +30,11 @@ ssh dokku@${HOST} -C postgres:link ${SERVICE_NAME} ${SERVICE_NAME}
 ssh dokku@${HOST} -C redis:create ${SERVICE_NAME}
 ssh dokku@${HOST} -C redis:link ${SERVICE_NAME} ${SERVICE_NAME}
 
-# dokku options
-ssh dokku@${HOST} -C ps:set-restart-policy ${SERVICE_NAME} always
-
+# dd-agent
 if ssh ${HOST} -C docker ps | grep -q dd-agent; then
     # link to dd-agent
     ssh dokku@${HOST} -C docker-options:add ${SERVICE_NAME} build,deploy,run "--link dd-agent:dd-agent"
 fi
-
-ssh dokku@${HOST} -C docker-options:add ${SERVICE_NAME} deploy,run "--memory=1Gb"
-ssh dokku@${HOST} -C docker-options:add ${SERVICE_NAME} build "--memory=2Gb"
-
-# DOKKU_SCALE
-ssh dokku@${HOST} -C ps:scale ${SERVICE_NAME} web=1 worker=1 beat=1
 
 # CONFIGS
 
@@ -50,8 +43,7 @@ SECRET_KEY=$( openssl rand -base64 18 )
 # base
 ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} SERVICE_NAME=${SERVICE_NAME}
 ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} DOKKU_APP_TYPE=dockerfile
-ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} SECRET_KEY=${SECRET_KEY}
-ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} DOKKU_DOCKER_STOP_TIMEOUT=600
+ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} SECRET_KEY=${SECRET_KEY} > /dev/null
 ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} ENVIRONMENT=${ENVIRONMENT}
 
 # lets encrypt
@@ -65,3 +57,15 @@ ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} DOKKU_LETSENCRYPT_E
 
 # sentry
 #ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} RAVEN_DSN=
+
+# OPTIONS
+ssh dokku@${HOST} -C ps:set-restart-policy ${SERVICE_NAME} always
+ssh dokku@${HOST} -C docker-options:add ${SERVICE_NAME} deploy,run "--memory=1Gb"
+ssh dokku@${HOST} -C docker-options:add ${SERVICE_NAME} build "--memory=2Gb"
+
+# SCALE
+ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} DOKKU_DEFAULT_CHECKS_WAIT=0
+ssh dokku@${HOST} -C ps:scale ${SERVICE_NAME} web=1 worker=1 beat=1
+ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} DOKKU_DEFAULT_CHECKS_WAIT=5
+ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} DOKKU_WAIT_TO_RETIRE=60
+ssh dokku@${HOST} -C config:set --no-restart ${SERVICE_NAME} DOKKU_DOCKER_STOP_TIMEOUT=600

@@ -68,14 +68,17 @@ jobs:
       - run:
           name: deploy staging
           command: |
-            HOST="${CIRCLE_BRANCH}.${CIRCLE_PROJECT_REPONAME}.pik-software.ru"
-            USER="circleci-staging"
-            PORT="22501"
+            DOMAIN=pik-software.ru
+            REPO_NAME=$( git config --local remote.origin.url | sed -n 's#.*/\([^.]*\)\.git#\1#p' )
+            BRANCH_NAME=$( git branch | grep -e "^*" | cut -d' ' -f 2 )
+            SSH_HOST="${BRANCH_NAME}.${REPO_NAME}.${DOMAIN}"
+            SSH_PORT="22501"
+            SSH_USER="circleci-staging"
             KNOWN_HOST_KEYS="ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBNJvPW0n0F2IjYLCBLaBNyLnO8TLAWL5WI5pAek6EJGN7MZtT1aVw1+B/juOusAshqKoTzTAR3I/q4ns7jMK7gc="
-            if [[ "${CIRCLE_BRANCH}" == "deploy" || "${CIRCLE_BRANCH}" == "master" ]]; then
-              echo "${HOST} ${KNOWN_HOST_KEYS}" >> ~/.ssh/known_hosts
-              echo -e "\nHost ${HOST}\n  HostName ${HOST}\n  Port ${PORT}\n  User ${USER}" >> ~/.ssh/config
-              ./.circleci/deploy-dokku-back.sh "${HOST}" "${CIRCLE_PROJECT_REPONAME}" "${CIRCLE_BRANCH}" "staging"
+            if [[ "${BRANCH_NAME}" == "deploy" || "${BRANCH_NAME}" == "master" ]]; then
+              echo "${SSH_HOST} ${KNOWN_HOST_KEYS}" >> ~/.ssh/known_hosts
+              echo -e "\nHost ${SSH_HOST}\n  HostName ${SSH_HOST}\n  Port ${SSH_PORT}\n  User ${SSH_USER}" >> ~/.ssh/config
+              ./.circleci/deploy-dokku-back.sh "${SSH_HOST}" "${DOMAIN}" "${REPO_NAME}" "${BRANCH_NAME}" "staging"
             fi
 
   deploy-prod:
@@ -87,8 +90,15 @@ jobs:
       - run:
           name: deploy master
           command: |
-            echo "boilerplate.pik-software.ru ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFPXodJ4VrKP3YKaotYDle6krEX2M1qORWpEXm2yqLA5spRrIG7VEw7mvFzqWD9xfTaQr1l2uIuxXp6DFMZY4hc=" >> ~/.ssh/known_hosts
-            ./.circleci/deploy-dokku-back.sh boilerplate.pik-software.ru ${CIRCLE_PROJECT_REPONAME} master production
+            DOMAIN=pik-software.ru
+            SSH_HOST="boilerplate.pik-software.ru"
+            SSH_PORT="22500"
+            SSH_USER="circleci-staging"
+            KNOWN_HOST_KEYS="ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBNJvPW0n0F2IjYLCBLaBNyLnO8TLAWL5WI5pAek6EJGN7MZtT1aVw1+B/juOusAshqKoTzTAR3I/q4ns7jMK7gc="
+            REPO_NAME=$( git config --local remote.origin.url | sed -n 's#.*/\([^.]*\)\.git#\1#p' )
+            echo "${SSH_HOST} ${KNOWN_HOST_KEYS}" >> ~/.ssh/known_hosts
+            echo -e "\nHost ${SSH_HOST}\n  HostName ${SSH_HOST}\n  Port ${SSH_PORT}\n  User ${SSH_USER}" >> ~/.ssh/config
+            ./.circleci/deploy-dokku-back.sh "${SSH_HOST}" "${DOMAIN}" "${REPO_NAME}" "master" "production"
 
 workflows:
   version: 2

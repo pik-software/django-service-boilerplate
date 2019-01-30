@@ -5,35 +5,34 @@ set -eo pipefail
 cd "$(dirname "$0")"
 echo "$(date +%Y-%m-%d-%H-%M-%S) - deploy-dokku-back.sh $@"
 
-HOST=$1
-REPO=$2
-BRANCH=$3
-ENVIRONMENT=$4
+SSH_HOST=$1
+DOMAIN=$2
+REPO=$3
+BRANCH=$4
+ENVIRONMENT=$5
 
-if [[ -z "$HOST" ]]; then
-    echo "Use: $0 <HOST>"
-    exit 1
-fi
-if [[ -z "$REPO" ]]; then
+if [[ -z "${SSH_HOST}" ]] || [[ -z "${DOMAIN}" ]] || [[ -z "$REPO" ]] || [[ -z "$BRANCH" ]] || [[ -z "$ENVIRONMENT" ]]; then
+    SSH_HOST=8.8.8.8
+    DOMAIN=pik-software.ru
     REPO=$( git config --local remote.origin.url | sed -n 's#.*/\([^.]*\)\.git#\1#p' )
-fi
-if [[ -z "$BRANCH" ]]; then
     BRANCH=$( git branch | grep -e "^*" | cut -d' ' -f 2 )
-fi
-if [[ -z "$ENVIRONMENT" ]]; then
     ENVIRONMENT=production
+    echo "Use: $0 <SSH_HOST> <DOMAIN> <REPO_NAME> <BRANCH_NAME> <ENVIRONMENT>"
+    echo "Example: $0 ${SSH_HOST} ${DOMAIN} ${REPO} ${BRANCH} ${ENVIRONMENT}"
+    exit 1
 fi
 
 function escape {
     echo "$1" | tr A-Z a-z | sed "s/[^a-z0-9]/-/g" | sed "s/^-+\|-+$//g"
 }
 
-HOST=$( echo ${HOST} )
+SSH_HOST=$( echo ${SSH_HOST} )
+DOMAIN=$( echo ${DOMAIN} )
 REPO=$( escape ${REPO} )
 BRANCH=$( escape ${BRANCH} )
 ENVIRONMENT=$( escape ${ENVIRONMENT} )
 
-echo "HOST=${HOST}"
+echo "SSH_HOST=${SSH_HOST}"
 echo "REPO=${REPO}"
 echo "BRANCH=${BRANCH}"
 echo "ENVIRONMENT=${ENVIRONMENT}"
@@ -51,37 +50,42 @@ if [[ "$ENVIRONMENT" = "production" ]]; then
         exit 2
     fi
 
-    SERVICE_NAME="${REPO}"
+    SERVICE_NAME="${REPO}.${DOMAIN}"
 elif [[ "$ENVIRONMENT" = "staging" ]]; then
-    SERVICE_NAME="${REPO}-${BRANCH}"
+    SERVICE_NAME="${BRANCH}.${REPO}.${DOMAIN}"
 else
-    echo "Unknown environment!"
+    echo "!!! ERROR: UNKNOWN ENVIRONMENT !!!"
     exit 1
 fi
+
+echo "SERVICE_NAME=${SERVICE_NAME}"
+echo "SSH: ${SSH_HOST}"
+echo "WEB: ${SERVICE_NAME}"
 
 INIT_LETSENCRYPT=false
 
 echo "Check SSH access"
-ssh dokku@${HOST} -C help > /dev/null
-ssh ${HOST} -C dokku help > /dev/null
-ssh ${HOST} -C docker ps > /dev/null
+ssh dokku@${SSH_HOST} -C help > /dev/null
+ssh ${SSH_HOST} -C dokku help > /dev/null
+ssh ${SSH_HOST} -C docker ps > /dev/null
 
-if ! ssh dokku@${HOST} -C apps:list | grep -qFx ${SERVICE_NAME}; then
-    echo "Init SERVICE_NAME=${SERVICE_NAME} BRANCH=${BRANCH} ENVIRONMENT=${ENVIRONMENT} on ${HOST}"
-    ./init-dokku-back.sh ${HOST} ${SERVICE_NAME} ${ENVIRONMENT}
-    INIT_LETSENCRYPT=true
+if ! ssh dokku@${SSH_HOST} -C apps:list | grep -qFx ${SERVICE_NAME}; then
+    echo "Init SERVICE_NAME=${SERVICE_NAME} BRANCH=${BRANCH} ENVIRONMENT=${ENVIRONMENT} on ${SSH_HOST}"
+    ./init-dokku-back.sh ${SSH_HOST} ${SERVICE_NAME} ${ENVIRONMENT}
+#    INIT_LETSENCRYPT=true
 fi
 
-echo "Reconfigure SERVICE_NAME=${SERVICE_NAME} BRANCH=${BRANCH} ENVIRONMENT=${ENVIRONMENT} on ${HOST}"
-./reconfigure-dokku-back.sh ${HOST} ${SERVICE_NAME} ${BRANCH} ${ENVIRONMENT}
+echo "Reconfigure SERVICE_NAME=${SERVICE_NAME} BRANCH=${BRANCH} ENVIRONMENT=${ENVIRONMENT} on ${SSH_HOST}"
+./reconfigure-dokku-back.sh ${SSH_HOST} ${SERVICE_NAME} ${BRANCH} ${ENVIRONMENT}
 
-git push ssh://dokku@${HOST}/${SERVICE_NAME} ${BRANCH}:master
+echo "Run deploy"
+git push ssh://dokku@${SSH_HOST}/${SERVICE_NAME} ${BRANCH}:master
 
 if ${INIT_LETSENCRYPT}; then
-    ssh dokku@${HOST} -C letsencrypt ${SERVICE_NAME}
+    ssh dokku@${SSH_HOST} -C letsencrypt ${SERVICE_NAME}
 fi
 
 # run migrations
-ssh dokku@${HOST} -C run ${SERVICE_NAME} python manage.py migrate
+ssh dokku@${SSH_HOST} -C run ${SERVICE_NAME} python manage.py migrate
 
-echo "open !!! http://${HOST}/"
+echo "open !!! http://${SERVICE_NAME}/"
