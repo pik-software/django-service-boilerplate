@@ -50,17 +50,19 @@ if [[ "$ENVIRONMENT" = "production" ]]; then
         exit 2
     fi
 
-    SERVICE_NAME="${REPO}.${DOMAIN}"
+    SERVICE_NAME="${REPO}"
+    SERVICE_HOST="${REPO}.${DOMAIN}"
 elif [[ "$ENVIRONMENT" = "staging" ]]; then
-    SERVICE_NAME="${BRANCH}.${REPO}.${DOMAIN}"
+    SERVICE_NAME="${REPO}-${BRANCH}"
+    SERVICE_HOST="${BRANCH}.${REPO}.${DOMAIN}"
 else
     echo "!!! ERROR: UNKNOWN ENVIRONMENT !!!"
     exit 1
 fi
 
 echo "SERVICE_NAME=${SERVICE_NAME}"
+echo "SERVICE_HOST=${SERVICE_HOST}"
 echo "SSH: ${SSH_HOST}"
-echo "WEB: ${SERVICE_NAME}"
 
 INIT_LETSENCRYPT=false
 
@@ -70,22 +72,23 @@ ssh ${SSH_HOST} -C dokku help > /dev/null
 ssh ${SSH_HOST} -C docker ps > /dev/null
 
 if ! ssh dokku@${SSH_HOST} -C apps:list | grep -qFx ${SERVICE_NAME}; then
-    echo "Init SERVICE_NAME=${SERVICE_NAME} BRANCH=${BRANCH} ENVIRONMENT=${ENVIRONMENT} on ${SSH_HOST}"
-    ./init-dokku-back.sh ${SSH_HOST} ${SERVICE_NAME} ${ENVIRONMENT}
+    echo "!!! ===> Init <=== !!!"
+    ./init-dokku-back.sh "${SSH_HOST}" "${SERVICE_HOST}" "${SERVICE_NAME}" "${ENVIRONMENT}"
 #    INIT_LETSENCRYPT=true
 fi
 
-echo "Reconfigure SERVICE_NAME=${SERVICE_NAME} BRANCH=${BRANCH} ENVIRONMENT=${ENVIRONMENT} on ${SSH_HOST}"
-./reconfigure-dokku-back.sh ${SSH_HOST} ${SERVICE_NAME} ${BRANCH} ${ENVIRONMENT}
+echo "!!! ===> Reconfigure <=== !!!"
+./reconfigure-dokku-back.sh "${SSH_HOST}" "${SERVICE_HOST}" "${SERVICE_NAME}" "${BRANCH}" "${ENVIRONMENT}"
 
-echo "Run deploy"
+echo "!!! ===> Deploy <=== !!!"
 git push ssh://dokku@${SSH_HOST}/${SERVICE_NAME} ${BRANCH}:master
 
 if ${INIT_LETSENCRYPT}; then
+    echo "!!! ===> Init letsencrypt certs <=== !!!"
     ssh dokku@${SSH_HOST} -C letsencrypt ${SERVICE_NAME}
 fi
 
-# run migrations
+echo "!!! ===> Run migrations <=== !!!"
 ssh dokku@${SSH_HOST} -C run ${SERVICE_NAME} python manage.py migrate
 
-echo "open !!! http://${SERVICE_NAME}/"
+echo "!!! ===> http://${SERVICE_HOST}/ <=== !!!"
