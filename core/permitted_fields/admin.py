@@ -27,3 +27,12 @@ class PermittedFieldsAdminMixIn(PermittedFieldsPermissionMixIn):
         }
         original = set(super().get_readonly_fields(request, obj))
         return list(original | fields)
+
+
+class PermittedFieldsInlineAdminMixIn(PermittedFieldsAdminMixIn):
+    def _has_view_permission_only(self, request, obj):
+        if obj is None:
+            return not self.has_add_permission(request, obj)
+
+        return (self.has_view_permission(request, obj)
+                and not self.has_change_permission(request, obj))
