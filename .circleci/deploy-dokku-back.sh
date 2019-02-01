@@ -66,10 +66,12 @@ echo "SSH: ${SSH_HOST}"
 
 INIT_LETSENCRYPT=false
 
-echo "Check SSH access"
-ssh dokku@${SSH_HOST} -C help > /dev/null
+echo "Check SSH access 'ssh ${SSH_HOST} dokku help'"
 ssh ${SSH_HOST} -C dokku help > /dev/null
+echo "Check SSH access 'ssh ${SSH_HOST} dokku ps'"
 ssh ${SSH_HOST} -C docker ps > /dev/null
+echo "Check SSH access 'ssh dokku@${SSH_HOST} help'"
+ssh dokku@${SSH_HOST} -C help > /dev/null
 
 if ! ssh dokku@${SSH_HOST} -C apps:list | grep -qFx ${SERVICE_NAME}; then
     echo "!!! ===> Init <=== !!!"
