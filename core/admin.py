@@ -1,7 +1,8 @@
 from django.contrib.gis import admin
 from simple_history.admin import SimpleHistoryAdmin
 
-from core.permitted_fields.admin import PermittedFieldsAdminMixIn
+from core.permitted_fields.admin import (
+    PermittedFieldsAdminMixIn, PermittedFieldsInlineAdminMixIn)
 
 
 class ReasonedMixIn:
@@ -55,7 +56,7 @@ class StrictSecuredModelAdmin(StrictMixIn, SecuredModelAdmin):
     pass
 
 
-class SecuredAdminInline(PermittedFieldsAdminMixIn, ReasonedMixIn,
+class SecuredAdminInline(PermittedFieldsInlineAdminMixIn, ReasonedMixIn,
                          admin.TabularInline):
     extra = 0
 
