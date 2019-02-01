@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='comment',
-            options={'ordering': ['-created'], 'permissions': (('can_edit_comment', 'Может редактировать коментарий'),), 'verbose_name': 'коментарий', 'verbose_name_plural': 'коментарии'},
+            options={'ordering': ['-created'], 'permissions': (('change_user_comment', 'Может менять автора коментария'),), 'verbose_name': 'коментарий', 'verbose_name_plural': 'коментарии'},
         ),
         migrations.AlterModelOptions(
             name='contact',

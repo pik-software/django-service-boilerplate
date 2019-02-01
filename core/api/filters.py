@@ -1,10 +1,10 @@
 import coreapi
 from rest_framework_filters import RelatedFilter
-from rest_framework_filters.backends import DjangoFilterBackend
+from rest_framework_filters.backends import RestFrameworkFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 
 
-class StandardizedFieldFilters(DjangoFilterBackend):
+class StandardizedFieldFilters(RestFrameworkFilterBackend):
     def get_schema_fields(self, view):
         # This is not compatible with widgets where the query param differs
         # from the filter's attribute name. Notably, this includes

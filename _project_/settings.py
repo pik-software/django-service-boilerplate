@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import sys
+from datetime import timedelta
 
 import dj_database_url
 from google.oauth2 import service_account
@@ -57,8 +58,8 @@ DATADOG_TRACE = {
 }
 
 # SQL EXPLORER
-EXPLORER_CONNECTIONS = {'Default': 'readonly'}
-EXPLORER_DEFAULT_CONNECTION = 'readonly'
+EXPLORER_CONNECTIONS = {'Default': 'default'}
+EXPLORER_DEFAULT_CONNECTION = 'default'
 EXPLORER_SCHEMA_EXCLUDE_TABLE_PREFIXES = (
     'auth_', 'contenttypes_',
     'sessions_', 'admin_', 'health_',
@@ -74,7 +75,6 @@ EXPLORER_SCHEMA_EXCLUDE_TABLE_PREFIXES = (
 # Application definition
 
 INSTALLED_APPS = [
-    'admin_view_permission',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -96,6 +96,7 @@ INSTALLED_APPS = [
     'cors',
     'rest_framework',
     'rest_framework.authtoken',
+    'rest_framework_filters',
     'django_filters',
     'crispy_forms',  # sexy django_filters forms
     'drf_openapi',
@@ -143,7 +144,8 @@ MIDDLEWARE = [
 
 # CORS
 CORS_ORIGIN_WHITELIST = os.environ.get('CORS_ORIGIN_WHITELIST', '').split()
-CORS_URLS_REGEX = r'^/(api|openid)/.*$'
+CORS_ALLOW_CREDENTIALS = True
+CORS_URLS_REGEX = r'^/(api|openid).*$'
 CORS_MODEL = 'cors.Cors'
 
 WSGI_APPLICATION = '_project_.wsgi.application'
@@ -285,6 +287,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
+        'core.api.permissions.DjangoModelViewPermission',
         'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_THROTTLE_CLASSES': (),
@@ -314,6 +317,8 @@ _CREDENTIALS = os.environ.get('FILE_STORAGE_BACKEND_CREDENTIALS', None)
 GS_BUCKET_NAME = os.environ.get('FILE_STORAGE_BUCKET_NAME', None)
 GS_PROJECT_ID = os.environ.get('FILE_STORAGE_PROJECT_ID', None)
 GS_CREDENTIALS = None
+GS_EXPIRATION = os.environ.get(
+    'FILE_STORAGE_EXPIRATION_SECONDS', timedelta(seconds=7200))
 if _STORAGE == 'gcloud' and _CREDENTIALS and GS_BUCKET_NAME and GS_PROJECT_ID:
     DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
     GS_CREDENTIALS = service_account.Credentials.from_service_account_info(

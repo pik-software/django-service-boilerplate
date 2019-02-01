@@ -1,12 +1,13 @@
 from django.conf import settings
-from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
+from django.urls import path, include
 
 from core.api.auth import OBTAIN_AUTH_TOKEN
 from core.api.router import StandardizedRouter
 from core.api.schema import SchemaView
+from core.api.user import USER_API_VIEW
 from core.views import task_result_api_view
 from contacts.api import ContactViewSet, CommentViewSet
 
@@ -26,16 +27,16 @@ def index(request):
 
 
 urlpatterns = [  # noqa: pylint=invalid-name
-    url(r'^$', index, name='index'),
-    url(r'', include('lib.oidc_relied.urls')),
-    url(r'^admin/', admin.site.urls),
-    url(r'^status/', include('health_check.urls')),
-    url(r'^accounts/', include('registration.auth_urls')),
-    url(r'^api/task/result/(.+)/', task_result_api_view),
-    url(r'^api/v(?P<version>[1-9])/schema/',
-        SchemaView.as_view(), name='api_schema'),
-    url(r'^api/v(?P<version>[1-9])/', include(router.urls, namespace='api')),
-    url(r'^api-token-auth/', OBTAIN_AUTH_TOKEN),
+    path('', index, name='index'),
+    path('', include('lib.oidc_relied.urls')),
+    path('admin/', admin.site.urls),
+    path('status/', include('health_check.urls')),
+    path('accounts/', include('registration.auth_urls')),
+    path('api/task/result/<str:taskid>/', task_result_api_view),
+    path('api/v<version>/schema/', SchemaView.as_view(), name='api_schema'),
+    path('api/v<int:version>/', include((router.urls, 'api'))),
+    path('api-token-auth/', OBTAIN_AUTH_TOKEN),
+    path('api-user/', USER_API_VIEW),
 ]
 
 urlpatterns += static(
@@ -51,6 +52,6 @@ if settings.DEBUG:
     import debug_toolbar  # noqa
 
     urlpatterns += [
-        url(r'^__debug__/', include(debug_toolbar.urls)),
-        url(r'^explorer/', include('explorer.urls')),
+        path('__debug__/', include(debug_toolbar.urls)),
+        path('explorer/', include('explorer.urls')),
     ]

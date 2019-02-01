@@ -17,6 +17,7 @@ from rest_framework.exceptions import (
     NotFound, ValidationError as DRFValidationError)
 
 from core.api.pagination import StandardizedCursorPagination
+from core.api.serializers import StandardizedModelSerializer
 
 
 class HistoryQueryParamsValidator:
@@ -90,6 +91,13 @@ class HistoryPermission(BasePermission):
         return False
 
 
+def _simplify_nested_serializer(serializer):
+    if isinstance(serializer, StandardizedModelSerializer):
+        for _name, _field in list(serializer.fields.items()):
+            if _name not in ('_uid', '_type'):
+                serializer.fields.pop(_name)
+
+
 class HistoryViewSetMixin:
 
     allow_history = False
@@ -111,15 +119,16 @@ class HistoryViewSetMixin:
                         continue
 
                 for field in fields:
+                    _simplify_nested_serializer(field)
                     try:
                         attribute = field.get_attribute(instance)
-                    except Exception:  # noqa: pylint=broad-except
-                        continue
-                    try:
-                        value = field.to_representation(attribute)
-                        ret[field.field_name] = value
-                    except Exception:  # noqa: pylint=broad-except
-                        continue
+                        if attribute is not None:
+                            ret[field.field_name] = field.to_representation(
+                                attribute)
+                        else:
+                            ret[field.field_name] = None
+                    except AttributeError:
+                        ret[field.field_name] = None
 
                 return ret
 

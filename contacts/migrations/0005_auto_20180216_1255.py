@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
                 'verbose_name': 'коментарий',
                 'verbose_name_plural': 'коментарии',
                 'ordering': ['-created'],
-                'permissions': (('can_edit_comment', 'Может редактировать коментарий'), ('can_get_api_comment_history', 'Может читать /api/v<X>/comment-list/history/')),
+                'permissions': (('change_user_comment', 'Может менять автора коментария'), ('can_get_api_comment_history', 'Может читать /api/v<X>/comment-list/history/')),
             },
         ),
         migrations.CreateModel(

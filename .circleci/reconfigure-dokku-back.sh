@@ -1,34 +1,33 @@
 #!/usr/bin/env bash
 
-set -ex
-
+[[ "${TRACE}" = "1" ]] && set -x
+set -eo pipefail
 cd "$(dirname "$0")"
 echo "$(date +%Y-%m-%d-%H-%M-%S) - reconfigure-dokku-back.sh $@"
 
-HOST=$1
-SERVICE_NAME=$2
-BRANCH=$3
-DEPLOYMENT_PLACE=$4
+SSH_HOST=$1
+SERVICE_HOST=$2
+SERVICE_NAME=$3
+BRANCH=$4
+ENVIRONMENT=$5
 
-if [[ -z "$HOST" ]]; then
-    echo "Use: $0 <HOST>"
+if [[ -z "${SSH_HOST}" ]] || [[ -z "${SERVICE_HOST}" ]] || [[ -z "${SERVICE_NAME}" ]] || [[ -z "${BRANCH}" ]] || [[ -z "${ENVIRONMENT}" ]]; then
+    echo "Use: $0 <SSH_HOST> <SERVICE_HOST> <SERVICE_NAME> <BRANCH> <ENVIRONMENT>"
     exit 1
 fi
-if [[ -z "$SERVICE_NAME" ]]; then
-    echo "Use: $0 $HOST <SERVICE_NAME>"
-    exit 1
-fi
-if [[ -z "$BRANCH" ]]; then
-    echo "Use: $0 $HOST $SERVICE_NAME <BRANCH>"
-    exit 1
-fi
+
+RELEASE_DATE=$( date '+%Y-%m-%d-%H-%M-%S' )
+ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} RELEASE_DATE="'"${RELEASE_DATE}"'"
+GIT_REV=$(git rev-parse ${BRANCH})
+ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} GIT_REV=${GIT_REV}
 
 # CONFIGS
-case "$DEPLOYMENT_PLACE" in
+case "$ENVIRONMENT" in
     production)
-        ./set-configs-to-prod.sh ${HOST} ${SERVICE_NAME} ${BRANCH}
+        ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} EXAMPLE=1
         ;;
     staging)
-        ./set-configs-to-staging.sh ${HOST} ${SERVICE_NAME} ${BRANCH}
+        ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} EXAMPLE=2
+        ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} BRANCH=${BRANCH}
         ;;
 esac

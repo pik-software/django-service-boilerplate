@@ -45,6 +45,3 @@ class CommentViewSet(StandardizedModelViewSet):
 
     def get_queryset(self):
         return Comment.objects.all().select_related('contact')
-
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
