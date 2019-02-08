@@ -37,7 +37,7 @@ jobs:
             . .venv/bin/activate
             pip install --upgrade pip
             pip install --upgrade setuptools
-            pip install --exists-action w -r requirements.txt
+            pip install --exists-action w -r requirements.txt --progress-bar off
             pip check
 
       - type: cache-save
