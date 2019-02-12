@@ -9,6 +9,7 @@ SSH_HOST=$1
 SERVICE_HOST=$2
 SERVICE_NAME=$3
 ENVIRONMENT=$4
+MEDIA_ROOT=/DATA/${SERVICE_NAME}
 
 if [[ -z "${SSH_HOST}" ]] || [[ -z "${SERVICE_HOST}" ]] || [[ -z "${SERVICE_NAME}" ]] || [[ -z "${ENVIRONMENT}" ]]; then
     echo "Use: $0 <SSH_HOST> <SERVICE_HOST> <SERVICE_NAME> <ENVIRONMENT>"
@@ -21,6 +22,8 @@ if ssh dokku@${SSH_HOST} -C apps:list | grep -qFx ${SERVICE_NAME}; then
 fi
 
 ssh ${SSH_HOST} -C dokku apps:create ${SERVICE_NAME}
+ssh ${SSH_HOST} -C mkdir "${MEDIA_ROOT}"
+ssh dokku@${SSH_HOST} -C storage:mount ${SERVICE_NAME} "${MEDIA_ROOT}:${MEDIA_ROOT}"
 ssh dokku@${SSH_HOST} -C domains:set ${SERVICE_NAME} ${SERVICE_HOST}
 
 # postgres (root required!)
@@ -46,6 +49,7 @@ ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} SERVICE_NAME=${
 ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} DOKKU_APP_TYPE=dockerfile
 ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} SECRET_KEY=${SECRET_KEY} > /dev/null
 ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} ENVIRONMENT=${ENVIRONMENT}
+ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} MEDIA_ROOT=${MEDIA_ROOT}
 
 # lets encrypt
 ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} DOKKU_LETSENCRYPT_EMAIL=pik-software-team@pik-comfort.ru
