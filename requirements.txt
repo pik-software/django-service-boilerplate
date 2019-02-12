@@ -30,7 +30,7 @@ django-health-check==3.9.0
 django-simple-history==2.7.0
 
 # API
-djangorestframework==3.8.2
+djangorestframework==3.9.1
 djangorestframework-filters==1.0.0.dev0
 django-filter==2.0.0
 django-crispy-forms==1.7.2
