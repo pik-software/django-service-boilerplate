@@ -82,4 +82,4 @@ django-oauth-toolkit==1.2.0
 django-rest-framework-social-oauth2==1.1.0
 pyjwkest==1.4.0
 future==0.17.1
-social_auth_core>=1.7.0,<2.0.0
+social_auth_core==3.0.0
