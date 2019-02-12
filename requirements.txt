@@ -45,7 +45,7 @@ psycopg2==2.7.4
 django-redis==4.9.0
 
 # celery
-kombu==4.2.1
+kombu==4.3.0
 celery==4.2.1
 django_celery_results==1.0.1
 
