@@ -53,7 +53,7 @@ django_celery_results==1.0.1
 raven==6.9.0
 
 # prod
-uwsgi==2.0.17
+uwsgi==2.0.18
 
 # dev
 django_debug_toolbar==1.10.1
