@@ -42,7 +42,7 @@ drf_openapi==1.3.0
 # db
 redis==2.10.6
 psycopg2==2.7.4
-django-redis==4.9.0
+django-redis==4.10.0
 
 # celery
 kombu==4.2.1
