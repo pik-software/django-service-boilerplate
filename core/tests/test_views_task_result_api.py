@@ -52,5 +52,5 @@ def test_get_task_result_task_failure(rf, celery_worker):  # noqa: pylint=invali
     assert response == {
         'state': 'FAILURE', 'task-id': task.id,
         'result': 'RuntimeError("Request: \''
-                  'core.tests.test_views_task_result_api._task2\'",)',
+                  'core.tests.test_views_task_result_api._task2\'")',
     }
