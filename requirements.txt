@@ -6,7 +6,7 @@ beautifulsoup4==4.6.3
 cucco==2.2.1
 openpyxl==2.5.8
 google_cloud==0.32.0
-ddtrace==0.11.1
+ddtrace==0.20.4
 datadog==0.20.0
 pik-django-utils==1.0.15
 google-cloud-resource-manager==0.28.1
