@@ -18,7 +18,7 @@ Django==2.1.5
 # django utils
 django_widget_tweaks==1.4.2
 django-bootstrap-form==3.4
-django-registration==2.5.2
+django-registration==3.0
 django-sql-explorer==1.1.2
 dj_database_url==0.5.0
 django-storages==1.7.1
