@@ -22,6 +22,7 @@ if ssh dokku@${SSH_HOST} -C apps:list | grep -qFx ${SERVICE_NAME}; then
 fi
 
 ssh ${SSH_HOST} -C sudo mkdir "${MEDIA_ROOT}"
+ssh ${SSH_HOST} -C dokku events:on
 ssh ${SSH_HOST} -C dokku apps:create ${SERVICE_NAME}
 ssh dokku@${SSH_HOST} -C storage:mount ${SERVICE_NAME} "${MEDIA_ROOT}:${MEDIA_ROOT}"
 ssh dokku@${SSH_HOST} -C domains:set ${SERVICE_NAME} ${SERVICE_HOST}
