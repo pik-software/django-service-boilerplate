@@ -66,8 +66,6 @@ ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} DOKKU_LETSENCRY
 
 # OPTIONS
 ssh dokku@${SSH_HOST} -C ps:set-restart-policy ${SERVICE_NAME} always
-ssh dokku@${SSH_HOST} -C docker-options:add ${SERVICE_NAME} deploy,run "--memory=1Gb"
-ssh dokku@${SSH_HOST} -C docker-options:add ${SERVICE_NAME} build "--memory=2Gb"
 
 # SCALE
 ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} DOKKU_DEFAULT_CHECKS_WAIT=0
@@ -75,3 +73,8 @@ ssh dokku@${SSH_HOST} -C ps:scale ${SERVICE_NAME} web=1 worker=1 beat=1
 ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} DOKKU_DEFAULT_CHECKS_WAIT=5
 ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} DOKKU_WAIT_TO_RETIRE=60
 ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} DOKKU_DOCKER_STOP_TIMEOUT=600
+
+# LIMITS
+ssh dokku@${SSH_HOST} -C limit:set --no-restart ${SERVICE_NAME} web memory=1Gb cpu=100
+ssh dokku@${SSH_HOST} -C limit:set --no-restart ${SERVICE_NAME} beat memory=1Gb cpu=100
+ssh dokku@${SSH_HOST} -C limit:set --no-restart ${SERVICE_NAME} worker memory=1Gb cpu=100
