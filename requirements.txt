@@ -77,7 +77,7 @@ flake8<3.6.0
 pep8-naming==0.7.0
 
 # OIDC
-django_cors_headers==2.2.0
+django_cors_headers==2.5.0
 django-oauth-toolkit<1.1.0
 django-rest-framework-social-oauth2==1.1.0
 pyjwkest==1.4.0
