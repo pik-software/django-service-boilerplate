@@ -98,7 +98,7 @@ ssh dokku@${SSH_HOST} -C run ${SERVICE_NAME} python manage.py migrate
 if ${FIX_MEDIA_ROOT_PERMISSIONS}; then
     echo "!!! ===> Fix MEDIA_ROOT permissions <=== !!!"
     MEDIA_ROOT=/DATA/${SERVICE_NAME}
-    ssh ${SSH_HOST} -C docker exec ${SERVICE_NAME}.web.1 chown -R unprivileged:unprivileged ${MEDIA_ROOT}
+    ssh ${SSH_HOST} "docker exec ${SERVICE_NAME}.web.1 chown -R unprivileged:unprivileged ${MEDIA_ROOT}"
 fi
 
 echo "!!! ===> http://${SERVICE_HOST}/ <=== !!!"
