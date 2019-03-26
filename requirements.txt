@@ -58,14 +58,14 @@ uwsgi==2.0.17
 # dev
 django_debug_toolbar==1.10.1
 django_extensions==2.1.6
-werkzeug==0.15.0
+werkzeug==0.15.1
 
 # tests
 prospector==1.1.2
 pylint==2.1.1
 factory_boy==2.11.1
 freezegun==0.3.10
-pdbpp==0.9.13
+pdbpp==0.9.14
 pytest==3.4.2
 pytest-mock==1.9.0
 pytest-cov==2.5.1
