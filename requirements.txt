@@ -4,7 +4,7 @@ requests==2.20.0
 deprecated==1.2.5
 beautifulsoup4==4.6.3
 cucco==2.2.1
-openpyxl==2.6.1
+openpyxl==2.6.2
 google_cloud==0.32.0
 ddtrace==0.23.0
 datadog==0.27.0
