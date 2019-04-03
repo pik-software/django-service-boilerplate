@@ -9,3 +9,8 @@ def add_permissions(user, model, *actions):
                                content_type=ctype)
         for action in actions
     ))
+
+
+def add_admin_access_permission(user):
+    user.is_staff = True
+    user.save()
