@@ -136,11 +136,6 @@ def test_api_comment_history(api_user, api_client):
         'contact': {
             '_uid': str(obj.contact.uid),
             '_type': 'contact',
-            '_version': obj.contact.version,
-            'emails': obj.contact.emails,
-            'name': obj.contact.name,
-            'order_index': obj.contact.order_index,
-            'phones': obj.contact.phones,
         },
         'message': obj.message,
         'user': obj.user.pk,
