@@ -26,7 +26,7 @@ def index(request):
     return render(request, 'access_denied.html', {})
 
 
-api_urlpatterns = [
+api_urlpatterns = [  # noqa: pylint=invalid-name
     path('api/v1/', include((router.urls, 'api'))),
 ]
 

@@ -5,12 +5,12 @@ from drf_yasg import openapi
 
 
 class StandardizedSchemaGenerator(OpenAPISchemaGenerator):
-
-    def get_schema(self, request=None, public=False):
-        return super().get_schema(request, public)
+    pass
 
 
 class StandardizedAutoSchema(SwaggerAutoSchema):
+    pass
+
 
     def get_operation(self, operation_keys):
         return super().get_operation(operation_keys)
