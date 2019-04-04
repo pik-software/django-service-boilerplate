@@ -14,18 +14,20 @@ class HistorizedRouter(DefaultRouter):
         self.history_router = HiddenRouter()
         super(HistorizedRouter, self).__init__(*args, **kwargs)
 
-    def register_history_viewset(self, orign_prefix, orig_viewset, orig_name):
-        viewset = get_history_viewset(orig_viewset)
-        prefix = f'{orign_prefix}/history'
-        name = None
-        if orig_name:
-            name = f'{orig_name}_history'
-        self.history_router.register(prefix, viewset, name)
+    def register_history_viewset(self, prefix, viewset, basename,
+                                 base_name):
+        history_viewset = get_history_viewset(viewset)
+        history_prefix = f'{prefix}/history'
+        history_basename = None
+        if basename:
+            history_basename = f'{basename}_history'
+        self.history_router.register(
+            history_prefix, history_viewset, history_basename, base_name)
 
-    def register(self, prefix, viewset, base_name=None):
+    def register(self, prefix, viewset, basename=None, base_name=None):
         if getattr(viewset, 'allow_history', True):
-            super().register(prefix, viewset, base_name)
-        self.register_history_viewset(prefix, viewset, base_name)
+            super().register(prefix, viewset, basename, base_name)
+        self.register_history_viewset(prefix, viewset, basename, base_name)
 
     def get_urls(self):
         return self.history_router.get_urls() + super().get_urls()
