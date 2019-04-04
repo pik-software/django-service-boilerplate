@@ -8,7 +8,7 @@ openpyxl==2.6.2
 google_cloud==0.32.0
 ddtrace==0.23.0
 datadog==0.28.0
-pik-django-utils==1.0.15
+pik-django-utils==1.0.16
 google-cloud-resource-manager==0.28.1
 google-cloud-runtimeconfig==0.28.1
 google-cloud-translate==1.3.1
@@ -27,17 +27,17 @@ django-extra-views==0.10.0
 django-health-check==3.5.1
 
 # HISTORY
-django-simple-history==2.0
+django-simple-history==2.7.0
 
 # API
-djangorestframework==3.8.2
+djangorestframework==3.9.2
 djangorestframework-filters==1.0.0.dev0
-django-filter==2.0.0
+django-filter==2.1.0
 django-crispy-forms==1.7.2
 markdown==2.6.11
+# API SCHEMA
 coreapi==2.3.3
-openapi_codec==1.3.2
-drf_openapi==1.3.0
+drf-yasg==1.15.0
 
 # db
 redis==2.10.6
