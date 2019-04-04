@@ -6,6 +6,7 @@ def test_api_schema_unauthorized(anon_api_client):
     assert res.status_code in (status.HTTP_401_UNAUTHORIZED,
                                status.HTTP_403_FORBIDDEN)
 
+
 def test_api_common_schema(api_client):
     res = api_client.get(f'/api/v1/schema/?format=openapi')
     assert res.status_code == status.HTTP_200_OK
