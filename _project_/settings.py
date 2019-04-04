@@ -300,7 +300,9 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'core.api.pagination.StandardizedPagination',
     # TODO: use: StandardizedFieldFilters, StandardizedSearchFilter,
     # StandardizedOrderingFilter as default filter backends
-    'DEFAULT_FILTER_BACKENDS': (),
+    'DEFAULT_FILTER_BACKENDS': (
+        'rest_framework_filters.backends.RestFrameworkFilterBackend',
+    ),
 
     'EXCEPTION_HANDLER': 'core.api.exception_handler.standardized_handler',
 
