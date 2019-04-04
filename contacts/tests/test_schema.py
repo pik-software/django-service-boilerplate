@@ -32,6 +32,7 @@ def test_api_contact_schema(api_client):
     assert contact == {
         'type': 'object',
         'required': ['name'],
+        'title': 'Contact',
         'properties': {
             '_uid': {'title': ' uid', 'type': 'string', 'readOnly': True},
             '_type': {'title': ' type', 'type': 'string', 'readOnly': True},
