@@ -1,7 +1,9 @@
+from deprecated import deprecated
 from rest_framework.metadata import SimpleMetadata
 from rest_framework.schemas import AutoSchema
 
 
+@deprecated
 class StandardizedAutoSchema(AutoSchema):
     """
     Add this to `settings.py`:
@@ -16,6 +18,7 @@ class StandardizedAutoSchema(AutoSchema):
     """
 
 
+@deprecated
 class StandardizedMetadata(SimpleMetadata):
     """
     Add this to `settings.py`:
