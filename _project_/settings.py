@@ -293,7 +293,6 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_CLASSES': (),
     'DEFAULT_CONTENT_NEGOTIATION_CLASS':
         'rest_framework.negotiation.DefaultContentNegotiation',
-    'DEFAULT_METADATA_CLASS': 'core.api.inspectors.StandardizedMetadata',
     'DEFAULT_VERSIONING_CLASS':
         'rest_framework.versioning.URLPathVersioning',
 
@@ -303,8 +302,6 @@ REST_FRAMEWORK = {
     # StandardizedOrderingFilter as default filter backends
     'DEFAULT_FILTER_BACKENDS': (),
 
-    # Schema
-    'DEFAULT_SCHEMA_CLASS': 'core.api.inspectors.StandardizedAutoSchema',
     'EXCEPTION_HANDLER': 'core.api.exception_handler.standardized_handler',
 
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
