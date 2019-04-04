@@ -1,7 +1,7 @@
+from drf_yasg import openapi
 from drf_yasg.generators import OpenAPISchemaGenerator
 from drf_yasg.inspectors import SwaggerAutoSchema
 from drf_yasg.views import get_schema_view
-from drf_yasg import openapi
 
 
 class StandardizedSchemaGenerator(OpenAPISchemaGenerator):
@@ -10,10 +10,6 @@ class StandardizedSchemaGenerator(OpenAPISchemaGenerator):
 
 class StandardizedAutoSchema(SwaggerAutoSchema):
     pass
-
-
-    def get_operation(self, operation_keys):
-        return super().get_operation(operation_keys)
 
 
 def get_standardized_schema_view(
@@ -28,4 +24,4 @@ def get_standardized_schema_view(
         patterns=api_urlpatterns,
         public=True,
     )
-    return schema_view.with_ui('redoc', cache_timeout=0)
+    return schema_view.with_ui('redoc', cache_timeout=1)

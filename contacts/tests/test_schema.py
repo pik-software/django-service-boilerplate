@@ -26,7 +26,7 @@ def test_api_schema(api_client):
     assert '/contact-list/{_uid}/' in data['paths']
 
 
-def test_api_contact_schema(api_client):
+def test_api_contact_model_schema(api_client):
     data = api_client.get(f'/api/v1/schema/?format=openapi').json()
     contact = data['definitions']['Contact']
     assert contact == {
@@ -62,7 +62,27 @@ def test_api_contact_schema(api_client):
     }
 
 
-def test_api_comment_schema(api_client):
+def test_api_contact_schema(api_client):
+    data = api_client.get(f'/api/v1/schema/?format=openapi').json()
+    comment = data['paths']['/contact-list/']['get']['responses']
+    assert comment == {'200': {
+        'description': '',
+        'schema': {
+            'required': ['results', 'count', 'page', 'page_size'],
+            'type': 'object',
+            'properties': {
+                'count': {'type': 'integer'},
+                'page': {'type': 'integer'},
+                'page_size': {'type': 'integer'},
+                'pages': {'type': 'integer'},
+                'page_next': {'type': 'integer', 'x-nullable': True},
+                'page_previous': {'type': 'integer', 'x-nullable': True},
+                'results': {
+                    'type': 'array',
+                    'items': {'$ref': '#/definitions/Contact'}}}}}}
+
+
+def test_api_comment_model_schema(api_client):
     data = api_client.get(f'/api/v1/schema/?format=openapi').json()
     comment = data['definitions']['Comment']
     assert comment == {
@@ -79,3 +99,23 @@ def test_api_comment_schema(api_client):
                 'title': 'Сообщение', 'type': 'string', 'minLength': 1}
         }
     }
+
+
+def test_api_comment_schema(api_client):
+    data = api_client.get(f'/api/v1/schema/?format=openapi').json()
+    comment = data['paths']['/comment-list/']['get']['responses']
+    assert comment == {'200': {
+        'description': '',
+        'schema': {
+            'required': ['results', 'count', 'page', 'page_size'],
+            'type': 'object',
+            'properties': {
+                'count': {'type': 'integer'},
+                'page': {'type': 'integer'},
+                'page_size': {'type': 'integer'},
+                'pages': {'type': 'integer'},
+                'page_next': {'type': 'integer', 'x-nullable': True},
+                'page_previous': {'type': 'integer', 'x-nullable': True},
+                'results': {
+                    'type': 'array',
+                    'items': {'$ref': '#/definitions/Comment'}}}}}}
