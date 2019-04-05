@@ -22,7 +22,10 @@ class HistoryViewSetBase(ListModelMixin, GenericViewSet):
         StandardizedOrderingFilter)
 
     def get_queryset(self):
-        return super().get_queryset().all()
+        queryset = super().get_queryset()
+        if self.select_related_fields:
+            queryset = queryset.select_related(*self.select_related_fields)
+        return queryset
 
 
 def get_history_viewset(viewset):
@@ -36,7 +39,13 @@ def get_history_viewset(viewset):
         model_name, serializer_class)
     filter_class = get_history_filter_class(model_name, viewset)
 
+    select_related_fields = viewset.select_related_fields
+    if select_related_fields:
+        select_related_fields = filter(
+            lambda r: '__' not in r, select_related_fields)
+
     return type(name, (HistoryViewSetBase,), {
+        'select_related_fields': select_related_fields,
         'serializer_class': serializer_class,
         'filter_class': filter_class,
         'queryset': queryset
