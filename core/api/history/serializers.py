@@ -1,25 +1,31 @@
 from collections import OrderedDict
 
+from rest_framework import fields
+from rest_framework.serializers import Serializer
+
 from core.api.serializers import StandardizedModelSerializer
+from core.api.user import UserSerializer
 
 
-class HistorySerializerMixIn:
+class HistorySerializerMixIn(Serializer):
+    history_id = fields.IntegerField()
+    history_date = fields.DateTimeField()
+    history_change_reason = fields.CharField()
+    history_type = fields.CharField()
+    history_user_id = fields.IntegerField()
+    history_user = UserSerializer()
+
+    class Meta:
+        fields = ('history_id', 'history_date', 'history_change_reason',
+                  'history_type', 'history_type', 'history_user_id',
+                  'history_user')
+
     def to_representation(self, instance):
         ret = OrderedDict()
         fields = self._readable_fields  # noqa
 
-        history_field_names = (
-            'history_id', 'history_date', 'history_change_reason',
-            'history_user_id', 'history_type')
-        for field_name in history_field_names:
-            try:
-                value = getattr(instance, field_name)
-                ret[field_name] = value
-            except Exception:  # noqa: pylint=broad-except
-                continue
-
         for field in fields:
-            get_simplified_nested_serializer(field)
+            simplify_nested_serializer(field)
             try:
                 attribute = field.get_attribute(instance)
                 if attribute is not None:
@@ -33,7 +39,7 @@ class HistorySerializerMixIn:
         return ret
 
 
-def get_simplified_nested_serializer(serializer):
+def simplify_nested_serializer(serializer):
     if isinstance(serializer, StandardizedModelSerializer):
         for _name, _field in list(serializer.fields.items()):
             if _name not in ('_uid', '_type'):
@@ -42,4 +48,11 @@ def get_simplified_nested_serializer(serializer):
 
 def get_history_serializer_class(model_name, serializer_class):
     name = f'{model_name}Serializer'
-    return type(name, (HistorySerializerMixIn, serializer_class), {})
+    _model = serializer_class.Meta.model.history.model
+    fields = HistorySerializerMixIn.Meta.fields + serializer_class.Meta.fields
+    _meta = type(
+        'Meta', (HistorySerializerMixIn.Meta, serializer_class.Meta), {
+            'model': _model,
+            'fields': fields})
+    bases = HistorySerializerMixIn, serializer_class
+    return type(name, bases, {'Meta': _meta})
