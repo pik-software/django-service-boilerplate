@@ -26,8 +26,8 @@ class HistorizedRouter(DefaultRouter):
 
     def register(self, prefix, viewset, basename=None, base_name=None):
         if getattr(viewset, 'allow_history', True):
-            super().register(prefix, viewset, basename, base_name)
-        self.register_history_viewset(prefix, viewset, basename, base_name)
+            self.register_history_viewset(prefix, viewset, basename, base_name)
+        super().register(prefix, viewset, basename, base_name)
 
     def get_urls(self):
         return self.history_router.get_urls() + super().get_urls()
