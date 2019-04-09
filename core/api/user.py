@@ -1,11 +1,17 @@
+from django.contrib.auth import get_user_model
 from rest_framework import renderers, serializers, permissions
 from rest_framework.response import Response
+from rest_framework.serializers import ModelSerializer
 from rest_framework.views import APIView
 
 
-class UserSerializer(serializers.Serializer):
+class UserSerializer(ModelSerializer):
     email = serializers.EmailField()
     username = serializers.CharField(max_length=200)
+
+    class Meta:
+        model = get_user_model()
+        fields = ('email', 'username')
 
 
 class StandardizedUserApiView(APIView):

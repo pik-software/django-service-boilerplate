@@ -1,9 +1,7 @@
 from django.utils.translation import ugettext as _
 from rest_framework import serializers
 from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.compat import authenticate
-
-from core.api.inspectors import StandardizedAutoSchema
+from rest_framework.authentication import authenticate
 
 
 class AuthTokenSerializer(serializers.Serializer):
@@ -44,7 +42,6 @@ class AuthTokenSerializer(serializers.Serializer):
 
 class StandardizedObtainAuthToken(ObtainAuthToken):
     serializer_class = AuthTokenSerializer
-    schema = StandardizedAutoSchema()
 
 
 OBTAIN_AUTH_TOKEN = StandardizedObtainAuthToken.as_view()
