@@ -1,6 +1,6 @@
 # python utils
 Pillow==5.3.0
-requests==2.20.0
+requests==2.21.0
 deprecated==1.2.5
 beautifulsoup4==4.6.3
 cucco==2.2.1
