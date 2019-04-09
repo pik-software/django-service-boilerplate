@@ -1,5 +1,6 @@
 from collections import OrderedDict
 
+from deprecated import deprecated
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.translation import ugettext as _
@@ -17,8 +18,11 @@ def _get_model_field(model, field):
         return None
 
 
+@deprecated
 class PrimaryKeyModelSerializerField(serializers.Field):
     """
+    DEPLRECATED use inner serializers! (see `contacts.api.serializers` example)
+
     Use it if you want to use ModelSerializer inside other ModelSerializer.
 
     Use `allowed_objects` function to restrict access to nested objects

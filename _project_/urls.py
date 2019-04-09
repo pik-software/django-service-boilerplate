@@ -6,7 +6,7 @@ from django.urls import path, include
 
 from core.api.auth import OBTAIN_AUTH_TOKEN
 from core.api.router import StandardizedRouter
-from core.api.schema import SchemaView
+from core.api.schema import get_standardized_schema_view
 from core.api.user import USER_API_VIEW
 from core.views import task_result_api_view
 from contacts.api import ContactViewSet, CommentViewSet
@@ -26,17 +26,21 @@ def index(request):
     return render(request, 'access_denied.html', {})
 
 
-urlpatterns = [  # noqa: pylint=invalid-name
+api_urlpatterns = [  # noqa: pylint=invalid-name
+    path('api/v1/', include((router.urls, 'api'))),
+]
+
+urlpatterns = api_urlpatterns + [  # noqa: pylint=invalid-name
     path('', index, name='index'),
     path('', include('lib.oidc_relied.urls')),
     path('admin/', admin.site.urls),
     path('status/', include('health_check.urls')),
     path('accounts/', include('registration.auth_urls')),
     path('api/task/result/<str:taskid>/', task_result_api_view),
-    path('api/v<version>/schema/', SchemaView.as_view(), name='api_schema'),
-    path('api/v<int:version>/', include((router.urls, 'api'))),
     path('api-token-auth/', OBTAIN_AUTH_TOKEN),
     path('api-user/', USER_API_VIEW),
+    path('api/v1/schema/', get_standardized_schema_view(api_urlpatterns),
+         name='api_schema'),
 ]
 
 urlpatterns += static(
