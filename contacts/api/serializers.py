@@ -1,6 +1,5 @@
 from rest_framework.fields import IntegerField
 
-from core.api.fields import PrimaryKeyModelSerializerField
 from core.api.serializers import StandardizedModelSerializer
 from ..models import Contact, Comment
 
@@ -14,9 +13,7 @@ class ContactSerializer(StandardizedModelSerializer):
 
 
 class CommentSerializer(StandardizedModelSerializer):
-    contact = PrimaryKeyModelSerializerField(
-        ContactSerializer,
-        allowed_objects=lambda serializer: serializer.Meta.model.objects.all())
+    contact = ContactSerializer()
 
     user = IntegerField(source='user_id', required=False)
 

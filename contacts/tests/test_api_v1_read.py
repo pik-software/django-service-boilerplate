@@ -72,6 +72,7 @@ def test_api_contact_history(api_user, api_client):
         'history_id': hist_obj.history_id,
         'history_type': '+',
         'history_user_id': None,
+        'history_user': None,
     }])
 
 
@@ -136,11 +137,6 @@ def test_api_comment_history(api_user, api_client):
         'contact': {
             '_uid': str(obj.contact.uid),
             '_type': 'contact',
-            '_version': obj.contact.version,
-            'emails': obj.contact.emails,
-            'name': obj.contact.name,
-            'order_index': obj.contact.order_index,
-            'phones': obj.contact.phones,
         },
         'message': obj.message,
         'user': obj.user.pk,
@@ -149,4 +145,5 @@ def test_api_comment_history(api_user, api_client):
         'history_id': hist_obj.history_id,
         'history_type': '+',
         'history_user_id': None,
+        'history_user': None,
     }])
