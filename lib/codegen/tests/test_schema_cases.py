@@ -11,7 +11,7 @@ TEMPLATES = os.path.join(
 
 SCHEMA = os.path.join(
     ((os.path.dirname(__file__))),
-    'cases', 'contacts1.json'
+    'testcases', 'contacts1.json'
 )
 
 

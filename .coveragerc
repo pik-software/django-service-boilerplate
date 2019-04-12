@@ -3,9 +3,10 @@ omit =
     # omit anything in a tests directory anywhere
     **/tests/*
     **/migrations/*
+    **/templates/*
+    **/codegen_templates/*
     # omit everything in .venv/
     .venv/*
     # omit this single file
     manage.py
     _project_/settings_local.py
-    lib/codegen/codegen_templates
