@@ -69,3 +69,14 @@ Run tests:
     # option for db recreation forcing.
     
     pytest --create-db
+
+# lib.codegen #
+
+Help you to generate django models by OpenAPI Swagger schema.
+
+1. Add `lib.codegen` to `INSTALLED_APPS`
+
+2. run code generation command
+
+    python manage.py schema_to_models ./app.schema.json app_name
+
