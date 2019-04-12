@@ -35,7 +35,8 @@ def test_api_contact_model_schema(api_client):
         'required': ['name'],
         'title': 'Contact',
         'properties': {
-            '_uid': {'title': ' uid', 'type': 'string', 'readOnly': True},
+            '_uid': {'title': ' uid', 'type': 'string', 'format': 'uuid',
+                     'readOnly': True},
             '_type': {'title': ' type', 'type': 'string', 'readOnly': True},
             '_version': {
                 'title': ' version', 'type': 'integer',
@@ -90,7 +91,8 @@ def test_api_comment_model_schema(api_client):
         'type': 'object',
         'required': ['contact', 'message'],
         'properties': {
-            '_uid': {'title': ' uid', 'type': 'string', 'readOnly': True},
+            '_uid': {'title': ' uid', 'type': 'string', 'format': 'uuid',
+                     'readOnly': True},
             '_type': {'title': ' type', 'type': 'string', 'readOnly': True},
             '_version': {
                 'title': ' version', 'type': 'integer', 'readOnly': True},

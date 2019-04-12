@@ -5,6 +5,7 @@ from uuid import UUID
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Model
+from drf_yasg.utils import swagger_serializer_method
 from rest_framework import serializers
 from rest_framework.fields import empty
 from rest_framework.serializers import ListSerializer
@@ -61,22 +62,20 @@ class StandardizedProtocolSerializer(serializers.ModelSerializer):
     _type = serializers.SerializerMethodField()
     _version = serializers.SerializerMethodField()
 
-    @staticmethod
-    def get__uid(obj) -> Optional[Union[str, UUID]]:
+    @swagger_serializer_method(serializer_or_field=serializers.UUIDField)
+    def get__uid(self, obj) -> Optional[Union[str, UUID]]:
         if not hasattr(obj, 'uid'):
             if not hasattr(obj, 'pk'):
                 return None
             return str(obj.pk)
         return obj.uid
 
-    @staticmethod
-    def get__type(obj) -> Optional[str]:
+    def get__type(self, obj) -> Optional[str]:
         if not isinstance(obj, Model):
             return None
         return ContentType.objects.get_for_model(type(obj)).model
 
-    @staticmethod
-    def get__version(obj) -> Optional[int]:
+    def get__version(self, obj) -> Optional[int]:
         if not hasattr(obj, 'version'):
             return None
         return obj.version

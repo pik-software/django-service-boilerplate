@@ -12,15 +12,8 @@ class StandardizedAutoSchema(SwaggerAutoSchema):
     pass
 
 
-def get_standardized_schema_view(
-        api_urlpatterns, title="API",
-        description="API", default_version='v1'):
+def get_standardized_schema_view(api_urlpatterns):
     schema_view = get_schema_view(
-        openapi.Info(
-            title=title,
-            description=description,
-            default_version=default_version,
-        ),
         patterns=api_urlpatterns,
         public=True,
     )
