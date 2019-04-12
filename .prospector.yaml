@@ -17,3 +17,4 @@ pylint:
     - redefined-outer-name
     - relative-beyond-top-level
     - abstract-method
+    - no-self-use

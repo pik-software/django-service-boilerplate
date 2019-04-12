@@ -333,7 +333,7 @@ SWAGGER_SETTINGS = {
         'drf_yasg.inspectors.CoreAPICompatInspector',
     ],
     'DEFAULT_API_URL': None,
-
+    'DEFAULT_INFO': '_project_.swagger.INFO',
     'USE_SESSION_AUTH': True,
     'SECURITY_DEFINITIONS': {
         'Basic': {
