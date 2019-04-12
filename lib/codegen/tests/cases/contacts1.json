@@ -1,0 +1,906 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "API",
+        "description": "API",
+        "version": "v1"
+    },
+    "basePath": "/",
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "securityDefinitions": {
+        "Basic": {
+            "type": "basic"
+        }
+    },
+    "security": [
+        {
+            "Basic": []
+        }
+    ],
+    "paths": {
+        "/api-token-auth/": {
+            "post": {
+                "operationId": "api-token-auth_create",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "api-token-auth"
+                ]
+            },
+            "parameters": []
+        },
+        "/api-user/": {
+            "get": {
+                "operationId": "api-user_list",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "api-user"
+                ]
+            },
+            "parameters": []
+        },
+        "/api/v1/comment-list/": {
+            "get": {
+                "operationId": "api_v1_comment-list_list",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "message",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "message__in",
+                        "in": "query",
+                        "description": "\u041d\u0435\u0441\u043a\u043e\u043b\u044c\u043a\u043e \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0439 \u043c\u043e\u0433\u0443\u0442 \u0431\u044b\u0442\u044c \u0440\u0430\u0437\u0434\u0435\u043b\u0435\u043d\u044b \u0437\u0430\u043f\u044f\u0442\u044b\u043c\u0438.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "message__startswith",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "message__endswith",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "message__contains",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "user",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "user__in",
+                        "in": "query",
+                        "description": "\u041d\u0435\u0441\u043a\u043e\u043b\u044c\u043a\u043e \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0439 \u043c\u043e\u0433\u0443\u0442 \u0431\u044b\u0442\u044c \u0440\u0430\u0437\u0434\u0435\u043b\u0435\u043d\u044b \u0437\u0430\u043f\u044f\u0442\u044b\u043c\u0438.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "A search term.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "ordering",
+                        "in": "query",
+                        "description": "Which field to use when ordering the results.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "A page number within the paginated result set.",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "required": false,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "required": [
+                                "results",
+                                "count",
+                                "page",
+                                "page_size"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "count": {
+                                    "type": "integer"
+                                },
+                                "page": {
+                                    "type": "integer"
+                                },
+                                "page_size": {
+                                    "type": "integer"
+                                },
+                                "pages": {
+                                    "type": "integer"
+                                },
+                                "page_next": {
+                                    "type": "integer",
+                                    "x-nullable": true
+                                },
+                                "page_previous": {
+                                    "type": "integer",
+                                    "x-nullable": true
+                                },
+                                "results": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Comment"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "api"
+                ]
+            },
+            "post": {
+                "operationId": "api_v1_comment-list_create",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Comment"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Comment"
+                        }
+                    }
+                },
+                "tags": [
+                    "api"
+                ]
+            },
+            "parameters": []
+        },
+        "/api/v1/comment-list/history/": {
+            "get": {
+                "operationId": "api_v1_comment-list_history",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "message",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "message__in",
+                        "in": "query",
+                        "description": "\u041d\u0435\u0441\u043a\u043e\u043b\u044c\u043a\u043e \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0439 \u043c\u043e\u0433\u0443\u0442 \u0431\u044b\u0442\u044c \u0440\u0430\u0437\u0434\u0435\u043b\u0435\u043d\u044b \u0437\u0430\u043f\u044f\u0442\u044b\u043c\u0438.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "message__startswith",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "message__endswith",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "message__contains",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "user",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "user__in",
+                        "in": "query",
+                        "description": "\u041d\u0435\u0441\u043a\u043e\u043b\u044c\u043a\u043e \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0439 \u043c\u043e\u0433\u0443\u0442 \u0431\u044b\u0442\u044c \u0440\u0430\u0437\u0434\u0435\u043b\u0435\u043d\u044b \u0437\u0430\u043f\u044f\u0442\u044b\u043c\u0438.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "A search term.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "ordering",
+                        "in": "query",
+                        "description": "Which field to use when ordering the results.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "A page number within the paginated result set.",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "required": false,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "required": [
+                                "results",
+                                "count",
+                                "page",
+                                "page_size"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "count": {
+                                    "type": "integer"
+                                },
+                                "page": {
+                                    "type": "integer"
+                                },
+                                "page_size": {
+                                    "type": "integer"
+                                },
+                                "pages": {
+                                    "type": "integer"
+                                },
+                                "page_next": {
+                                    "type": "integer",
+                                    "x-nullable": true
+                                },
+                                "page_previous": {
+                                    "type": "integer",
+                                    "x-nullable": true
+                                },
+                                "results": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Comment"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "api"
+                ]
+            },
+            "parameters": []
+        },
+        "/api/v1/comment-list/{_uid}/": {
+            "get": {
+                "operationId": "api_v1_comment-list_read",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Comment"
+                        }
+                    }
+                },
+                "tags": [
+                    "api"
+                ]
+            },
+            "put": {
+                "operationId": "api_v1_comment-list_update",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Comment"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Comment"
+                        }
+                    }
+                },
+                "tags": [
+                    "api"
+                ]
+            },
+            "patch": {
+                "operationId": "api_v1_comment-list_partial_update",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Comment"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Comment"
+                        }
+                    }
+                },
+                "tags": [
+                    "api"
+                ]
+            },
+            "delete": {
+                "operationId": "api_v1_comment-list_delete",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "api"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "_uid",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        },
+        "/api/v1/contact-list/": {
+            "get": {
+                "operationId": "api_v1_contact-list_list",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name__in",
+                        "in": "query",
+                        "description": "\u041d\u0435\u0441\u043a\u043e\u043b\u044c\u043a\u043e \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0439 \u043c\u043e\u0433\u0443\u0442 \u0431\u044b\u0442\u044c \u0440\u0430\u0437\u0434\u0435\u043b\u0435\u043d\u044b \u0437\u0430\u043f\u044f\u0442\u044b\u043c\u0438.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name__startswith",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name__endswith",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name__contains",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "phones__contains",
+                        "in": "query",
+                        "description": "\u041d\u0435\u0441\u043a\u043e\u043b\u044c\u043a\u043e \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0439 \u043c\u043e\u0433\u0443\u0442 \u0431\u044b\u0442\u044c \u0440\u0430\u0437\u0434\u0435\u043b\u0435\u043d\u044b \u0437\u0430\u043f\u044f\u0442\u044b\u043c\u0438.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "emails__contains",
+                        "in": "query",
+                        "description": "\u041d\u0435\u0441\u043a\u043e\u043b\u044c\u043a\u043e \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0439 \u043c\u043e\u0433\u0443\u0442 \u0431\u044b\u0442\u044c \u0440\u0430\u0437\u0434\u0435\u043b\u0435\u043d\u044b \u0437\u0430\u043f\u044f\u0442\u044b\u043c\u0438.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "A search term.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "ordering",
+                        "in": "query",
+                        "description": "Which field to use when ordering the results.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "A page number within the paginated result set.",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "required": false,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "required": [
+                                "results",
+                                "count",
+                                "page",
+                                "page_size"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "count": {
+                                    "type": "integer"
+                                },
+                                "page": {
+                                    "type": "integer"
+                                },
+                                "page_size": {
+                                    "type": "integer"
+                                },
+                                "pages": {
+                                    "type": "integer"
+                                },
+                                "page_next": {
+                                    "type": "integer",
+                                    "x-nullable": true
+                                },
+                                "page_previous": {
+                                    "type": "integer",
+                                    "x-nullable": true
+                                },
+                                "results": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Contact"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "api"
+                ]
+            },
+            "post": {
+                "operationId": "api_v1_contact-list_create",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Contact"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Contact"
+                        }
+                    }
+                },
+                "tags": [
+                    "api"
+                ]
+            },
+            "parameters": []
+        },
+        "/api/v1/contact-list/history/": {
+            "get": {
+                "operationId": "api_v1_contact-list_history",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name__in",
+                        "in": "query",
+                        "description": "\u041d\u0435\u0441\u043a\u043e\u043b\u044c\u043a\u043e \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0439 \u043c\u043e\u0433\u0443\u0442 \u0431\u044b\u0442\u044c \u0440\u0430\u0437\u0434\u0435\u043b\u0435\u043d\u044b \u0437\u0430\u043f\u044f\u0442\u044b\u043c\u0438.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name__startswith",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name__endswith",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "name__contains",
+                        "in": "query",
+                        "description": "",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "phones__contains",
+                        "in": "query",
+                        "description": "\u041d\u0435\u0441\u043a\u043e\u043b\u044c\u043a\u043e \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0439 \u043c\u043e\u0433\u0443\u0442 \u0431\u044b\u0442\u044c \u0440\u0430\u0437\u0434\u0435\u043b\u0435\u043d\u044b \u0437\u0430\u043f\u044f\u0442\u044b\u043c\u0438.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "emails__contains",
+                        "in": "query",
+                        "description": "\u041d\u0435\u0441\u043a\u043e\u043b\u044c\u043a\u043e \u0437\u043d\u0430\u0447\u0435\u043d\u0438\u0439 \u043c\u043e\u0433\u0443\u0442 \u0431\u044b\u0442\u044c \u0440\u0430\u0437\u0434\u0435\u043b\u0435\u043d\u044b \u0437\u0430\u043f\u044f\u0442\u044b\u043c\u0438.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "A search term.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "ordering",
+                        "in": "query",
+                        "description": "Which field to use when ordering the results.",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "A page number within the paginated result set.",
+                        "required": false,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "required": false,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "required": [
+                                "results",
+                                "count",
+                                "page",
+                                "page_size"
+                            ],
+                            "type": "object",
+                            "properties": {
+                                "count": {
+                                    "type": "integer"
+                                },
+                                "page": {
+                                    "type": "integer"
+                                },
+                                "page_size": {
+                                    "type": "integer"
+                                },
+                                "pages": {
+                                    "type": "integer"
+                                },
+                                "page_next": {
+                                    "type": "integer",
+                                    "x-nullable": true
+                                },
+                                "page_previous": {
+                                    "type": "integer",
+                                    "x-nullable": true
+                                },
+                                "results": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/definitions/Contact"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "api"
+                ]
+            },
+            "parameters": []
+        },
+        "/api/v1/contact-list/{_uid}/": {
+            "get": {
+                "operationId": "api_v1_contact-list_read",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Contact"
+                        }
+                    }
+                },
+                "tags": [
+                    "api"
+                ]
+            },
+            "put": {
+                "operationId": "api_v1_contact-list_update",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Contact"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Contact"
+                        }
+                    }
+                },
+                "tags": [
+                    "api"
+                ]
+            },
+            "patch": {
+                "operationId": "api_v1_contact-list_partial_update",
+                "description": "",
+                "parameters": [
+                    {
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Contact"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "$ref": "#/definitions/Contact"
+                        }
+                    }
+                },
+                "tags": [
+                    "api"
+                ]
+            },
+            "delete": {
+                "operationId": "api_v1_contact-list_delete",
+                "description": "",
+                "parameters": [],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "api"
+                ]
+            },
+            "parameters": [
+                {
+                    "name": "_uid",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ]
+        }
+    },
+    "definitions": {
+        "Contact": {
+            "title": "Contact",
+            "required": [
+                "name"
+            ],
+            "type": "object",
+            "properties": {
+                "_uid": {
+                    "title": " uid",
+                    "type": "string",
+                    "readOnly": true
+                },
+                "_type": {
+                    "title": " type",
+                    "type": "string",
+                    "readOnly": true
+                },
+                "_version": {
+                    "title": " version",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "name": {
+                    "title": "\u041d\u0430\u0438\u043c\u0435\u043d\u043e\u0432\u0430\u043d\u0438\u0435",
+                    "type": "string",
+                    "maxLength": 255,
+                    "minLength": 1
+                },
+                "phones": {
+                    "description": "\u041d\u043e\u043c\u0435\u0440\u0430 \u0442\u0435\u043b\u0435\u0444\u043e\u043d\u043e\u0432 \u0432\u0432\u043e\u0434\u044f\u0442\u0441\u044f \u0432 \u043f\u0440\u043e\u0438\u0437\u0432\u043e\u043b\u044c\u043d\u043e\u043c \u0444\u043e\u0440\u043c\u0430\u0442\u0435 \u0447\u0435\u0440\u0435\u0437 \u0437\u0430\u043f\u044f\u0442\u0443\u044e",
+                    "type": "array",
+                    "items": {
+                        "title": "Phones",
+                        "type": "string",
+                        "maxLength": 30,
+                        "minLength": 1
+                    }
+                },
+                "emails": {
+                    "description": "E-mail \u0430\u0434\u0440\u0435\u0441\u0430 \u0432\u0432\u043e\u0434\u044f\u0442\u0441\u044f \u0447\u0435\u0440\u0435\u0437 \u0437\u0430\u043f\u044f\u0442\u0443\u044e",
+                    "type": "array",
+                    "items": {
+                        "title": "Emails",
+                        "type": "string",
+                        "format": "email",
+                        "maxLength": 254,
+                        "minLength": 1
+                    }
+                },
+                "order_index": {
+                    "title": "\u0418\u043d\u0434\u0435\u043a\u0441 \u0434\u043b\u044f \u0441\u043e\u0440\u0442\u0438\u0440\u043e\u0432\u043a\u0438",
+                    "type": "integer",
+                    "maximum": 2147483647,
+                    "minimum": -2147483648
+                }
+            }
+        },
+        "Comment": {
+            "required": [
+                "contact",
+                "message"
+            ],
+            "type": "object",
+            "properties": {
+                "_uid": {
+                    "title": " uid",
+                    "type": "string",
+                    "readOnly": true
+                },
+                "_type": {
+                    "title": " type",
+                    "type": "string",
+                    "readOnly": true
+                },
+                "_version": {
+                    "title": " version",
+                    "type": "integer",
+                    "readOnly": true
+                },
+                "user": {
+                    "title": "User",
+                    "type": "integer"
+                },
+                "contact": {
+                    "$ref": "#/definitions/Contact"
+                },
+                "message": {
+                    "title": "\u0421\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435",
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        }
+    }
+}
