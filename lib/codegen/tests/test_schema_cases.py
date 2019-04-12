@@ -23,12 +23,12 @@ def cases(request):
     return request.param
 
 
-def _read_file(path):
-    with open(path) as f:
-        return f.read()
+def _read_from_file(path):
+    with open(path) as fileobj:
+        return fileobj.read()
 
 
 def test_generate_models(cases):
     schema, template, result = cases
-    g = Generator(TEMPLATES, schema)
-    assert g.generate(template) == _read_file(result)
+    generator = Generator(TEMPLATES, schema)
+    assert generator.generate(template) == _read_from_file(result)

@@ -1,11 +1,12 @@
-_SKIP_KEYS = []
-
-
-def skip_items_keys(items, keys=_SKIP_KEYS):
+def skip_items_keys(items, keys=tuple()):
+    """
+    >>> skip_items_keys({'fo': 1}.items())
+    [('fo', 1)]
+    """
     return [x for x in items if x[0] not in keys]
 
 
-def to_python_kwargs(v):
+def to_python_kwargs(val):
     """
     >>> to_python_kwargs({'foo': 1})
     'foo=1'
@@ -14,7 +15,7 @@ def to_python_kwargs(v):
     >>> to_python_kwargs({})
     ''
     """
-    return ', '.join([f"{k}={v!r}" for k, v in v.items()])
+    return ', '.join([f"{k}={v!r}" for k, v in val.items()])
 
 
 def to_model_field_name(name):
@@ -55,9 +56,8 @@ def to_model_field(schema, name=None):
             kwargs['primary_key'] = True
         if schema.get('format') == 'uuid':
             return f"models.UUIDField({to_python_kwargs(kwargs)})"
-        else:
-            kwargs['max_length'] = schema.get('maxLength', 255)
-            return f"models.CharField({to_python_kwargs(kwargs)})"
+        kwargs['max_length'] = schema.get('maxLength', 255)
+        return f"models.CharField({to_python_kwargs(kwargs)})"
     # fix title for complex objects
     items = schema.get('items')
     if items and isinstance(items, dict) and items.get('title'):

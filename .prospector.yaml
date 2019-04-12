@@ -9,6 +9,7 @@ ignore-paths:
   - .venv
   - _project_/settings_local.py
   - README.md
+  - lib/codegen/utils.py
 
 pylint:
   disable:
