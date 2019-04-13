@@ -47,7 +47,7 @@ django-redis==4.9.0
 # celery
 kombu==4.2.1
 celery==4.2.2
-django_celery_results==1.0.1
+django_celery_results==1.0.4
 
 # sentry
 raven==6.10.0
