@@ -81,7 +81,7 @@ django_cors_headers==2.5.2
 django-oauth-toolkit<1.1.0
 django-rest-framework-social-oauth2==1.1.0
 pyjwkest==1.4.0
-future>=0.16.0,<0.17.0
+future==0.17.1
 social_auth_core>=1.7.0,<2.0.0
 
 # lib/codegen
