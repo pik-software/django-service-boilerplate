@@ -101,6 +101,9 @@ INSTALLED_APPS = [
     'crispy_forms',  # sexy django_filters forms
     'drf_yasg',
 
+    # LIB
+    'lib.codegen',
+
     # CELERY
     'django_celery_results',
 

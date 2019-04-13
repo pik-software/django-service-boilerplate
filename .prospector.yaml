@@ -4,9 +4,12 @@ strictness: veryhigh
 ignore-paths:
   - docs
   - migrations
+  - templates
+  - codegen_templates
   - .venv
   - _project_/settings_local.py
   - README.md
+  - lib/codegen/utils.py
 
 pylint:
   disable:
