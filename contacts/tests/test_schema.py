@@ -41,6 +41,10 @@ def test_api_contact_model_schema(api_client):
             '_version': {
                 'title': ' version', 'type': 'integer',
                 'readOnly': True},
+            'created': {'title': 'Создан', 'format': 'date-time',
+                        'readOnly': True, 'type': 'string'},
+            'updated': {'title': 'Updated', 'format': 'date-time',
+                        'readOnly': True, 'type': 'string'},
             'name': {
                 'title': 'Наименование', 'type': 'string',
                 'maxLength': 255, 'minLength': 1},
@@ -96,6 +100,10 @@ def test_api_comment_model_schema(api_client):
             '_type': {'title': ' type', 'type': 'string', 'readOnly': True},
             '_version': {
                 'title': ' version', 'type': 'integer', 'readOnly': True},
+            'created': {'title': 'Создан', 'format': 'date-time',
+                        'readOnly': True, 'type': 'string'},
+            'updated': {'title': 'Updated', 'format': 'date-time',
+                        'readOnly': True, 'type': 'string'},
             'user': {'title': 'User', 'type': 'integer'},
             'contact': {'$ref': '#/definitions/Contact'},
             'message': {
