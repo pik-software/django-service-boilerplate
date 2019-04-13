@@ -1,4 +1,5 @@
 import rest_framework_filters as filters
+from django.db.models import DateTimeField
 
 from ..models import Contact, Comment
 
@@ -19,6 +20,11 @@ class ContactFilter(filters.FilterSet):
         model = Contact
         fields = {
             'name': NAME_FILTERS,
+            'updated': ['exact', 'gt', 'gte', 'lt', 'lte'],
+            'created': ['exact', 'gt', 'gte', 'lt', 'lte'],
+        }
+        filter_overrides = {
+            DateTimeField: {'filter_class': filters.IsoDateTimeFilter}
         }
 
 
@@ -28,4 +34,9 @@ class CommentFilter(filters.FilterSet):
         fields = {
             'message': NAME_FILTERS,
             'user': ['exact', 'in'],
+            'updated': ['exact', 'gt', 'gte', 'lt', 'lte'],
+            'created': ['exact', 'gt', 'gte', 'lt', 'lte'],
+        }
+        filter_overrides = {
+            DateTimeField: {'filter_class': filters.IsoDateTimeFilter}
         }
