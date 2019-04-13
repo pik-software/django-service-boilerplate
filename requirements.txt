@@ -64,7 +64,7 @@ werkzeug==0.15.2
 prospector==1.1.2
 pylint==2.1.1
 factory_boy==2.11.1
-freezegun==0.3.10
+freezegun==0.3.11
 pdbpp==0.9.15
 pytest==3.4.2
 pytest-mock==1.9.0
@@ -83,3 +83,6 @@ django-rest-framework-social-oauth2==1.1.0
 pyjwkest==1.4.0
 future>=0.16.0,<0.17.0
 social_auth_core>=1.7.0,<2.0.0
+
+# lib/codegen
+swagger-parser==1.0.1

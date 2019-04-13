@@ -3,6 +3,8 @@ omit =
     # omit anything in a tests directory anywhere
     **/tests/*
     **/migrations/*
+    **/templates/*
+    **/codegen_templates/*
     # omit everything in .venv/
     .venv/*
     # omit this single file
