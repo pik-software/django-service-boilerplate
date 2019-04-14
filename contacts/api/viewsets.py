@@ -21,7 +21,7 @@ class ContactViewSet(StandardizedModelViewSet):
     filter_class = ContactFilter
     search_fields = (
         'name', 'phones', 'emails')
-    ordering_fields = ('name', 'order_index')
+    ordering_fields = ('created', 'updated', 'name', 'order_index')
 
     def get_queryset(self):
         return Contact.objects.all()
@@ -41,7 +41,7 @@ class CommentViewSet(StandardizedModelViewSet):
     filter_class = CommentFilter
     search_fields = (
         'message', 'user')
-    ordering_fields = ()
+    ordering_fields = ('created', 'updated')
 
     def get_queryset(self):
         return Comment.objects.all().select_related('contact')

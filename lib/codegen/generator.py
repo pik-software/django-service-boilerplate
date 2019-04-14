@@ -18,6 +18,8 @@ class Generator:
             'skip_items_keys': skip_items_keys,
         })
 
-    def generate(self, name):
+    def generate(self, name, options=None):
         return self.env.get_template(name + '.py').render({
-            'schema': self.parser.specification})
+            'schema': self.parser.specification,
+            'options': options or {},
+        })
