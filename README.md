@@ -78,3 +78,47 @@ Help you to generate django models by OpenAPI Swagger schema.
 
 2. run `python manage.py schema_to_models ./app.schema.json app_name` command
 
+# integration #
+
+```
+#!/bin/bash
+
+# 0. prepare settings
+INTEGRA_BASE_URL="http://127.0.0.1:8000"
+INTEGRA_SCHEMA_PATH="schema.json"
+INTEGRA_APP_NAME="contacts_replica1"
+
+# 1. create login/pass API user
+AUTH="api-reader:MyPass39dza2es"
+
+# 2. download swagger `curl`
+curl -u "${AUTH}" "${INTEGRA_BASE_URL}/api/v1/schema/?format=openapi" -o "${INTEGRA_SCHEMA_PATH}"
+
+# 3. generate integration app
+python manage.py schema_to_models "${INTEGRA_SCHEMA_PATH}" "${INTEGRA_APP_NAME}" --options '{"skip_models":["HistoricalComment","HistoricalContact","User"],"skip_fields":["_type"]}'
+
+echo Add "${INTEGRA_APP_NAME}" to INSTALLED_APPS
+echo
+echo Setup integration settings like:
+echo
+echo "INTEGRA_CONFIGS = [                                        "
+echo "    ...                                                    "
+echo "    {                                                      "
+echo "        'base_url': '${INTEGRA_BASE_URL}',                 "
+echo "        'request': {                                       "
+echo "            'auth': '${AUTH}',                             "
+echo "        },                                                 "
+echo "        'models': [                                        "
+echo "            {'url': '/api/v1/<model>-list/',               "
+echo "             'app': '${INTEGRA_APP_NAME}',                 "
+echo "             'model': '<model>'},                          "
+echo "            ...                                            "
+echo "        ],                                                 "
+echo "    }                                                      "
+echo "    ...                                                    "
+echo "]                                                          "
+echo
+echo Run: python manage.py makemigrations "${INTEGRA_APP_NAME}"
+echo Run: python manage.py migrate
+echo Setup: CELERY_BEAT_SCHEDULE in settings
+```
