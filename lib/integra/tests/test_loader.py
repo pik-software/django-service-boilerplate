@@ -12,8 +12,8 @@ def test_loader_protocol(mocker):
     result = [{'app': 'housing', 'model': 'contact', 'data': {'_uid': '0'}}]
 
     loader = Loader(config)
-    with mocker.patch.object(loader, '_request', return_value=result) as func:
+    with mocker.patch.object(loader, '_request', return_value=result):
         downloaded = list(loader.download())
 
         assert downloaded == result
-        loader._request.assert_called_once_with(config['models'][0], None)
+        loader._request.assert_called_once_with(config['models'][0], None)  # noqa: pylint=protected-access

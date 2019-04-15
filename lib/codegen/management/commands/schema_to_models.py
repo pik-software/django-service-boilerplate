@@ -1,18 +1,14 @@
 import json
-import os
 import shlex
 import sys
 from os import mkdir
-from os.path import join
+from os.path import join, dirname, exists
 
 from django.core.management.base import BaseCommand
 
 from lib.codegen.generator import Generator
 
-TEMPLATES = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
-    'codegen_templates',
-)
+TEMPLATES = join(dirname(dirname(dirname(__file__))), 'codegen_templates')
 
 
 def _write_to_file(path, content):
@@ -21,7 +17,7 @@ def _write_to_file(path, content):
 
 
 def _write_if_not_exists(path, content, force=False):
-    if os.path.exists(path) and not force:
+    if exists(path) and not force:
         return
     _write_to_file(path, content)
 
@@ -55,7 +51,7 @@ class Command(BaseCommand):
         command = ' '.join(['python'] + [shlex.quote(s) for s in sys.argv])
         options['command'] = command
 
-    def handle(self, schema, app_name, **options):
+    def handle(self, schema, app_name, **options):  # noqa: pylint=arguments-differ
         generator = Generator(TEMPLATES, schema)
         self._add_extra_options(options['options'])
 
