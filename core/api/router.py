@@ -23,7 +23,7 @@ class HistorizedRouter(DefaultRouter):
         self.history_router.register(
             history_prefix, history_viewset, history_basename, base_name)
 
-    def register(self, prefix, viewset, basename=None):
+    def register(self, prefix, viewset, basename=None, base_name=None):
         if getattr(viewset, 'allow_history', True):
             self.register_history_viewset(prefix, viewset, basename)
         super().register(prefix, viewset, basename, base_name)
