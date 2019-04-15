@@ -1,9 +1,9 @@
-{% for name, definition in schema.definitions.items() %}
+{% for name, definition in schema.definitions.items() | skip_items_keys(options.skip_models) %}
 from .abstract_schema_models import Base{{name}}
 {% endfor %}
 
 
-{% for name, definition in schema.definitions.items() %}
+{% for name, definition in schema.definitions.items() | skip_items_keys(options.skip_models) %}
 class {{name}}(Base{{name}}):
     pass
 

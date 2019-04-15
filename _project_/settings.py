@@ -57,6 +57,25 @@ DATADOG_TRACE = {
     'TAGS': {'env': ENVIRONMENT},
 }
 
+# INTEGRA (lib.integra)
+INTEGRA_CONFIGS = json.loads(os.environ.get('INTEGRA_CONFIGS', '[]'))
+# INTEGRA_CONFIGS = [
+#     {
+#         'base_url': 'http://127.0.0.1:8000',
+#         'request': {
+#             'auth': 'api-reader:MyPass39dza2es',
+#         },
+#         'models': [
+#             {'url': '/api/v1/contact-list/',
+#              'app': 'contacts_replica1',
+#              'model': 'contact'},
+#             {'url': '/api/v1/comment-list/',
+#              'app': 'contacts_replica1',
+#              'model': 'comment'},
+#         ],
+#     }
+# ]
+
 # SQL EXPLORER
 EXPLORER_CONNECTIONS = {'Default': 'default'}
 EXPLORER_DEFAULT_CONNECTION = 'default'
@@ -103,6 +122,7 @@ INSTALLED_APPS = [
 
     # LIB
     'lib.codegen',
+    'lib.integra',
 
     # CELERY
     'django_celery_results',
