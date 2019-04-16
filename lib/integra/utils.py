@@ -132,7 +132,7 @@ def _prepare_model_attrs(model, data, is_strict=True) -> dict:
             continue
 
         value = data[field.name]
-        if field.is_relation:
+        if field.is_relation and value:
             if isinstance(value, dict):
                 if '_uid' not in value or ('_type' not in value and is_strict):
                     raise ValueError(f'protocol error: bad relation '
