@@ -14,10 +14,18 @@ class Integra:
 
     def run(self):
         count = 0
+        has_exception = False
         for obj in self.loader.download():
-            status = self.updater.update(obj)
-            count += 1 if status else 0
-        self.updater.flush_updates()
+            try:
+                status = self.updater.update(obj)
+                count += 1 if status else 0
+            except Exception as exc:  # noqa
+                app, model, data = obj['app'], obj['model'], obj['data']
+                LOGGER.exception("integra error: %r; app=%s model=%s data=%r",
+                                 exc, app, model, data)
+                has_exception = True
+        if not has_exception:
+            self.updater.flush_updates()
         return count
 
 
