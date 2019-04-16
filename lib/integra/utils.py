@@ -117,6 +117,10 @@ class Updater:
     def flush_updates(self):
         for key, value in self.last_updated.items():
             UpdateState.objects.set_last_updated(key, value)
+        self.clear_updates()
+
+    def clear_updates(self):
+        self.last_updated = {}
 
 
 def _prepare_model_attrs(model, data, is_strict=True) -> dict:
