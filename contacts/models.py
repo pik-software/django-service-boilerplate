@@ -4,12 +4,18 @@ from django.utils.translation import ugettext_lazy as _
 from pik.core.models import BaseHistorical, BasePHistorical, Owned
 
 
+class Category(BasePHistorical):
+    name = models.CharField(_('Название'), max_length=255)
+    parent = models.ForeignKey('self', null=True, on_delete=models.CASCADE)
+
+
 class Contact(BaseHistorical):
     permitted_fields = {
         '{app_label}.change_{model_name}': [
             'name', 'phones', 'emails', 'order_index']
     }
 
+    category = models.ForeignKey(Category, null=True, on_delete=models.CASCADE)
     name = models.CharField(_('Наименование'), max_length=255)
     phones = ArrayField(
         models.CharField(max_length=30), blank=True, default=list,
