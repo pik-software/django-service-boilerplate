@@ -27,7 +27,7 @@ django-extra-views==0.10.0
 django-health-check==3.5.1
 
 # HISTORY
-django-simple-history==2.7.0
+django-simple-history==2.7.2
 
 # API
 djangorestframework==3.9.2
