@@ -4,6 +4,14 @@ from core.api.serializers import StandardizedModelSerializer
 from ..models import Contact, Comment
 
 
+class CategorySerializer(StandardizedModelSerializer):
+    class Meta:
+        model = Contact
+        fields = (
+            '_uid', '_type', '_version', 'created', 'updated',
+            'name', 'parent')
+
+
 class ContactSerializer(StandardizedModelSerializer):
     class Meta:
         model = Contact

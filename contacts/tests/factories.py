@@ -4,7 +4,7 @@ import factory
 import factory.fuzzy
 
 from core.tasks.fixtures import create_user
-from ..models import Contact, Comment
+from ..models import Contact, Comment, Category
 
 
 def _get_random_internal_phones():
@@ -18,6 +18,21 @@ def _get_random_external_phones():
         for _ in range(count)]
 
 
+def _gen_if_probability(model_factory, probability, **kwargs):
+    assert 0 < probability < 100
+    number = random.randint(0, 100)
+    if number < probability:
+        return model_factory.create(**kwargs)
+    return None
+
+
+class CategoryFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Category
+
+    name = factory.Faker('name')
+
+
 class ContactFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Contact
@@ -27,6 +42,8 @@ class ContactFactory(factory.django.DjangoModelFactory):
         lambda x: _get_random_internal_phones())
     emails = factory.LazyAttribute(
         lambda x: ['{0}@example.com'.format(x.name).lower()])
+    category = factory.LazyAttribute(
+        lambda x: _gen_if_probability(CategoryFactory, 20))
 
 
 class CommentFactory(factory.django.DjangoModelFactory):

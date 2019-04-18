@@ -1,12 +1,13 @@
 import pytest
 
-from ..models import Contact, Comment
-from ..tests.factories import ContactFactory, CommentFactory
+from ..models import Contact, Comment, Category
+from ..tests.factories import ContactFactory, CommentFactory, CategoryFactory
 
 
 @pytest.fixture(params=[
     (Contact, ContactFactory),
     (Comment, CommentFactory),
+    (Category, CategoryFactory),
 ])
 def model_and_factory(request):
     return request.param
@@ -15,6 +16,7 @@ def model_and_factory(request):
 @pytest.fixture(params=[
     (Contact, ContactFactory),
     (Comment, CommentFactory),
+    (Category, CategoryFactory),
 ])
 def critical_model_and_factory(request):
     return request.param

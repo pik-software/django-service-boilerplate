@@ -1,10 +1,11 @@
-from contacts.models import Contact, Comment
+from contacts.models import Contact, Comment, Category
 from core.api.filters import StandardizedFieldFilters, \
     StandardizedSearchFilter, StandardizedOrderingFilter
 from core.api.viewsets import StandardizedModelViewSet
 
-from .filters import ContactFilter, CommentFilter
-from .serializers import ContactSerializer, CommentSerializer
+from .filters import ContactFilter, CommentFilter, CategoryFilter
+from .serializers import ContactSerializer, CommentSerializer, \
+    CategorySerializer
 
 
 class ContactViewSet(StandardizedModelViewSet):
@@ -45,3 +46,23 @@ class CommentViewSet(StandardizedModelViewSet):
 
     def get_queryset(self):
         return Comment.objects.all().select_related('contact')
+
+
+class CategoryViewSet(StandardizedModelViewSet):
+    lookup_field = 'uid'
+    lookup_url_kwarg = '_uid'
+    ordering = '-created'
+    serializer_class = CategorySerializer
+    allow_bulk_create = True
+    allow_history = True
+
+    filter_backends = (
+        StandardizedFieldFilters, StandardizedSearchFilter,
+        StandardizedOrderingFilter)
+    filter_class = CategoryFilter
+    search_fields = (
+        'name')
+    ordering_fields = ('created', 'updated')
+
+    def get_queryset(self):
+        return Category.objects.all()
