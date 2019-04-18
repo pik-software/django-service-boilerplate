@@ -8,6 +8,14 @@ class Category(BasePHistorical):
     name = models.CharField(_('Название'), max_length=255)
     parent = models.ForeignKey('self', null=True, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _('категория')
+        verbose_name_plural = _('категории')
+        ordering = ['-created']
+
 
 class Contact(BaseHistorical):
     permitted_fields = {
