@@ -17,15 +17,17 @@ class Integra:
         count = 0
         for model in self.models:
             has_exception = False
+            LOGGER.info(
+                "integra: loading app=%s model=%s",
+                model['app'], model['model'])
             for obj in self.loader.download(model):
                 try:
                     status = self.updater.update(obj)
                     count += 1 if status else 0
                 except Exception as exc:  # noqa
-                    app, model, data = obj['app'], obj['model'], obj['data']
                     LOGGER.exception(
                         "integra error: %r; app=%s model=%s data=%r",
-                        exc, app, model, data)
+                        exc, obj['app'], obj['model'], obj['data'])
                     has_exception = True
             if not has_exception:
                 self.updater.flush_updates()
