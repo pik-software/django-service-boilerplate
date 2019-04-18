@@ -1,3 +1,5 @@
+import dateutil.parser
+
 from lib.integra.models import UpdateState
 from lib.integra.utils import Updater
 
@@ -63,4 +65,5 @@ def test_last_updated_counters():
     assert UpdateState.objects.count() == count + 1
     assert UpdateState.objects.last().key == 'updater1'
     assert UpdateState.objects.last().updated.isoformat() == updated_value
-    assert updater.last_updated == {'integra:updatestate': updated_value}
+    assert updater.last_updated == {
+        'integra:updatestate': dateutil.parser.parse(updated_value)}
