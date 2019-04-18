@@ -14,7 +14,9 @@ class Integra:
         self.updater = Updater()
 
     def run(self):
-        count = 0
+        processed = 0
+        updated = 0
+        errors = 0
         for model in self.models:
             has_exception = False
             LOGGER.info(
@@ -22,26 +24,31 @@ class Integra:
                 model['app'], model['model'])
             for obj in self.loader.download(model):
                 try:
+                    processed += 1
                     status = self.updater.update(obj)
-                    count += 1 if status else 0
+                    updated += 1 if status else 0
                 except Exception as exc:  # noqa
+                    has_exception = True
+                    errors += 1
                     LOGGER.exception(
                         "integra error: %r; app=%s model=%s data=%r",
                         exc, obj['app'], obj['model'], obj['data'])
-                    has_exception = True
             if not has_exception:
                 self.updater.flush_updates()
             self.updater.clear_updates()
-        return count
+        return processed, updated, errors
 
 
 @shared_task
 def download_updates():
-    count = 0
+    processed, updated, errors = 0, 0, 0
     configs = getattr(settings, 'INTEGRA_CONFIGS', None)
     if not configs:
         return 'no-configs'
     for config in configs:
         integrator = Integra(config)
-        count += integrator.run()
-    return f'ok:{count}'
+        c_processed, c_updated, c_errors = integrator.run()
+        processed += c_processed
+        updated += c_updated
+        errors += c_errors
+    return f'ok:{processed}/{updated}:errors:{errors}'
