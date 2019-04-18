@@ -15,7 +15,7 @@ class Loader:
         l = Loader({
             'base_url': 'https://housing.pik-software.ru/',
             'request': {
-
+                'auth': 'login:password',
             },
             'models': [
                 {'url': '/api/v1/contact-list/',
@@ -27,14 +27,12 @@ class Loader:
     def __init__(self, config):
         self.url = config['base_url']
         self.request = config['request']
-        self.models = config['models']
 
-    def download(self):
-        for model in self.models:
-            key = f'{model["app"]}:{model["model"]}'
-            updated = UpdateState.objects.get_last_updated(key)
-            for data in self._request(model, updated):
-                yield data
+    def download(self, model):
+        key = f'{model["app"]}:{model["model"]}'
+        updated = UpdateState.objects.get_last_updated(key)
+        for data in self._request(model, updated):
+            yield data
 
     def _request(self, model, updated=None):
         app_name, model_name = model["app"], model["model"]
