@@ -31,8 +31,6 @@ class CategoryFactory(factory.django.DjangoModelFactory):
         model = Category
 
     name = factory.Faker('name')
-    parent = factory.LazyAttribute(
-        lambda x: _gen_if_probability(CategoryFactory, 40, parent=x))  # noqa: pylint=undefined-variable
 
 
 class ContactFactory(factory.django.DjangoModelFactory):
@@ -45,7 +43,7 @@ class ContactFactory(factory.django.DjangoModelFactory):
     emails = factory.LazyAttribute(
         lambda x: ['{0}@example.com'.format(x.name).lower()])
     category = factory.LazyAttribute(
-        lambda x: _gen_if_probability(CategoryFactory, 20, parent=x))
+        lambda x: _gen_if_probability(CategoryFactory, 20))
 
 
 class CommentFactory(factory.django.DjangoModelFactory):
