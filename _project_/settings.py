@@ -29,6 +29,7 @@ DATABASE_URL = os.environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 SECRET_KEY = os.environ.get('SECRET_KEY', '~+%iawwf2@R!@nakwe%jcAWKJF1asdAFw2')
+
 ENVIRONMENT = os.environ.get('ENVIRONMENT', 'staging')
 
 ALLOWED_HOSTS = ['*']
@@ -292,6 +293,9 @@ CELERY_IMPORTS = [
 ]
 CELERYBEAT_SCHEDULE_FILENAME = os.path.join(DATA_DIR, 'celerybeat.db')
 CELERYBEAT_SCHEDULE = {}
+CELERY_WORKER_CONCURRENCY = int(
+    os.environ.get('CELERY_WORKER_CONCURRENCY', 2))
+
 
 # DRF
 REST_FRAMEWORK = {
