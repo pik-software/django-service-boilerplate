@@ -2,7 +2,7 @@
 
 if [ "$ENVIRONMENT" = "staging" ]
 then
-  concurrency=${1:-$CELERY_WORKER_CONCURRENCY}
+  concurrency=1
 else
   concurrency=${2:-$CELERY_WORKER_CONCURRENCY}
 fi
