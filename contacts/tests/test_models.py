@@ -56,3 +56,8 @@ def test_increment_version(critical_model_and_factory):
     obj.save()
     version3 = obj.version
     assert version1 < version2 < version3
+
+
+def test_escaped_charfield_normalization():
+    contact = Category.objects.create(name='category\xa0\xa01')
+    assert contact.name == 'category 1'
