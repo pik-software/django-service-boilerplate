@@ -58,6 +58,14 @@ def test_increment_version(critical_model_and_factory):
     assert version1 < version2 < version3
 
 
-def test_escaped_charfield_normalization():
-    contact = Category.objects.create(name='category\xa0\xa01')
+space_unicodes = [  # noqa: invalid name
+    '\xa0', '\u1680', '\u2000', '\u2001', '\u2002', '\u2003',
+    '\u2004', '\u2005', '\u2006', '\u2007', '\u2008',
+    '\u2009', '\u200A', '\u200B', '\u202F', '\u205F',
+    '\u3000', '\uFEFF']
+
+
+@pytest.mark.parametrize('space_unicode', space_unicodes)
+def test_escaped_en_quad_charfield_normalization(space_unicode):
+    contact = Category.objects.create(name=f'category{space_unicode}1')
     assert contact.name == 'category 1'
