@@ -65,6 +65,6 @@ space_unicodes = [  # noqa: invalid name
 
 
 @pytest.mark.parametrize('space_unicode', space_unicodes)
-def test_escaped_en_quad_charfield_normalization(space_unicode):
+def test_escaped_whitespaces_charfield_normalization(space_unicode):
     contact = Category.objects.create(name=f'category{space_unicode}1')
     assert contact.name == 'category 1'
