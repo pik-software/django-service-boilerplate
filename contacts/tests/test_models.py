@@ -56,3 +56,15 @@ def test_increment_version(critical_model_and_factory):
     obj.save()
     version3 = obj.version
     assert version1 < version2 < version3
+
+
+space_unicodes = [  # noqa: invalid name
+    '\xa0', '\u1680', '\u2000', '\u2001', '\u2002', '\u2003',
+    '\u2004', '\u2005', '\u2006', '\u2007', '\u2008',
+    '\u2009', '\u200A', '\u202F', '\u205F', '\u3000']
+
+
+@pytest.mark.parametrize('space_unicode', space_unicodes)
+def test_escaped_whitespaces_charfield_normalization(space_unicode):
+    contact = Category.objects.create(name=f'category{space_unicode}1')
+    assert contact.name == 'category 1'

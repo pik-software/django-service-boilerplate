@@ -8,6 +8,8 @@ from django.db import migrations, models
 import django.db.models.deletion
 import uuid
 
+import core.fields
+
 
 class Migration(migrations.Migration):
 
@@ -26,7 +28,7 @@ class Migration(migrations.Migration):
                 ('updated', models.DateTimeField(auto_now=True, verbose_name='Updated')),
                 ('uid', models.UUIDField(default=uuid.uuid4, editable=False, unique=True)),
                 ('version', models.IntegerField(default=1, editable=False)),
-                ('name', models.CharField(max_length=255, verbose_name='Наименование')),
+                ('name', core.fields.NormalizedCharField(max_length=255, verbose_name='Наименование')),
                 ('phones', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=30), blank=True, default=list, help_text='Номера телефонов вводятся в произвольном формате через запятую: четыре (4), шесть (6) или семь (7) цифр каждый', size=None, verbose_name='Номера телефонов служб')),
                 ('emails', django.contrib.postgres.fields.ArrayField(base_field=models.EmailField(max_length=254), blank=True, default=list, help_text='E-mail адреса вводятся через запятую', size=None, verbose_name='E-mail адреса')),
                 ('_contacts_index', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=1024), blank=True, default=list, editable=False, size=None)),
@@ -45,7 +47,7 @@ class Migration(migrations.Migration):
                 ('updated', models.DateTimeField(blank=True, editable=False, verbose_name='Updated')),
                 ('uid', models.UUIDField(db_index=True, default=uuid.uuid4, editable=False)),
                 ('version', models.IntegerField(default=1, editable=False)),
-                ('name', models.CharField(max_length=255, verbose_name='Наименование')),
+                ('name', core.fields.NormalizedCharField(max_length=255, verbose_name='Наименование')),
                 ('phones', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=30), blank=True, default=list, help_text='Номера телефонов вводятся в произвольном формате через запятую: четыре (4), шесть (6) или семь (7) цифр каждый', size=None, verbose_name='Номера телефонов служб')),
                 ('emails', django.contrib.postgres.fields.ArrayField(base_field=models.EmailField(max_length=254), blank=True, default=list, help_text='E-mail адреса вводятся через запятую', size=None, verbose_name='E-mail адреса')),
                 ('_contacts_index', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=1024), blank=True, default=list, editable=False, size=None)),

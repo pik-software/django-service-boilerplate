@@ -70,6 +70,10 @@ Run tests:
     
     pytest --create-db
 
+# ENVIRONMENTS #
+
+`CELERY_WORKER_CONCURRENCY` -- celery worker concurrency info
+
 # lib.codegen #
 
 Help you to generate django models by OpenAPI Swagger schema.
