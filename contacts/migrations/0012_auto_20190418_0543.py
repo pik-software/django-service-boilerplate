@@ -6,6 +6,8 @@ import django.db.models.deletion
 import pik.core.models.uided
 import simple_history.models
 
+import core.fields
+
 
 class Migration(migrations.Migration):
 
@@ -22,7 +24,7 @@ class Migration(migrations.Migration):
                 ('updated', models.DateTimeField(auto_now=True, db_index=True, verbose_name='updated')),
                 ('uid', models.UUIDField(default=pik.core.models.uided._new_uid, editable=False, primary_key=True, serialize=False)),
                 ('version', models.IntegerField(editable=False)),
-                ('name', models.CharField(max_length=255, verbose_name='Название')),
+                ('name', core.fields.NormalizedCharField(max_length=255, verbose_name='Название')),
                 ('parent', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='contacts.Category')),
             ],
             options={
@@ -36,7 +38,7 @@ class Migration(migrations.Migration):
                 ('updated', models.DateTimeField(blank=True, db_index=True, editable=False, verbose_name='updated')),
                 ('uid', models.UUIDField(db_index=True, default=pik.core.models.uided._new_uid, editable=False)),
                 ('version', models.IntegerField(editable=False)),
-                ('name', models.CharField(max_length=255, verbose_name='Название')),
+                ('name', core.fields.NormalizedCharField(max_length=255, verbose_name='Название')),
                 ('history_id', models.AutoField(primary_key=True, serialize=False)),
                 ('history_date', models.DateTimeField()),
                 ('history_change_reason', models.CharField(max_length=100, null=True)),
