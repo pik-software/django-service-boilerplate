@@ -25,7 +25,7 @@ dj_database_url==0.5.0
 django-storages==1.7.1
 django-waffle==0.16.0
 django-extra-views==0.10.0
-django-health-check==3.5.1
+django-health-check==3.10.0
 
 # HISTORY
 django-simple-history==2.7.2
