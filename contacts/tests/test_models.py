@@ -1,12 +1,13 @@
 import pytest
 
-from ..models import Contact, Comment
-from ..tests.factories import ContactFactory, CommentFactory
+from ..models import Contact, Comment, Category
+from ..tests.factories import ContactFactory, CommentFactory, CategoryFactory
 
 
 @pytest.fixture(params=[
     (Contact, ContactFactory),
     (Comment, CommentFactory),
+    (Category, CategoryFactory),
 ])
 def model_and_factory(request):
     return request.param
@@ -15,6 +16,7 @@ def model_and_factory(request):
 @pytest.fixture(params=[
     (Contact, ContactFactory),
     (Comment, CommentFactory),
+    (Category, CategoryFactory),
 ])
 def critical_model_and_factory(request):
     return request.param
@@ -54,3 +56,15 @@ def test_increment_version(critical_model_and_factory):
     obj.save()
     version3 = obj.version
     assert version1 < version2 < version3
+
+
+space_unicodes = [  # noqa: invalid name
+    '\xa0', '\u1680', '\u2000', '\u2001', '\u2002', '\u2003',
+    '\u2004', '\u2005', '\u2006', '\u2007', '\u2008',
+    '\u2009', '\u200A', '\u202F', '\u205F', '\u3000']
+
+
+@pytest.mark.parametrize('space_unicode', space_unicodes)
+def test_escaped_whitespaces_charfield_normalization(space_unicode):
+    contact = Category.objects.create(name=f'category{space_unicode}1')
+    assert contact.name == 'category 1'

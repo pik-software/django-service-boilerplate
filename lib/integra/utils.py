@@ -2,6 +2,7 @@ from copy import copy
 from urllib.parse import urljoin
 
 import requests
+import dateutil.parser
 
 from core.utils.models import get_fields, has_field, get_model, \
     get_base_manager, get_pk_name
@@ -15,7 +16,7 @@ class Loader:
         l = Loader({
             'base_url': 'https://housing.pik-software.ru/',
             'request': {
-
+                'auth': 'login:password',
             },
             'models': [
                 {'url': '/api/v1/contact-list/',
@@ -27,14 +28,12 @@ class Loader:
     def __init__(self, config):
         self.url = config['base_url']
         self.request = config['request']
-        self.models = config['models']
 
-    def download(self):
-        for model in self.models:
-            key = f'{model["app"]}:{model["model"]}'
-            updated = UpdateState.objects.get_last_updated(key)
-            for data in self._request(model, updated):
-                yield data
+    def download(self, model):
+        key = f'{model["app"]}:{model["model"]}'
+        updated = UpdateState.objects.get_last_updated(key)
+        for data in self._request(model, updated):
+            yield data
 
     def _request(self, model, updated=None):
         app_name, model_name = model["app"], model["model"]
@@ -108,6 +107,8 @@ class Updater:
     def _set_last_updated(self, obj):
         last_updated = obj.get('last_updated')
         if last_updated:
+            if isinstance(last_updated, str):
+                last_updated = dateutil.parser.parse(last_updated)
             key = f'{obj["app"]}:{obj["model"]}'
             current_value = self.last_updated.get(key)
             if current_value and current_value > last_updated:
@@ -116,7 +117,13 @@ class Updater:
 
     def flush_updates(self):
         for key, value in self.last_updated.items():
-            UpdateState.objects.set_last_updated(key, value)
+            current_value = UpdateState.objects.get_last_updated(key)
+            if not current_value or current_value < value:
+                UpdateState.objects.set_last_updated(key, value)
+        self.clear_updates()
+
+    def clear_updates(self):
+        self.last_updated = {}
 
 
 def _prepare_model_attrs(model, data, is_strict=True) -> dict:
@@ -128,7 +135,7 @@ def _prepare_model_attrs(model, data, is_strict=True) -> dict:
             continue
 
         value = data[field.name]
-        if field.is_relation:
+        if field.is_relation and value:
             if isinstance(value, dict):
                 if '_uid' not in value or ('_type' not in value and is_strict):
                     raise ValueError(f'protocol error: bad relation '
@@ -148,7 +155,6 @@ def _prepare_model_attrs(model, data, is_strict=True) -> dict:
 
 
 def _fetch_data_from_api(url, auth, url_params=None):
-    results = []
     next_page = 1
     url_params = copy(url_params) if url_params else {}
     while next_page:
@@ -159,4 +165,3 @@ def _fetch_data_from_api(url, auth, url_params=None):
         next_page = data['page_next']
         for obj in data['results']:
             yield obj
-    return results

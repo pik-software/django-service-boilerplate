@@ -7,6 +7,8 @@ from .consts import DEFAULT_CACHE_NAME, CACHE_KEY
 
 
 class Cors(BasePHistorical):
+    permitted_fields = {'{app_label}.change_{model_name}': ['cors']}
+
     cors = models.CharField(max_length=255, unique=True, help_text=_(
         "Название домена допущенного делать междоменные запросы, например: "
         "staff-front.pik-software.ru или localhost:3000"))

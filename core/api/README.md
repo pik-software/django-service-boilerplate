@@ -1,41 +1,37 @@
 # Standardized API CheckList #
 
- - [ ] Model has: `UID_PREFIX`
  - [ ] Model has: `history = HistoricalRecords()`
  - [ ] Model has: `def __str__(self)`
- - [ ] Model: `issubclass(Model, (Uided, PUided))`
- - [ ] Model: NullOwned, NullOwned, Dated, Versioned, ... (optional)
+ - [ ] Model: `issubclass(Model, BasePHistorical)`
  - [ ] Model.Meta: `verbose_name`, `verbose_name_plural`
- - [ ] Model.Meta: `ordering = ['-id']` / `ordering = ['-created']`
- - [ ] Model.Meta.permissions has: `can_edit_<model-name>`
- - [ ] Model.Meta.permissions has: `can_get_api_<model-name>_history`
+ - [ ] Model.Meta: `ordering = ['-created']`
 
  - [ ] `module/api/__init__.py` exists
  - [ ] `module/api/serializers.py` exists
  - [ ] `module/api/filters.py` exists
  - [ ] `module/api/viewsets.py` exists
 
- - [ ] module.api.filters.ModelSerializer has: `_uid`, `_type`
+ - [ ] api.serializers.ModelSerializer: `issubclass(ModelSerializer, StandardizedModelSerializer)`
+ - [ ] api.vewsets.ModelViewSet: `issubclass(ModelViewSet, StandardizedModelViewSet)`
 
 ```
-class ModelSerializer(serializers.ModelSerializer):
-    _uid = serializers.SerializerMethodField()
-    _type = serializers.SerializerMethodField()
+class ModelViewSet(StandardizedModelViewSet):
+    lookup_field = 'uid'
+    lookup_url_kwarg = '_uid'
+    ordering = '-created'
+    serializer_class = <ModelSerializer>
+    allow_bulk_create = True
+    allow_history = True
 
-    def get__uid(self, obj):  # noqa: pylint=no-self-use
-        return obj.uid
-
-    def get__type(self, obj):  # noqa: pylint=no-self-use
-        return ContentType.objects.get_for_model(type(obj)).model
-
-    class Meta:
-        model = Model
-        fields = (
-            '_uid', '_type', ...
-        )
+    filter_backends = (
+        StandardizedFieldFilters, StandardizedSearchFilter,
+        StandardizedOrderingFilter)
+    filter_class = <ModelFilter>
+    search_fields = (...)
+    ordering_fields = (...)
 ```
 
- - [ ] module.api.filters.ModelFilter exists: (optional)
+ - [ ] api.filters.ModelFilter: (optional)
 
 ```
 class ModelFilter(filters.FilterSet):
@@ -46,32 +42,9 @@ class ModelFilter(filters.FilterSet):
         }
 ```
 
- - [ ] module.api.vewsets.ModelViewSet:
+# SCHEMA #
 
-```
-class ModelViewSet(HistoryViewSetMixin, StandartizedModelViewSet):
-    lookup_field = 'uid'
-    lookup_url_kwarg = '_uid'
-    ordering = '-id' / ordering = '-created'
-    serializer_class = ContactSerializer
-
-    filter_backends = (
-        StandardizedFieldFilters, StandardizedSearchFilter,
-        StandardizedOrderingFilter)
-    filter_class = ModelFilter
-    search_fields = (
-        ...)
-    ordering_fields = (...)
-
-    def get_queryset(self):
-        return Contact.objects.all()
-
-    ...
-```
-
- - [ ] ModelViewSet: `issubclass(ModelViewSet, (StandartizedGenericViewSet, StandartizedReadOnlyModelViewSet, StandartizedModelViewSet))`
- - [ ] ModelViewSet: `issubclass(ModelViewSet, HistoryViewSetMixin)` (optional)
- - [ ] ModelViewSet has: `lookup_field`, `lookup_url_kwarg`, `ordering`, `serializer_class`
- - [ ] ModelViewSet has: `filter_backends = (StandardizedFieldFilters, StandardizedSearchFilter, StandardizedOrderingFilter)`
- - [ ] ModelViewSet has: `filter_class = ModelFilter`
- - [ ] ModelViewSet has: `search_fields`, `ordering_fields`, `get_queryset`
+DEFAULT_AUTO_SCHEMA_CLASS
+`view.swagger_schema`
+`view.method._swagger_auto_schema.auto_schema`
+`view.method._swagger_auto_schema[method].auto_schema`

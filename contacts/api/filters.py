@@ -1,13 +1,26 @@
 import rest_framework_filters as filters
 from django.db.models import DateTimeField
 
-from ..models import Contact, Comment
+from ..models import Contact, Comment, Category
 
 NAME_FILTERS = ['exact', 'in', 'startswith', 'endswith', 'contains']
 
 
 class CharArrayFilter(filters.BaseCSVFilter, filters.CharFilter):
     pass
+
+
+class CategoryFilter(filters.FilterSet):
+    class Meta:
+        model = Category
+        fields = {
+            'name': NAME_FILTERS,
+            'updated': ['exact', 'gt', 'gte', 'lt', 'lte'],
+            'created': ['exact', 'gt', 'gte', 'lt', 'lte'],
+        }
+        filter_overrides = {
+            DateTimeField: {'filter_class': filters.IsoDateTimeFilter}
+        }
 
 
 class ContactFilter(filters.FilterSet):
