@@ -21,7 +21,7 @@ class HistorizedRouter(DefaultRouter):
         if basename:
             history_basename = f'{basename}_history'
         self.history_router.register(
-            history_prefix, history_viewset, history_basename, base_name)
+            history_prefix, history_viewset, history_basename)
 
     def register(self, prefix, viewset, basename=None, base_name=None):
         super().register(prefix, viewset, basename, base_name)
