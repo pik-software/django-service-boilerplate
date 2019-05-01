@@ -14,7 +14,7 @@ google-cloud-runtimeconfig==0.28.3
 google-cloud-translate==1.4.0
 python-dateutil==2.8.0
 
-Django==2.1.7
+Django==2.2.1
 
 # django utils
 django_widget_tweaks==1.4.3
