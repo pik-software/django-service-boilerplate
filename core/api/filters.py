@@ -1,5 +1,5 @@
 import coreapi
-from rest_framework_filters import RelatedFilter
+from rest_framework_filters import RelatedFilter, BaseCSVFilter, AutoFilter
 from rest_framework_filters.backends import RestFrameworkFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 
@@ -46,3 +46,11 @@ class StandardizedSearchFilter(SearchFilter):
 
 class StandardizedOrderingFilter(OrderingFilter):
     pass
+
+
+class ArrayFilter(BaseCSVFilter, AutoFilter):
+    DEFAULT_LOOKUPS = ['contains', 'contained_by', 'overlap', 'len']
+
+    def __init__(self, *args, **kwargs):
+        kwargs.setdefault('lookups', self.DEFAULT_LOOKUPS)
+        super().__init__(*args, **kwargs)
