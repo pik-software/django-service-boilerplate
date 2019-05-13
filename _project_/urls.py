@@ -13,9 +13,9 @@ from contacts.api import ContactViewSet, CommentViewSet
 
 router = StandardizedRouter()  # noqa: pylint=invalid-name
 router.register(
-    'contact-list', ContactViewSet, base_name='contact')
+    'contact-list', ContactViewSet, 'contact')
 router.register(
-    'comment-list', CommentViewSet, base_name='comment')
+    'comment-list', CommentViewSet, 'comment')
 
 
 @login_required
