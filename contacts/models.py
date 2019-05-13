@@ -3,9 +3,11 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from pik.core.models import BaseHistorical, BasePHistorical, Owned
 
+from core.fields import NormalizedCharField
+
 
 class Category(BasePHistorical):
-    name = models.CharField(_('Название'), max_length=255)
+    name = NormalizedCharField(_('Название'), max_length=255)
     parent = models.ForeignKey('self', null=True, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -24,7 +26,7 @@ class Contact(BaseHistorical):
     }
 
     category = models.ForeignKey(Category, null=True, on_delete=models.CASCADE)
-    name = models.CharField(_('Наименование'), max_length=255)
+    name = NormalizedCharField(_('Наименование'), max_length=255)
     phones = ArrayField(
         models.CharField(max_length=30), blank=True, default=list,
         verbose_name=_('Номера телефонов'),
