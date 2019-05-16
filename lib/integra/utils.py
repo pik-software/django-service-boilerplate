@@ -1,8 +1,10 @@
+from datetime import  datetime
 from copy import copy
 from urllib.parse import urljoin
 
 import requests
 import dateutil.parser
+from django.db import models
 
 from core.utils.models import get_fields, has_field, get_model, \
     get_base_manager, get_pk_name
@@ -150,6 +152,19 @@ def _prepare_model_attrs(model, data, is_strict=True) -> dict:
             except rel_model.DoesNotExist:
                 raise ValueError(f'error: obj[data][{field.name}] '
                                  f'DoesNotExists')
+
+        if isinstance(field, models.DateField):
+            try:
+                value = datetime.fromisoformat(value).date()
+            except (ValueError, TypeError):
+                value = None
+
+        elif isinstance(field, models.DateTimeField):
+            try:
+                value = datetime.fromisoformat(value)
+            except (ValueError, TypeError):
+                value = None
+
         attributes[field.name] = value
     return attributes
 
