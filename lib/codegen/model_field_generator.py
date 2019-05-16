@@ -1,6 +1,3 @@
-from lib.codegen.utils import to_python_kwargs
-
-
 class ModelFieldGenerator:
 
     UUID_MODEL_FIELD_NAME = 'models.UUIDField'
@@ -28,7 +25,19 @@ class ModelFieldGenerator:
         'editable': False,
         'null': True}
 
-    def get_field_name_from_format(self, field_format):
+    @staticmethod
+    def _to_python_kwargs(val):
+        """
+        >>> ModelFieldGenerator._to_python_kwargs({'foo': 1})
+        'foo=1'
+        >>> ModelFieldGenerator._to_python_kwargs({'foo': 1, 'b': 'xx'})
+        'foo=1, b=xx'
+        >>> ModelFieldGenerator._to_python_kwargs({})
+        ''
+        """
+        return ', '.join([f"{k}={v}" for k, v in val.items()])
+
+    def _get_field_name_from_format(self, field_format):
         return self.STRING_FORMAT_TO_FIELD_NAME.get(
             field_format, self.CHAR_MODEL_FIELD_NAME)
 
@@ -39,7 +48,7 @@ class ModelFieldGenerator:
             model_field_name = self.FOREIGN_KEY_MODEL_FIELD_NAME
         elif property_type == self.STRING_TYPE:
             field_format = schema.get('format', 'unknown')
-            model_field_name = self.get_field_name_from_format(field_format)
+            model_field_name = self._get_field_name_from_format(field_format)
         elif property_type == self.INTEGER_TYPE:
             model_field_name = self.INTEGER_MODEL_FIELD_NAME
         elif property_type == self.BOOLEAN_TYPE:
@@ -48,13 +57,13 @@ class ModelFieldGenerator:
             model_field_name = self.DEFAULT_MODEL_FIELD_NAME
         return model_field_name
 
-    def get_field_args(self, schema, field_name):
+    def _get_field_args(self, schema, field_name):
         if field_name == self.FOREIGN_KEY_MODEL_FIELD_NAME:
             model_ref = schema['$ref'].replace('#/definitions/', '')
             return [f"'{model_ref}'"]
         return []
 
-    def get_field_kwargs(self, schema, model_field_name, name=None):
+    def _get_field_kwargs(self, schema, model_field_name, name=None):
         verbose_name = schema.get('title')
 
         if verbose_name:
@@ -91,7 +100,7 @@ class ModelFieldGenerator:
 
         return kwargs
 
-    def construct_field_definition(
+    def _construct_field_definition(
             self, model_field_name, field_args, field_kwargs):
 
         if field_args:
@@ -99,12 +108,11 @@ class ModelFieldGenerator:
         else:
             args = ''
 
-        kwargs = to_python_kwargs(field_kwargs)
-
+        kwargs = self._to_python_kwargs(field_kwargs)
         return f"{model_field_name}({args}{kwargs})"
 
     def __call__(self, schema, name=None):
         model_field_name = self.get_model_field_name(schema)
-        args = self.get_field_args(schema, model_field_name)
-        kwargs = self.get_field_kwargs(schema, model_field_name, name)
-        return self.construct_field_definition(model_field_name, args, kwargs)
+        args = self._get_field_args(schema, model_field_name)
+        kwargs = self._get_field_kwargs(schema, model_field_name, name)
+        return self._construct_field_definition(model_field_name, args, kwargs)
