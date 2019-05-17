@@ -84,6 +84,14 @@ Help you to generate django models by OpenAPI Swagger schema.
 
 # integration #
 
+## Known issues: ##
+
+* By default boolean API field transforms into `BooleanField` with `null=True`. This behavior follows recommendation to
+`Django >= 2.1`. However this flag is not supported in early versions and `BooleanField` should be overridden by 
+`NullBoleanField` in generated `models.py` module.
+* If target API endpoint have `updated` field, you mast ensure that ordering is supported for this field.
+* You mast put related model before original. If one have link e.g `Category` should be placed before `Contact`.
+
 ```
 #!/bin/bash
 
