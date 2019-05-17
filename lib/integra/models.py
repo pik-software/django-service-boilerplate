@@ -2,11 +2,14 @@ from django.db import models
 
 
 class UpdateStateManager(models.Manager):
-    def get_last_updated(self, key):
+
+    @staticmethod
+    def get_last_updated(key):
         state, _ = UpdateState.objects.get_or_create(key=key)
         return state.updated
 
-    def set_last_updated(self, key, datetime):
+    @staticmethod
+    def set_last_updated(key, datetime):
         UpdateState.objects.update_or_create(
             defaults={'updated': datetime}, key=key)
 
