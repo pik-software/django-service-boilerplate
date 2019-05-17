@@ -12,7 +12,7 @@ pik-django-utils==1.0.17
 google_cloud==0.34.0
 google-cloud-resource-manager==0.28.3
 google-cloud-runtimeconfig==0.28.3
-google-cloud-translate==1.4.0
+google-cloud-translate==1.5.0
 python-dateutil==2.8.0
 
 Django==2.1.7
