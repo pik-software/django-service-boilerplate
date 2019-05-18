@@ -11,8 +11,8 @@ services:
       - "127.0.0.1:5432:5432"
     environment:
       POSTGRES_USER: pguser
-      POSTGRES_PASSWORD: pguser
-      POSTGRES_DB: pgdb_receipt
+      POSTGRES_PASSWORD: pgpass
+      POSTGRES_DB: pgdb
   web:
     build: .
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
@@ -21,7 +21,7 @@ services:
     ports:
       - "127.0.0.1:8000:8000"
     environment:
-      DATABASE_URL: postgres://pguser:pguser@db:5432/pgdb_receipt
+      DATABASE_URL: postgres://pguser:pgpass@db:5432/pgdb
       REDIS_URL: redis://@redis:6379
       DJANGO_SETTINGS_MODULE: _project_.settings
     depends_on:
