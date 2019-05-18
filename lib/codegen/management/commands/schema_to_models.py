@@ -32,6 +32,11 @@ def _create_directory(path):
 class Command(BaseCommand):
     help = 'Generate application by OpenAPI schema'
 
+    @staticmethod
+    def _add_extra_options(options):
+        command = ' '.join(['python'] + [shlex.quote(s) for s in sys.argv])
+        options['command'] = command
+
     def add_arguments(self, parser):
         parser.add_argument('schema')
         parser.add_argument('app_name')
@@ -46,10 +51,6 @@ class Command(BaseCommand):
             action='store_true',
             help='Force overwrite existing files',
         )
-
-    def _add_extra_options(self, options):
-        command = ' '.join(['python'] + [shlex.quote(s) for s in sys.argv])
-        options['command'] = command
 
     def handle(self, schema, app_name, **options):  # noqa: pylint=arguments-differ
         generator = Generator(TEMPLATES, schema)
