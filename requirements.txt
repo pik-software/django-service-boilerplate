@@ -36,7 +36,7 @@ djangorestframework==3.9.2
 djangorestframework-filters==1.0.0.dev0
 django-filter==2.1.0
 django-crispy-forms==1.7.2
-markdown==2.6.11
+markdown==3.1.1
 # API SCHEMA
 coreapi==2.3.3
 drf-yasg==1.15.0
