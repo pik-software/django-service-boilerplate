@@ -59,7 +59,7 @@ uwsgi==2.0.18
 
 # dev
 django_debug_toolbar==1.11
-django_extensions==2.1.6
+django_extensions==2.1.7
 werkzeug==0.15.4
 
 # tests
