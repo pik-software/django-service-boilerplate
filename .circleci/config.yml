@@ -71,7 +71,7 @@ jobs:
             DOMAIN=pik-software.ru
             REPO_NAME=$( git config --local remote.origin.url | sed -n 's#.*/\([^.]*\)\.git#\1#p' )
             BRANCH_NAME=$( git branch | grep -e "^*" | cut -d' ' -f 2 )
-            SSH_HOST="${BRANCH_NAME}-${REPO_NAME}.${DOMAIN}"
+            SSH_HOST="${REPO_NAME}-${BRANCH_NAME}.${DOMAIN}"
             SSH_PORT="22501"
             SSH_USER="circleci-staging"
             KNOWN_HOST_KEYS="ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBNJvPW0n0F2IjYLCBLaBNyLnO8TLAWL5WI5pAek6EJGN7MZtT1aVw1+B/juOusAshqKoTzTAR3I/q4ns7jMK7gc="
@@ -80,7 +80,7 @@ jobs:
               echo -e "\nHost ${SSH_HOST}\n  HostName ${SSH_HOST}\n  Port ${SSH_PORT}\n  User ${SSH_USER}" >> ~/.ssh/config
               ./.circleci/deploy-dokku-back.sh "${SSH_HOST}" "${DOMAIN}" "${REPO_NAME}" "${BRANCH_NAME}" "staging"
             fi
-            echo "Open https://${BRANCH_NAME}-${REPO_NAME}.${DOMAIN}"
+            echo "Open https://${REPO_NAME}-${BRANCH_NAME}.${DOMAIN}"
 
   deploy-prod:
     docker:
