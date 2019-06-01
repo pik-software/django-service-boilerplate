@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  redis:
+    image: redis:4.0.11
+  db:
+    image: mdillon/postgis:9.6
+    volumes:
+      - ./psql_dump:/psql_dump
+    ports:
+      - "127.0.0.1:5432:5432"
+    environment:
+      POSTGRES_USER: pguser
+      POSTGRES_PASSWORD: pgpass
+      POSTGRES_DB: pgdb
+  web:
+    build: .
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      DATABASE_URL: postgres://pguser:pgpass@db:5432/pgdb
+      REDIS_URL: redis://@redis:6379
+      DJANGO_SETTINGS_MODULE: _project_.settings
+    depends_on:
+      - redis
+      - db
