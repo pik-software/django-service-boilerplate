@@ -54,7 +54,7 @@ if [[ "$ENVIRONMENT" = "production" ]]; then
     SERVICE_HOST="${REPO}.${DOMAIN}"
 elif [[ "$ENVIRONMENT" = "staging" ]]; then
     SERVICE_NAME="${REPO}-${BRANCH}"
-    SERVICE_HOST="${BRANCH}.${REPO}.${DOMAIN}"
+    SERVICE_HOST="${BRANCH}-${REPO}.${DOMAIN}"
 else
     echo "!!! ERROR: UNKNOWN ENVIRONMENT !!!"
     exit 1
