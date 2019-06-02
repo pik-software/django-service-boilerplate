@@ -58,7 +58,7 @@ DATADOG_TRACE = {
     'TAGS': {'env': ENVIRONMENT},
 }
 ELASTIC_APM_SERVER_ADDR = os.environ.get(
-    'ELASTIC_APM_SERVER_ADDR', 'localhost')
+    'ELASTIC_APM_SERVER_ADDR', '172.17.0.1')
 ELASTIC_APM_SERVER_PORT = int(os.environ.get(
     'ELASTIC_APM_SERVER_PORT', '8200'))
 ELASTIC_APM = {
