@@ -44,7 +44,7 @@ RAVEN_CONFIG = {
     'CELERY_LOGLEVEL': logging.WARNING,
 }
 
-# DATADOG
+# APM
 DD_STATSD_ADDR = os.environ.get('DD_AGENT_PORT_8125_UDP_ADDR', 'localhost')
 DD_STATSD_PORT = int(os.environ.get('DD_AGENT_PORT_8125_UDP_PORT', '8125'))
 DD_STATSD_NAMESPACE = SERVICE_NAME
@@ -56,6 +56,16 @@ DATADOG_TRACE = {
     'AGENT_HOSTNAME': DD_TRACE_ADDR,
     'AGENT_PORT': DD_TRACE_PORT,
     'TAGS': {'env': ENVIRONMENT},
+}
+ELASTIC_APM_SERVER_ADDR = os.environ.get(
+    'ELASTIC_APM_SERVER_ADDR', 'localhost')
+ELASTIC_APM_SERVER_PORT = int(os.environ.get(
+    'ELASTIC_APM_SERVER_PORT', '8200'))
+ELASTIC_APM = {
+    'SERVICE_NAME': SERVICE_NAME + '-django-app',
+    'SECRET_TOKEN': '',
+    'SERVER_URL': 'http://{0}:{1}'.format(
+        ELASTIC_APM_SERVER_ADDR, ELASTIC_APM_SERVER_PORT),
 }
 
 # INTEGRA (lib.integra)
@@ -138,8 +148,9 @@ INSTALLED_APPS = [
     'health_check.storage',
     'health_check.contrib.celery',  # requires celery
 
-    # DATADOG
+    # APM
     'ddtrace.contrib.django',
+    'elasticapm.contrib.django',
 
     'bootstrapform',  # sexy form in _project_/templates
 
@@ -164,6 +175,8 @@ MIDDLEWARE = [
 
     # DEV
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # APM
+    'elasticapm.contrib.django.middleware.TracingMiddleware',
 ]
 
 # CORS
