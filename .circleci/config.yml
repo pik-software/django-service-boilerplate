@@ -92,14 +92,15 @@ jobs:
           name: deploy master
           command: |
             DOMAIN=pik-software.ru
+            REPO_NAME=$( git config --local remote.origin.url | sed -n 's#.*/\([^.]*\)\.git#\1#p' )
+            BRANCH_NAME=master            
             SSH_HOST="${REPO_NAME}.${DOMAIN}"
             SSH_PORT="22500"
             SSH_USER="circleci-staging"
             KNOWN_HOST_KEYS="ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBNJvPW0n0F2IjYLCBLaBNyLnO8TLAWL5WI5pAek6EJGN7MZtT1aVw1+B/juOusAshqKoTzTAR3I/q4ns7jMK7gc="
-            REPO_NAME=$( git config --local remote.origin.url | sed -n 's#.*/\([^.]*\)\.git#\1#p' )
             echo "${SSH_HOST} ${KNOWN_HOST_KEYS}" >> ~/.ssh/known_hosts
             echo -e "\nHost ${SSH_HOST}\n  HostName ${SSH_HOST}\n  Port ${SSH_PORT}\n  User ${SSH_USER}" >> ~/.ssh/config
-            ./.circleci/deploy-dokku-back.sh "${SSH_HOST}" "${DOMAIN}" "${REPO_NAME}" "master" "production"
+            ./.circleci/deploy-dokku-back.sh "${SSH_HOST}" "${DOMAIN}" "${REPO_NAME}" "${BRANCH_NAME}" "production"
             echo "Open https://${REPO_NAME}.${DOMAIN}"
 
 workflows:
