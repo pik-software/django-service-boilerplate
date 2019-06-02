@@ -8,25 +8,25 @@ from django.db import models
 
 
 class BaseContact(models.Model):
-    uid = models.CharField(verbose_name=' uid', editable=False, primary_key=True, max_length=255)
-    type = models.CharField(verbose_name=' type', editable=False, max_length=255)
-    version = models.IntegerField(verbose_name=' version', editable=False)
-    name = models.CharField(verbose_name='Наименование', editable=False, max_length=255)
-    phones = JSONField(verbose_name='Phones', editable=False, null=True)
-    emails = JSONField(verbose_name='Emails', editable=False, null=True)
-    order_index = models.IntegerField(verbose_name='Индекс для сортировки', editable=False)
+    uid = models.CharField(verbose_name='uid', primary_key=True, max_length=255)
+    type = models.CharField(verbose_name='type', editable=False, null=True, max_length=255)
+    version = models.IntegerField(verbose_name='version', editable=False, null=True)
+    name = models.CharField(verbose_name='Наименование', editable=False, null=True, max_length=255)
+    phones = JSONField(verbose_name='Phones', editable=False, default=dict)
+    emails = JSONField(verbose_name='Emails', editable=False, default=dict)
+    order_index = models.IntegerField(verbose_name='Индекс для сортировки', editable=False, null=True)
 
     class Meta:
         abstract = True
 
 
 class BaseComment(models.Model):
-    uid = models.CharField(verbose_name=' uid', editable=False, primary_key=True, max_length=255)
-    type = models.CharField(verbose_name=' type', editable=False, max_length=255)
-    version = models.IntegerField(verbose_name=' version', editable=False)
-    user = models.IntegerField(verbose_name='User', editable=False)
-    contact = models.ForeignKey('Contact', on_delete=models.CASCADE)
-    message = models.CharField(verbose_name='Сообщение', editable=False, max_length=255)
+    uid = models.CharField(verbose_name='uid', primary_key=True, max_length=255)
+    type = models.CharField(verbose_name='type', editable=False, null=True, max_length=255)
+    version = models.IntegerField(verbose_name='version', editable=False, null=True)
+    user = models.IntegerField(verbose_name='User', editable=False, null=True)
+    contact = models.ForeignKey('Contact', editable=False, null=True, on_delete=models.CASCADE)
+    message = models.CharField(verbose_name='Сообщение', editable=False, null=True, max_length=255)
 
     class Meta:
         abstract = True
