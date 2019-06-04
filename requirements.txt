@@ -12,7 +12,7 @@ elastic-apm==4.2.2
 pik-django-utils==1.0.19
 google_cloud==0.34.0
 google-cloud-resource-manager==0.28.3
-google-cloud-runtimeconfig==0.28.3
+google-cloud-runtimeconfig==0.29.1
 google-cloud-translate==1.4.0
 python-dateutil==2.8.0
 
