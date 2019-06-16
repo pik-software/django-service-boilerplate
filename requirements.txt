@@ -6,9 +6,10 @@ deprecated==1.2.5
 beautifulsoup4==4.7.1
 cucco==2.2.1
 openpyxl==2.6.2
-ddtrace==0.24.0
-datadog==0.28.0
-pik-django-utils==1.0.17
+ddtrace==0.25.0
+datadog==0.29.3
+elastic-apm==4.2.2
+pik-django-utils==1.0.19
 google_cloud==0.34.0
 google-cloud-resource-manager==0.28.3
 google-cloud-runtimeconfig==0.28.3
@@ -18,7 +19,7 @@ python-dateutil==2.8.0
 Django==2.1.7
 
 # django utils
-django_widget_tweaks==1.4.3
+django_widget_tweaks==1.4.5
 django-bootstrap-form==3.4
 django-registration==2.5.2
 django-sql-explorer==1.1.2
@@ -59,14 +60,14 @@ uwsgi==2.0.18
 
 # dev
 django_debug_toolbar==1.11
-django_extensions==2.1.6
+django_extensions==2.1.9
 werkzeug==0.15.4
 
 # tests
 prospector==1.1.2
 pylint==2.1.1
 factory_boy==2.11.1
-freezegun==0.3.11
+freezegun==0.3.12
 pdbpp==0.10.0
 pytest==3.4.2
 pytest-mock==1.10.4
