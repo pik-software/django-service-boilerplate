@@ -128,11 +128,11 @@ def test_api_history_create_and_change(api_user, api_client, api_model):  # noqa
     assert first_result['_uid'] == last_obj.uid
     assert first_result['history_change_reason'] is None
 
-    assert first_result['history_type'] == "+"
+    assert first_result['history_type'] == "~"
     second_result = res.data['results'][1]
     assert second_result['_uid'] == last_obj.uid
     assert second_result['history_change_reason'] is None
-    assert second_result['history_type'] == "~"
+    assert second_result['history_type'] == "+"
 
 
 def test_history_events(api_model):
