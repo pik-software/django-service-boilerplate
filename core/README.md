@@ -180,12 +180,10 @@ NAME_FILTERS = ['exact', 'in', 'startswith', 'endswith', 'contains']
 
 
 class <Organization>Filter(filters.FilterSet):
+    name = filters.AutoFilter(lookups=NAME_FILTERS)
+    
     class Meta:
         model = Organization
-        fields = {
-            'name': NAME_FILTERS,
-            ...
-        }
 ```
 
 1. create `api/viewsets.py`

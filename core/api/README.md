@@ -35,11 +35,11 @@ class ModelViewSet(StandardizedModelViewSet):
 
 ```
 class ModelFilter(filters.FilterSet):
+    uid = filters.AutoFilter(lookups=['exact', 'in'])
+    related = filters.RelatedFilter(lookups=['isnull'])
+
     class Meta:
         model = Model
-        fields = {
-            ...
-        }
 ```
 
 # SCHEMA #
