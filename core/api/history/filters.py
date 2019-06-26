@@ -11,6 +11,7 @@ class HistoryFilterBase(FilterSet):
     history_date = AutoFilter(lookups=('exact', 'gt', 'gte', 'lt', 'lte', 'in'))
 
     class Meta:
+        fields = {}
         model = None
         filter_overrides = {
             DateTimeField: {'filter_class': IsoDateTimeFilter}}

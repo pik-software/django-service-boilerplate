@@ -1,7 +1,14 @@
 import coreapi
-from rest_framework_filters import RelatedFilter
+from django.db.models import DateTimeField
+from rest_framework_filters import RelatedFilter, AutoFilter, FilterSet, \
+    IsoDateTimeFilter
 from rest_framework_filters.backends import RestFrameworkFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
+
+
+UID_LOOKUPS = ('exact', 'in')
+DATE_LOOKUPS = ('exact', 'lt', 'gt', 'lte', 'gte')
+
 
 
 class StandardizedFieldFilters(RestFrameworkFilterBackend):
@@ -46,3 +53,16 @@ class StandardizedSearchFilter(SearchFilter):
 
 class StandardizedOrderingFilter(OrderingFilter):
     pass
+
+
+class StandardizedModelFilter(FilterSet):
+    uid = AutoFilter(lookups=UID_LOOKUPS)
+    updated = AutoFilter(lookups=DATE_LOOKUPS)
+    created = AutoFilter(lookups=DATE_LOOKUPS)
+
+    class Meta:
+        model = None
+        fields = {}
+        filter_overrides = {
+            DateTimeField: {'filter_class': IsoDateTimeFilter}
+        }

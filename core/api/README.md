@@ -34,11 +34,10 @@ class ModelViewSet(StandardizedModelViewSet):
  - [ ] api.filters.ModelFilter: (optional)
 
 ```
-class ModelFilter(filters.FilterSet):
-    uid = filters.AutoFilter(lookups=['exact', 'in'])
+class ModelFilter(StandardizedModelFilter):
     related = filters.RelatedFilter(lookups=['isnull'])
 
-    class Meta:
+    class Meta(StandardizedModelFilter.Meta):
         model = Model
 ```
 
