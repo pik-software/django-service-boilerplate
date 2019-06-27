@@ -8,7 +8,8 @@ class HistoryFilterBase(FilterSet):
     history_id = AutoFilter(lookups=('exact', 'gt', 'gte', 'lt', 'lte', 'in'))
     history_type = AutoFilter(lookups=('exact', 'in'))
     history_user_id = AutoFilter(lookups=('exact', 'in', 'isnull'))
-    history_date = AutoFilter(lookups=('exact', 'gt', 'gte', 'lt', 'lte', 'in'))
+    history_date = AutoFilter(
+        lookups=('exact', 'gt', 'gte', 'lt', 'lte', 'in'))
 
     class Meta:
         fields = {}
