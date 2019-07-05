@@ -1,16 +1,16 @@
 from pytest import raises
 
 from ..models import DEFAULT_SCHEMA
-from ..utils.swagger import check_schema, convert_data_to_schema, \
-    validate_and_update_schema, validate_data_by_schema
+from ..utils.swagger import _check_schema, convert_data_to_schema, \
+    validate_and_merge_schemas, validate_data_by_schema
 
 
 def test_check_empty_schema():
-    assert check_schema({})
+    assert _check_schema({})
 
 
 def test_check_contact_schema():
-    assert check_schema({
+    assert _check_schema({
         'type': 'object',
         'required': ['name'],
         'title': 'Contact',
@@ -48,13 +48,24 @@ def test_check_contact_schema():
     })
 
 
+def test_check_schema_with_skip_ref_check():
+    assert _check_schema({
+        'type': 'object',
+        'required': ['name'],
+        'properties': {
+            'obj': {'$ref': f'#/definitions/contact'},
+            'name': {'type': 'string'},
+        }
+    }, skip_ref_check=True)
+
+
 def test_check_default_schema():
-    assert check_schema(DEFAULT_SCHEMA)
+    assert _check_schema(DEFAULT_SCHEMA)
 
 
 def test_check_schema_without_required_field():
     with raises(ValueError):
-        check_schema({
+        _check_schema({
             'type': 'object',
             'required': ['phone'],
             'properties': {
@@ -69,7 +80,7 @@ def test_check_schema_without_required_field():
 
 def test_convert_data_to_schema():
     data = {'_uid': 'x', 'foo': 1, 'y': {'x': [1]}}
-    res = {'_uid': 'x', 'name': 'string'}
+    res = {'_uid': 'x', 'name': None}
     assert res == convert_data_to_schema(data, {
         'type': 'object',
         'required': ['_uid'],
@@ -84,23 +95,23 @@ def test_convert_data_to_schema():
 
 def test_convert_empty_data_to_schema():
     data = {}
-    res = {'_uid': 'string', 'name': 'string'}
+    res = {'_uid': None, 'name': 'noname'}
     assert res == convert_data_to_schema(data, {
         'type': 'object',
         'required': ['_uid'],
         'properties': {
             '_uid': {'title': ' uid', 'type': 'string'},
             'name': {
-                'title': 'Наименование', 'type': 'string',
+                'title': 'Наименование', 'type': 'string', 'default': 'noname',
                 'maxLength': 255, 'minLength': 1},
         }
     })
 
 
 def test_validate_and_update_schema():
-    assert validate_and_update_schema({}, DEFAULT_SCHEMA) == DEFAULT_SCHEMA
+    assert validate_and_merge_schemas({}, DEFAULT_SCHEMA) == DEFAULT_SCHEMA
 
-    assert validate_and_update_schema(DEFAULT_SCHEMA, DEFAULT_SCHEMA) == \
+    assert validate_and_merge_schemas(DEFAULT_SCHEMA, DEFAULT_SCHEMA) == \
            DEFAULT_SCHEMA
 
 
@@ -139,7 +150,7 @@ def test_merge_schema_by_validate_and_update_schema():
         }
     }
 
-    assert validate_and_update_schema(data, DEFAULT_SCHEMA) == res
+    assert validate_and_merge_schemas(data, DEFAULT_SCHEMA) == res
 
 
 def test_validate_data_by_schema():

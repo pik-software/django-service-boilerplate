@@ -1,3 +1,4 @@
+from ast import literal_eval
 from collections import OrderedDict
 
 import rest_framework_filters as filters
@@ -5,7 +6,9 @@ from django.db.models import DateTimeField
 from django.urls import NoReverseMatch
 from rest_framework import views
 from rest_framework.exceptions import ValidationError
+from rest_framework.filters import BaseFilterBackend
 from rest_framework.generics import get_object_or_404
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.reverse import reverse
 from rest_framework.serializers import Serializer
@@ -13,7 +16,7 @@ from rest_framework.serializers import Serializer
 from core.api.filters import StandardizedFieldFilters, \
     StandardizedOrderingFilter, StandardizedSearchFilter
 from core.api.viewsets import StandardizedModelViewSet
-from .models import EntityType, Entity
+from .models import EntityType, Entity, DEFAULT_SCHEMA
 from .utils.swagger import convert_data_to_schema, validate_data_by_schema
 
 
@@ -75,6 +78,28 @@ class EntityFilter(filters.FilterSet):
         }
 
 
+class EntityValueFilterBackend(BaseFilterBackend):
+    def filter_queryset(self, request: Request, queryset, view):
+        if (not hasattr(request, 'entity_type') or
+                not request.entity_type.schema or
+                not isinstance(request.entity_type.schema, dict) or
+                not request.entity_type.schema.get('properties')):
+            return queryset
+        entity_type = request.entity_type
+        fields = (set(entity_type.schema['properties'].keys()) -
+                  set(DEFAULT_SCHEMA['properties'].keys()))
+        qs_kwargs = {
+            'value__' + k: literal_eval(v)
+            for k, v in request.query_params.items()
+            if any(k.startswith(f) for f in fields)}
+        if qs_kwargs:
+            return queryset.filter(**qs_kwargs)
+        return queryset
+
+    def get_schema_fields(self, view):
+        return []
+
+
 class APIEntityViewSet(StandardizedModelViewSet):
     lookup_field = 'uid'
     lookup_url_kwarg = '_uid'
@@ -84,8 +109,8 @@ class APIEntityViewSet(StandardizedModelViewSet):
     allow_history = True
 
     filter_backends = (
-        StandardizedFieldFilters, StandardizedSearchFilter,
-        StandardizedOrderingFilter)
+        EntityValueFilterBackend, StandardizedFieldFilters,
+        StandardizedSearchFilter, StandardizedOrderingFilter)
     filter_class = EntityFilter
     search_fields = ('value',)
     ordering_fields = ('created', 'updated')
@@ -96,6 +121,7 @@ class APIEntityViewSet(StandardizedModelViewSet):
     def dispatch(self, request, *args, **kwargs):
         _type = kwargs['_type']
         self.entity_type = get_object_or_404(EntityType, slug=_type)
+        request.entity_type = self.entity_type  # for EntityValueFilterBackend
         return super().dispatch(request, *args, **kwargs)
 
     def get_serializer_context(self):
@@ -130,7 +156,8 @@ class APIRootView(views.APIView):
                 continue
 
         for entity in EntityType.objects.all():
-            url_name = namespace + ':entity-list' if namespace else 'entity-list'
+            url_name = namespace + ':entity-list' if namespace \
+                else 'entity-list'
             kwargs['_type'] = entity.slug
             ret[entity.slug + '-list'] = reverse(
                 url_name,

@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from pik.core.models import BasePHistorical
 
 from core.fields import NormalizedCharField
-from .utils.swagger import validate_and_update_schema
+from .utils.swagger import validate_and_merge_schemas
 
 DEFAULT_SCHEMA = {
     'type': 'object',
@@ -35,7 +35,7 @@ class EntityType(BasePHistorical):
         return f'{self.name} ({self.slug})'
 
     def save(self, *args, **kwargs):
-        self.schema = validate_and_update_schema(self.schema, DEFAULT_SCHEMA)
+        self.schema = validate_and_merge_schemas(self.schema, DEFAULT_SCHEMA)
         return super().save(*args, **kwargs)
 
     class Meta:
