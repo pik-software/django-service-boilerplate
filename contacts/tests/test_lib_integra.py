@@ -1,8 +1,8 @@
 from copy import deepcopy
 from unittest import mock
 
-from contacts.models import Contact
 from lib.integra.tasks import Integra
+from ..models import Contact
 
 RESULT = [
     {

@@ -2,9 +2,9 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 
-from contacts.models import Contact
-from contacts.tests.factories import ContactFactory
 from core.tests.utils import add_admin_access_permission, add_permissions
+from ..models import Contact
+from .factories import ContactFactory
 
 
 BATCH_MODELS = 5
