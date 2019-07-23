@@ -3,23 +3,24 @@ from django.contrib.contenttypes.models import ContentType
 from django.utils.crypto import get_random_string
 from rest_framework import status
 
-from contacts.models import Contact, Comment
 from core.tests.utils import add_permissions
-from ..tests.factories import ContactFactory
+from ..models import Contact, Comment
+from .factories import ContactFactory
 
 
 REQUIRED_FIELD_ERROR = {'message': 'Это поле обязательно.', 'code': 'required'}
 
 
-def test_api_unauthorized(anon_api_client):
-    res = anon_api_client.get('/api/v1/')
+def test_api_create_contact_by_anon(anon_api_client):  # noqa: pylint=invalid-name
+    data = {'name': get_random_string()}
+    res = anon_api_client.post('/api/v1/contact-list/', data=data)
     assert res.status_code in (status.HTTP_401_UNAUTHORIZED,
                                status.HTTP_403_FORBIDDEN)
 
 
-def test_api_create_contact_unauthorized(anon_api_client):  # noqa: pylint=invalid-name
+def test_api_create_contact_without_permission(api_client):  # noqa: pylint=invalid-name
     data = {'name': get_random_string()}
-    res = anon_api_client.post('/api/v1/contact-list/', data=data)
+    res = api_client.post('/api/v1/contact-list/', data=data)
     assert res.status_code in (status.HTTP_401_UNAUTHORIZED,
                                status.HTTP_403_FORBIDDEN)
 
@@ -58,9 +59,17 @@ def test_api_create_bulk_contact(api_user, api_client):
     assert len(res.data) == 2
 
 
-def test_api_create_comment_unauthorized(anon_api_client):  # noqa: pylint=invalid-name
+def test_api_create_comment_by_anon(anon_api_client):  # noqa: pylint=invalid-name
     data = {'message': get_random_string()}
     res = anon_api_client.post('/api/v1/comment-list/', data=data)
+    assert res.status_code in (status.HTTP_401_UNAUTHORIZED,
+                               status.HTTP_403_FORBIDDEN)
+
+
+def test_api_create_comment_without_permission(api_client):
+    link = {'_uid': ContactFactory.create().uid, '_type': 'contact'}
+    data = {'message': get_random_string(), 'contact': link}
+    res = api_client.post('/api/v1/comment-list/', data=data)
     assert res.status_code in (status.HTTP_401_UNAUTHORIZED,
                                status.HTTP_403_FORBIDDEN)
 
