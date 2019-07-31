@@ -4,6 +4,16 @@ from celery.result import AsyncResult
 from django.http import JsonResponse
 
 
+def _safe_result(result):
+    """returns json encodable result"""
+    try:
+        json.dumps(result)
+    except TypeError:
+        return repr(result)
+    else:
+        return result
+
+
 def task_result_api_view(request, taskid):
     """
     Get task `state` and `result` from API endpoint.
@@ -32,13 +42,3 @@ def task_result_api_view(request, taskid):
     response = {'task-id': taskid, 'state': result.state}
     response.update({'result': _safe_result(result.result)})
     return JsonResponse(response)
-
-
-def _safe_result(result):
-    """returns json encodable result"""
-    try:
-        json.dumps(result)
-    except TypeError:
-        return repr(result)
-    else:
-        return result
