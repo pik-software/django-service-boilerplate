@@ -65,7 +65,8 @@ class Updater:
     """
     is_strict = True
 
-    def __init__(self):
+    def __init__(self, ignore_version=False):
+        self.ignore_version = ignore_version
         self.last_updated = {}
 
     def update(self, obj):
@@ -90,8 +91,9 @@ class Updater:
         instance = get_base_manager(model).filter(**{pk_name: obj_pk}).last()
         attrs = _prepare_model_attrs(model, data, self.is_strict)
         if instance:
-            if obj_version and hasattr(instance, 'version') and \
-                    instance.version and obj_version <= instance.version:
+            if (obj_version and hasattr(instance, 'version') and
+                    instance.version and obj_version <= instance.version
+                    and self.ignore_version is False):
                 return False
             for key, val in attrs.items():
                 setattr(instance, key, val)
