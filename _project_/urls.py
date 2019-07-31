@@ -35,7 +35,6 @@ urlpatterns = api_urlpatterns + [  # noqa: pylint=invalid-name
     path('', include('lib.oidc_relied.urls')),
     path('admin/', admin.site.urls),
     path('status/', include('health_check.urls')),
-    path('accounts/', include('registration.auth_urls')),
     path('api/task/result/<str:taskid>/', task_result_api_view),
     path('api-token-auth/', OBTAIN_AUTH_TOKEN),
     path('api-user/', USER_API_VIEW),
