@@ -2,7 +2,7 @@ from django.contrib.contenttypes.models import ContentType
 import pytest
 from rest_framework import status
 
-from core.tests.utils import add_permissions
+from core.tests.utils import add_user_permissions
 from ..models import Contact, Comment
 from ..tests.factories import ContactFactory, CommentFactory
 
@@ -59,7 +59,7 @@ def test_api_list(api_user, api_client, api_model):
     url = _url(model, options)
     _type = ContentType.objects.get_for_model(model).model
 
-    add_permissions(api_user, model, 'view')
+    add_user_permissions(api_user, model, 'view')
     res = api_client.get(url)
     assert res.status_code == status.HTTP_200_OK
     assert res.data['count'] > BATCH_MODELS
@@ -79,7 +79,7 @@ def test_api_retrieve(api_user, api_client, api_model):
     url = _url(model, options, last_obj)
     _type = ContentType.objects.get_for_model(model).model
 
-    add_permissions(api_user, model, 'view')
+    add_user_permissions(api_user, model, 'view')
     res = api_client.get(url)
     assert res.status_code == status.HTTP_200_OK
     assert res.data['_uid'] == last_obj.uid
@@ -93,7 +93,7 @@ def test_api_list_num_queries(
     model, factory, options = api_model
     _create_few_models(factory)
     url = _url(model, options)
-    add_permissions(api_user, model, 'view')
+    add_user_permissions(api_user, model, 'view')
 
     with assert_num_queries_lte(options["queries"]):
         res = api_client.get(url)
