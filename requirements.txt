@@ -5,7 +5,7 @@ deprecated==1.2.5
 beautifulsoup4==4.7.1
 cucco==2.2.1
 openpyxl==2.6.2
-ddtrace==0.25.0
+ddtrace==0.26.0
 datadog==0.29.3
 elastic-apm==4.2.2
 pik-django-utils==1.0.19
@@ -15,18 +15,17 @@ google-cloud-runtimeconfig==0.28.3
 google-cloud-translate==1.4.0
 python-dateutil==2.8.0
 
-Django==2.1.7
+Django==2.2.4
 
 # django utils
 django_widget_tweaks==1.4.5
 django-bootstrap-form==3.4
-django-registration==2.5.2
 django-sql-explorer==1.1.2
 dj_database_url==0.5.0
 django-storages==1.7.1
 django-waffle==0.16.0
 django-extra-views==0.10.0
-django-health-check==3.5.1
+django-health-check==3.10.2
 
 # HISTORY
 django-simple-history==2.7.2
@@ -43,7 +42,7 @@ drf-yasg==1.15.0
 
 # db
 redis==2.10.6
-psycopg2==2.8.2
+psycopg2==2.8.3
 django-redis==4.10.0
 
 # celery
