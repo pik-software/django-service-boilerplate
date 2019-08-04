@@ -1,14 +1,14 @@
 from freezegun import freeze_time
 from rest_framework import status
 
-from core.tests.utils import add_permissions
+from core.tests.utils import add_user_permissions
 
 from .factories import ContactFactory
 from ..models import Contact
 
 
 def test_api_filter_by_updated(api_user, api_client):  # noqa: pylint=invalid-name
-    add_permissions(api_user, Contact, 'view')
+    add_user_permissions(api_user, Contact, 'view')
     with freeze_time("2012-01-14"):
         ContactFactory.create()
         obj = ContactFactory.create()
