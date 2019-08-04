@@ -58,7 +58,7 @@ raven==6.10.0
 uwsgi==2.0.18
 
 # dev
-django_debug_toolbar==1.11
+django_debug_toolbar==2.0
 django_extensions==2.1.9
 werkzeug==0.15.4
 
