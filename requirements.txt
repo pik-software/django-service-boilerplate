@@ -8,7 +8,7 @@ cucco==2.2.1
 openpyxl==2.6.2
 ddtrace==0.26.0
 datadog==0.29.3
-elastic-apm==4.2.2
+elastic-apm==5.1.1
 pik-django-utils==1.0.19
 google_cloud==0.34.0
 google-cloud-resource-manager==0.28.3
