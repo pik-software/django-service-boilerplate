@@ -17,7 +17,8 @@ if [[ -z "${SSH_HOST}" ]] || [[ -z "${SERVICE_HOST}" ]] || [[ -z "${SERVICE_NAME
 fi
 
 RELEASE_DATE=$( date '+%Y-%m-%d-%H-%M-%S' )
-ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} RELEASE_DATE="'"${RELEASE_DATE}"'"
+RELEASE=`git describe --tags --match v[0-9]*`
+ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} RELEASE_DATE="'"${RELEASE_DATE}"'" SENTRY_RELEASE=${RELEASE}
 GIT_REV=$(git rev-parse ${BRANCH})
 ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} GIT_REV=${GIT_REV}
 
