@@ -23,7 +23,7 @@ django_widget_tweaks==1.4.5
 django-bootstrap-form==3.4
 django-sql-explorer==1.1.2
 dj_database_url==0.5.0
-django-storages==1.7.1
+django-storages==1.7.2
 django-waffle==0.16.0
 django-extra-views==0.10.0
 django-health-check==3.10.2
