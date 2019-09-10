@@ -10,6 +10,7 @@ SERVICE_HOST=$2
 SERVICE_NAME=$3
 BRANCH=$4
 ENVIRONMENT=$5
+SENTRY_TEAM='nsi'
 
 if [[ -z "${SSH_HOST}" ]] || [[ -z "${SERVICE_HOST}" ]] || [[ -z "${SERVICE_NAME}" ]] || [[ -z "${BRANCH}" ]] || [[ -z "${ENVIRONMENT}" ]]; then
     echo "Use: $0 <SSH_HOST> <SERVICE_HOST> <SERVICE_NAME> <BRANCH> <ENVIRONMENT>"
@@ -26,9 +27,14 @@ ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} GIT_REV=${GIT_R
 case "$ENVIRONMENT" in
     production)
         ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} EXAMPLE=1
+        SENTRY_URL='https://sentry.pik-software.ru/api/'
         ;;
     staging)
         ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} EXAMPLE=2
         ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} BRANCH=${BRANCH}
+        SENTRY_URL='https://sentry-staging.pik-software.ru/api/'
         ;;
 esac
+
+SENTRY_DSN=`python3 get-sentry-dsn.py -a ${SENTRY_URL} -p ${SERVICE_NAME} -t ${SENTRY_TEAM} -k ${SENTRY_API_KEY}`
+ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} SENTRY_DSN=${SENTRY_DSN}
