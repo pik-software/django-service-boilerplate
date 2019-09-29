@@ -50,7 +50,7 @@ django_extensions==2.2.1
 werkzeug==0.16.0
 
 # tests
-factory_boy==2.11.1
+factory_boy==2.12.0
 freezegun==0.3.12
 pdbpp==0.10.0
 pytest==5.2.0
