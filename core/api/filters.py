@@ -1,8 +1,9 @@
 import coreapi
 import rest_framework_filters as rest_filters
 from rest_framework_filters.backends import RestFrameworkFilterBackend
-from rest_framework_filters import FilterSet, RelatedFilter, BaseCSVFilter, \
-    AutoFilter, IsoDateTimeFilter
+from django.db.models import DateTimeField
+from rest_framework_filters import RelatedFilter, AutoFilter, FilterSet, \
+    IsoDateTimeFilter
 # https://github.com/philipn/django-rest-framework-filters/
 # commit/379e36359b90658fe10e319c5f3cb232556d8a87
 from rest_framework.filters import SearchFilter, OrderingFilter
