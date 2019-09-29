@@ -8,7 +8,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 
 
 UID_LOOKUPS = ('exact', 'gt', 'gte', 'lt', 'lte', 'in', 'isnull')
-STRING_LOOKUPS= (
+STRING_LOOKUPS = (
     'exact', 'iexact', 'in', 'startswith', 'endswith', 'contains', 'contains',
     'isnull')
 DATE_LOOKUPS = ('exact', 'gt', 'gte', 'lt', 'lte', 'in', 'isnull')
