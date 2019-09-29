@@ -27,7 +27,7 @@ django-crispy-forms==1.7.2
 markdown==3.1.1
 # API SCHEMA
 #drf-yasg==1.16.1 ( wait PR https://github.com/axnsan12/drf-yasg/pull/428 )
--e git+https://github.com/pik-software/drf-yasg.git@master
+-e git+https://github.com/pik-software/drf-yasg.git@master#egg=drf-yasg
 
 # db
 redis==2.10.6
