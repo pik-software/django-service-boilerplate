@@ -10,10 +10,6 @@ ddtrace==0.29.0
 datadog==0.30.0
 elastic-apm==5.1.2
 pik-django-utils==1.0.19
-google_cloud==0.34.0
-google-cloud-resource-manager==0.28.3
-google-cloud-runtimeconfig==0.28.3
-google-cloud-translate==1.4.0
 python-dateutil==2.8.0
 
 Django==2.2.5
