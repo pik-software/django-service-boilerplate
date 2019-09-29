@@ -7,7 +7,7 @@ openpyxl==2.6.2
 ddtrace==0.29.0
 datadog==0.30.0
 elastic-apm==5.1.2
-pik-django-utils==1.0.19
+pik-django-utils==2.0.1
 python-dateutil==2.8.0
 
 Django==2.2.5
