@@ -54,7 +54,7 @@ if [[ "$ENVIRONMENT" = "production" ]]; then
     SERVICE_HOST="${REPO}.${DOMAIN}"
 elif [[ "$ENVIRONMENT" = "staging" ]]; then
     SERVICE_NAME="${REPO}-${BRANCH}"
-    SERVICE_HOST="${BRANCH}.${REPO}.${DOMAIN}"
+    SERVICE_HOST="${REPO}-${BRANCH}.${DOMAIN}"
 else
     echo "!!! ERROR: UNKNOWN ENVIRONMENT !!!"
     exit 1
@@ -78,7 +78,7 @@ if ! ssh dokku@${SSH_HOST} -C apps:list | grep -qFx ${SERVICE_NAME}; then
     echo "!!! ===> Init <=== !!!"
     ./init-dokku-back.sh "${SSH_HOST}" "${SERVICE_HOST}" "${SERVICE_NAME}" "${ENVIRONMENT}"
     FIX_MEDIA_ROOT_PERMISSIONS=true
-#    INIT_LETSENCRYPT=true
+    [[ -n "${LETSENCRYPT}" ]] && export INIT_LETSENCRYPT=true
 fi
 
 echo "!!! ===> Reconfigure <=== !!!"

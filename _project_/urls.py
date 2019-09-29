@@ -6,16 +6,18 @@ from django.urls import path, include
 
 from core.api.auth import OBTAIN_AUTH_TOKEN
 from core.api.router import StandardizedRouter
+from core.views.permissions import permissions_view
 from core.api.schema import get_standardized_schema_view
 from core.api.user import USER_API_VIEW
 from core.views import task_result_api_view
 from contacts.api import ContactViewSet, CommentViewSet
 
+
 router = StandardizedRouter()  # noqa: pylint=invalid-name
 router.register(
-    'contact-list', ContactViewSet, base_name='contact')
+    'contact-list', ContactViewSet, 'contact')
 router.register(
-    'comment-list', CommentViewSet, base_name='comment')
+    'comment-list', CommentViewSet, 'comment')
 
 
 @login_required
@@ -35,10 +37,10 @@ urlpatterns = api_urlpatterns + [  # noqa: pylint=invalid-name
     path('', include('lib.oidc_relied.urls')),
     path('admin/', admin.site.urls),
     path('status/', include('health_check.urls')),
-    path('accounts/', include('registration.auth_urls')),
     path('api/task/result/<str:taskid>/', task_result_api_view),
     path('api-token-auth/', OBTAIN_AUTH_TOKEN),
     path('api-user/', USER_API_VIEW),
+    path('api/v1/permissions/', permissions_view),
     path('api/v1/schema/', get_standardized_schema_view(api_urlpatterns),
          name='api_schema'),
 ]
