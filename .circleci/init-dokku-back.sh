@@ -53,7 +53,9 @@ ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} ENVIRONMENT=${E
 ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} MEDIA_ROOT=${MEDIA_ROOT}
 
 # lets encrypt
-ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} DOKKU_LETSENCRYPT_EMAIL=pik-software-team@pik-comfort.ru
+if [[ -n "${LETSENCRYPT}" && -n "${LETSENCRYPT_EMAIL}" ]]; then
+    ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} DOKKU_LETSENCRYPT_EMAIL="'"${LETSENCRYPT_EMAIL}"'"
+fi
 
 # gcloud file storage
 #ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} FILE_STORAGE_BACKEND=
