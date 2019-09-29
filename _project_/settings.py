@@ -6,7 +6,6 @@ import sys
 from datetime import timedelta
 
 import dj_database_url
-from google.oauth2 import service_account
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
@@ -45,10 +44,10 @@ RAVEN_CONFIG = {
 }
 
 # APM
-DD_STATSD_ADDR = os.environ.get('DD_AGENT_PORT_8125_UDP_ADDR', 'localhost')
+DD_STATSD_ADDR = os.environ.get('DD_AGENT_PORT_8125_UDP_ADDR', 'dd-agent')
 DD_STATSD_PORT = int(os.environ.get('DD_AGENT_PORT_8125_UDP_PORT', '8125'))
 DD_STATSD_NAMESPACE = SERVICE_NAME
-DD_TRACE_ADDR = os.environ.get('DD_AGENT_PORT_8126_TCP_ADDR', 'localhost')
+DD_TRACE_ADDR = os.environ.get('DD_AGENT_PORT_8126_TCP_ADDR', 'dd-agent')
 DD_TRACE_PORT = int(os.environ.get('DD_AGENT_PORT_8126_TCP_PORT', '8126'))
 DATADOG_TRACE = {
     'DEFAULT_SERVICE': SERVICE_NAME + '-django-app',
@@ -228,6 +227,14 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
         "KEY_PREFIX": SERVICE_NAME
+    },
+    "sessions": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"{REDIS_URL}/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+        "KEY_PREFIX": SERVICE_NAME
     }
 }
 
@@ -286,6 +293,7 @@ MEDIA_ROOT_PROJECT_PATH_PREFIX = os.environ.get('SERVICE_NAME', 'boilerplate')
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(DATA_DIR, 'media'))
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'sessions'
 
 LOGIN_REDIRECT_URL = '/'
 INDEX_STAFF_REDIRECT_URL = '/admin/'
@@ -307,6 +315,9 @@ CELERY_IMPORTS = [
 ]
 CELERYBEAT_SCHEDULE_FILENAME = os.path.join(DATA_DIR, 'celerybeat.db')
 CELERYBEAT_SCHEDULE = {}
+
+# API
+ALLOWED_APPS_FOR_PERMISSIONS_VIEW = {'auth', 'contacts'}
 
 # DRF
 REST_FRAMEWORK = {
@@ -390,26 +401,26 @@ SWAGGER_SETTINGS = {
 }
 
 # storage
-GS_FILE_OVERWRITE = False
-_STORAGE = os.environ.get('FILE_STORAGE_BACKEND', 'local')
-_CREDENTIALS = os.environ.get('FILE_STORAGE_BACKEND_CREDENTIALS', None)
-GS_BUCKET_NAME = os.environ.get('FILE_STORAGE_BUCKET_NAME', None)
-GS_PROJECT_ID = os.environ.get('FILE_STORAGE_PROJECT_ID', None)
-GS_CREDENTIALS = None
-GS_EXPIRATION = os.environ.get(
-    'FILE_STORAGE_EXPIRATION_SECONDS', timedelta(seconds=7200))
-if _STORAGE == 'gcloud' and _CREDENTIALS and GS_BUCKET_NAME and GS_PROJECT_ID:
-    DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+FILE_STORAGE_BACKEND = os.environ.get('FILE_STORAGE_BACKEND', 'local')
+if FILE_STORAGE_BACKEND == 'gcloud':
+    from google.oauth2 import service_account  # noqa
+    _CREDENTIALS = os.environ['FILE_STORAGE_BACKEND_CREDENTIALS']
+    GS_BUCKET_NAME = os.environ['FILE_STORAGE_BUCKET_NAME']
+    GS_PROJECT_ID = os.environ['FILE_STORAGE_PROJECT_ID']
     GS_CREDENTIALS = service_account.Credentials.from_service_account_info(
         json.loads(base64.b64decode(_CREDENTIALS), strict=False))
+    GS_EXPIRATION = os.environ.get(
+        'FILE_STORAGE_EXPIRATION_SECONDS', timedelta(seconds=7200))
+    GS_FILE_OVERWRITE = False
+    DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
 else:
-    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
     logging.warning('!! DEFAULT_FILE_STORAGE="FileSystemStorage"')
+    DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 
 
 ONLY_LAST_VERSION_ALLOWED_DAYS_RANGE = os.environ.get(
     'ONLY_LAST_VERSION_ALLOWED_DAYS_RANGE', 1)
-
+SOFT_DELETE_SAFE_MODE = False
 
 LOGGING = {
     'version': 1,
