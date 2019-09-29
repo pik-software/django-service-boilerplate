@@ -45,10 +45,10 @@ RAVEN_CONFIG = {
 }
 
 # APM
-DD_STATSD_ADDR = os.environ.get('DD_AGENT_PORT_8125_UDP_ADDR', 'localhost')
+DD_STATSD_ADDR = os.environ.get('DD_AGENT_PORT_8125_UDP_ADDR', 'dd-agent')
 DD_STATSD_PORT = int(os.environ.get('DD_AGENT_PORT_8125_UDP_PORT', '8125'))
 DD_STATSD_NAMESPACE = SERVICE_NAME
-DD_TRACE_ADDR = os.environ.get('DD_AGENT_PORT_8126_TCP_ADDR', 'localhost')
+DD_TRACE_ADDR = os.environ.get('DD_AGENT_PORT_8126_TCP_ADDR', 'dd-agent')
 DD_TRACE_PORT = int(os.environ.get('DD_AGENT_PORT_8126_TCP_PORT', '8126'))
 DATADOG_TRACE = {
     'DEFAULT_SERVICE': SERVICE_NAME + '-django-app',
@@ -227,6 +227,14 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient"
         },
         "KEY_PREFIX": SERVICE_NAME
+    },
+    "sessions": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": f"{REDIS_URL}/1",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
+        "KEY_PREFIX": SERVICE_NAME
     }
 }
 
@@ -285,6 +293,7 @@ MEDIA_ROOT_PROJECT_PATH_PREFIX = os.environ.get('SERVICE_NAME', 'boilerplate')
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(DATA_DIR, 'media'))
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'sessions'
 
 LOGIN_REDIRECT_URL = '/'
 INDEX_STAFF_REDIRECT_URL = '/admin/'
@@ -306,6 +315,9 @@ CELERY_IMPORTS = [
 ]
 CELERYBEAT_SCHEDULE_FILENAME = os.path.join(DATA_DIR, 'celerybeat.db')
 CELERYBEAT_SCHEDULE = {}
+
+# API
+ALLOWED_APPS_FOR_PERMISSIONS_VIEW = {'auth', 'contacts'}
 
 # DRF
 REST_FRAMEWORK = {
