@@ -2,8 +2,8 @@
 Pillow==6.1.0
 requests==2.22.0
 deprecated==1.2.6
-beautifulsoup4==4.7.1
-openpyxl==2.6.2
+beautifulsoup4==4.8.0
+openpyxl==3.0.0
 python-dateutil==2.8.0
 
 Django==2.2.5
@@ -30,14 +30,13 @@ markdown==3.1.1
 -e git+https://github.com/pik-software/drf-yasg.git@master#egg=drf-yasg
 
 # db
-redis==2.10.6
+redis==3.3.8
 psycopg2==2.8.3
 django-redis==4.10.0
 
 # celery
-kombu==4.2.1
-celery==4.2.2
-django_celery_results==1.0.4
+celery==4.3.0
+django_celery_results==1.1.2
 
 # sentry
 raven==6.10.0
@@ -51,19 +50,20 @@ django_extensions==2.2.1
 werkzeug==0.16.0
 
 # tests
-prospector==1.1.2
-pylint==2.1.1
-factory_boy==2.11.1
+factory_boy==2.12.0
 freezegun==0.3.12
 pdbpp==0.10.0
-pytest==3.4.2
-pytest-mock==1.10.4
-pytest-cov==2.5.1
-pytest-django==3.1.2
-pytest-selenium==1.13.0
+pytest==5.2.0
+pytest-mock==1.11.0
+pytest-cov==2.7.1
+pytest-django==3.5.1
+pytest-selenium==1.17.0
 pytest-base-url==1.4.1
-pytest-benchmark==3.1.1
-pytest-html==1.22.0
+pytest-benchmark==3.2.2
+pytest-html==2.0.0
+# tests/style
+prospector==1.1.2
+pylint==2.1.1
 flake8<3.6.0
 pep8-naming==0.8.2
 
