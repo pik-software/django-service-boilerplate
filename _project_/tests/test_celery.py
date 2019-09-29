@@ -1,7 +1,12 @@
-from _project_.celery import debug_task
+from celery import shared_task
 
 
-def test_create_task(celery_session_worker):
+@shared_task(bind=True)
+def debug_task(self):
+    return 'Request: {0!r}'.format(self.request.task)
+
+
+def test_create_task(celery_worker):
     req = debug_task.delay()
     assert req.status in ['PENDING', 'SUCCESS']
-    assert req.get(timeout=10) == "Request: '_project_.celery.debug_task'"
+    assert req.get() == "Request: '_project_.tests.test_celery.debug_task'"
