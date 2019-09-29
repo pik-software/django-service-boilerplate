@@ -419,7 +419,7 @@ else:
 
 ONLY_LAST_VERSION_ALLOWED_DAYS_RANGE = os.environ.get(
     'ONLY_LAST_VERSION_ALLOWED_DAYS_RANGE', 1)
-
+SOFT_DELETE_SAFE_MODE = False
 
 LOGGING = {
     'version': 1,
