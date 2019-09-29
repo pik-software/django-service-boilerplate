@@ -78,7 +78,7 @@ if ! ssh dokku@${SSH_HOST} -C apps:list | grep -qFx ${SERVICE_NAME}; then
     echo "!!! ===> Init <=== !!!"
     ./init-dokku-back.sh "${SSH_HOST}" "${SERVICE_HOST}" "${SERVICE_NAME}" "${ENVIRONMENT}"
     FIX_MEDIA_ROOT_PERMISSIONS=true
-#    INIT_LETSENCRYPT=true
+    [[ -n "${LETSENCRYPT}" ]] && export INIT_LETSENCRYPT=true
 fi
 
 echo "!!! ===> Reconfigure <=== !!!"
