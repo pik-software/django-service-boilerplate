@@ -18,8 +18,7 @@ def test_error():
             return field == 'a'
 
     serializer = TestSerializer(context={'request': Mock()})
-    message = {'b': ['У вас нет прав для редактирования этого поля.']}
-    with pytest.raises(ValidationError, message=message):
+    with pytest.raises(ValidationError):
         serializer.to_internal_value({'a': 1, 'b': 2})
 
 
