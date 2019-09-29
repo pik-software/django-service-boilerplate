@@ -2,7 +2,7 @@ from django.contrib.contenttypes.models import ContentType
 import pytest
 from rest_framework import status
 
-from core.tests.utils import add_permissions
+from core.tests.utils import add_user_permissions
 from ..models import Contact, Comment
 from ..tests.factories import ContactFactory, CommentFactory
 
@@ -58,7 +58,7 @@ def test_api_history(api_user, api_client, api_model):
     _create_few_models(factory)
     url = _url(model, options)
 
-    add_permissions(api_user, model.history.model, 'view')
+    add_user_permissions(api_user, model.history.model, 'view')
     res = api_client.get(url)
 
     assert res.status_code == status.HTTP_200_OK
@@ -71,7 +71,7 @@ def test_api_history_filter_by_uid(api_user, api_client, api_model):
     url = _url(model, options)
     _type = ContentType.objects.get_for_model(model).model
 
-    add_permissions(api_user, model.history.model, 'view')
+    add_user_permissions(api_user, model.history.model, 'view')
     res = api_client.get(f'{url}?_uid={last_obj.uid}')
 
     assert res.status_code == status.HTTP_200_OK
@@ -89,7 +89,7 @@ def test_api_history_filter_by_date(api_user, api_client, api_model):
     last_obj = _create_few_models(factory)
     url = _url(model, options)
 
-    add_permissions(api_user, model.history.model, 'view')
+    add_user_permissions(api_user, model.history.model, 'view')
     last_obj.save()
     history = last_obj.history.last()
     history.history_date = '2000-01-01 00:00:00'
@@ -117,7 +117,7 @@ def test_api_history_create_and_change(api_user, api_client, api_model):  # noqa
     last_obj = _create_few_models(factory)
     url = _url(model, options)
 
-    add_permissions(api_user, model.history.model, 'view')
+    add_user_permissions(api_user, model.history.model, 'view')
 
     last_obj.save()
     res = api_client.get(f'{url}?_uid={last_obj.uid}')

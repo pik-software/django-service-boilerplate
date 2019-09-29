@@ -8,10 +8,10 @@ LOGGER = get_task_logger(__name__)
 
 
 class Integra:
-    def __init__(self, config):
+    def __init__(self, config, ignore_version=False):
         self.models = config['models']
         self.loader = Loader(config)
-        self.updater = Updater()
+        self.updater = Updater(ignore_version=ignore_version)
 
     def run(self):
         processed = 0
