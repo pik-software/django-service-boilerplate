@@ -50,8 +50,6 @@ django_extensions==2.2.1
 werkzeug==0.16.0
 
 # tests
-prospector==1.1.2
-pylint==2.1.1
 factory_boy==2.11.1
 freezegun==0.3.12
 pdbpp==0.10.0
@@ -63,6 +61,9 @@ pytest-selenium==1.17.0
 pytest-base-url==1.4.1
 pytest-benchmark==3.2.2
 pytest-html==2.0.0
+# tests/style
+prospector==1.1.2
+pylint==2.1.1
 flake8<3.6.0
 pep8-naming==0.8.2
 
