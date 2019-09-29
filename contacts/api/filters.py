@@ -3,7 +3,7 @@ import rest_framework_filters as filters
 from core.api.filters import StandardizedModelFilter
 from ..models import Contact, Comment, Category
 
-NAME_FILTERS = ['exact', 'in', 'startswith', 'endswith', 'contains']
+NAME_FILTERS = ('exact', 'in', 'startswith', 'endswith', 'contains')
 
 
 class CharArrayFilter(filters.BaseCSVFilter, filters.CharFilter):
@@ -30,7 +30,7 @@ class ContactFilter(StandardizedModelFilter):
 
 class CommentFilter(StandardizedModelFilter):
     message = filters.AutoFilter(lookups=NAME_FILTERS)
-    user = filters.AutoFilter(lookups=['exact', 'in'])
+    user = filters.AutoFilter(lookups=('exact', 'in'))
 
     class Meta(StandardizedModelFilter.Meta):
         model = Comment
