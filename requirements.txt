@@ -64,7 +64,7 @@ werkzeug==0.16.0
 
 # tests
 prospector==1.1.2
-pylint==2.1.1
+pylint==2.4.1
 factory_boy==2.11.1
 freezegun==0.3.12
 pdbpp==0.10.0
