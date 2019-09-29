@@ -1,8 +1,8 @@
 import os
 from contextlib import contextmanager
 
-import django
 import pytest
+from django import setup as django_setup
 from django.core.cache import caches
 from django.test import TransactionTestCase
 from selenium import webdriver
@@ -41,7 +41,7 @@ def api_client(api_user):
 
 def pytest_configure():
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "_project_.settings")
-    django.setup()
+    django_setup()
 
 
 @pytest.fixture(scope='session')
