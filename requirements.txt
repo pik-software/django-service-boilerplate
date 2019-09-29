@@ -30,7 +30,7 @@ coreapi==2.3.3
 drf-yasg==1.15.0
 
 # db
-redis==2.10.6
+redis==3.3.8
 psycopg2==2.8.3
 django-redis==4.10.0
 
