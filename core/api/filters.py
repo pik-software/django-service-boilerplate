@@ -9,12 +9,10 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 
 
 UID_LOOKUPS = ('exact', 'in', 'isnull')
-STRING_LOOKUPS = (
-    'exact', 'iexact', 'in', 'startswith', 'endswith', 'contains', 'contains',
-    'isnull')
-DATE_LOOKUPS = ('exact', 'lt', 'gt', 'lte', 'gte', 'isnull')
+STRING_LOOKUPS = ('exact', 'in', 'isnull', 'startswith', 'endswith', 'contains')
+DATE_LOOKUPS = ('exact', 'in', 'isnull', 'lt', 'gt', 'lte', 'gte')
 BOOLEAN_LOOKUPS = ('exact', 'in', 'isnull')
-ARRAY_LOOKUPS = ['contains', 'contained_by', 'overlap', 'len', 'isnull']
+ARRAY_LOOKUPS = ('contains', 'contained_by', 'overlap', 'len', 'isnull')
 
 
 class StandardizedFieldFilters(RestFrameworkFilterBackend):
@@ -59,3 +57,16 @@ class StandardizedSearchFilter(SearchFilter):
 
 class StandardizedOrderingFilter(OrderingFilter):
     pass
+
+
+class StandardizedModelFilter(FilterSet):
+    uid = AutoFilter(lookups=UID_LOOKUPS)
+    updated = AutoFilter(lookups=DATE_LOOKUPS)
+    created = AutoFilter(lookups=DATE_LOOKUPS)
+
+    class Meta:
+        model = None
+        fields = {}
+        filter_overrides = {
+            DateTimeField: {'filter_class': IsoDateTimeFilter}
+        }
