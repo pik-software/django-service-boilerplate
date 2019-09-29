@@ -1,16 +1,13 @@
 import coreapi
-import rest_framework_filters as rest_filters
-from rest_framework_filters.backends import RestFrameworkFilterBackend
 from django.db.models import DateTimeField
+from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework_filters import RelatedFilter, AutoFilter, FilterSet, \
     IsoDateTimeFilter
-# https://github.com/philipn/django-rest-framework-filters/
-# commit/379e36359b90658fe10e319c5f3cb232556d8a87
-from rest_framework.filters import SearchFilter, OrderingFilter
-
+from rest_framework_filters.backends import RestFrameworkFilterBackend
 
 UID_LOOKUPS = ('exact', 'in', 'isnull')
-STRING_LOOKUPS = ('exact', 'in', 'isnull', 'startswith', 'endswith', 'contains')
+STRING_LOOKUPS = (
+    'exact', 'in', 'isnull', 'startswith', 'endswith', 'contains')
 DATE_LOOKUPS = ('exact', 'in', 'isnull', 'lt', 'gt', 'lte', 'gte')
 BOOLEAN_LOOKUPS = ('exact', 'in', 'isnull')
 ARRAY_LOOKUPS = ('contains', 'contained_by', 'overlap', 'len', 'isnull')
