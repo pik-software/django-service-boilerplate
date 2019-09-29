@@ -8,7 +8,7 @@ jobs:
     docker:
       # specify the version you desire here
       # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
-      - image: quay.io/pik-software/base:v1.9
+      - image: quay.io/pik-software/base:v1.11
 
       - image: mdillon/postgis:9.6
         environment:
@@ -61,7 +61,7 @@ jobs:
 
   deploy-staging:
     docker:
-      - image: quay.io/pik-software/base:v1.9
+      - image: quay.io/pik-software/base:v1.11
     working_directory: ~/repo
     steps:
       - checkout
@@ -71,7 +71,7 @@ jobs:
             DOMAIN=pik-software.ru
             REPO_NAME=$( git config --local remote.origin.url | sed -n 's#.*/\([^.]*\)\.git#\1#p' )
             BRANCH_NAME=$( git branch | grep -e "^*" | cut -d' ' -f 2 )
-            SSH_HOST="${BRANCH_NAME}.${REPO_NAME}.${DOMAIN}"
+            SSH_HOST="${REPO_NAME}-${BRANCH_NAME}.${DOMAIN}"
             SSH_PORT="22501"
             SSH_USER="circleci-staging"
             KNOWN_HOST_KEYS="ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBNJvPW0n0F2IjYLCBLaBNyLnO8TLAWL5WI5pAek6EJGN7MZtT1aVw1+B/juOusAshqKoTzTAR3I/q4ns7jMK7gc="
@@ -80,10 +80,11 @@ jobs:
               echo -e "\nHost ${SSH_HOST}\n  HostName ${SSH_HOST}\n  Port ${SSH_PORT}\n  User ${SSH_USER}" >> ~/.ssh/config
               ./.circleci/deploy-dokku-back.sh "${SSH_HOST}" "${DOMAIN}" "${REPO_NAME}" "${BRANCH_NAME}" "staging"
             fi
+            echo "Open https://${REPO_NAME}-${BRANCH_NAME}.${DOMAIN}"
 
   deploy-prod:
     docker:
-      - image: quay.io/pik-software/base:v1.9
+      - image: quay.io/pik-software/base:v1.11
     working_directory: ~/repo
     steps:
       - checkout
@@ -91,14 +92,16 @@ jobs:
           name: deploy master
           command: |
             DOMAIN=pik-software.ru
-            SSH_HOST="boilerplate.pik-software.ru"
+            REPO_NAME=$( git config --local remote.origin.url | sed -n 's#.*/\([^.]*\)\.git#\1#p' )
+            BRANCH_NAME=master            
+            SSH_HOST="${REPO_NAME}.${DOMAIN}"
             SSH_PORT="22500"
             SSH_USER="circleci-staging"
             KNOWN_HOST_KEYS="ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBNJvPW0n0F2IjYLCBLaBNyLnO8TLAWL5WI5pAek6EJGN7MZtT1aVw1+B/juOusAshqKoTzTAR3I/q4ns7jMK7gc="
-            REPO_NAME=$( git config --local remote.origin.url | sed -n 's#.*/\([^.]*\)\.git#\1#p' )
             echo "${SSH_HOST} ${KNOWN_HOST_KEYS}" >> ~/.ssh/known_hosts
             echo -e "\nHost ${SSH_HOST}\n  HostName ${SSH_HOST}\n  Port ${SSH_PORT}\n  User ${SSH_USER}" >> ~/.ssh/config
-            ./.circleci/deploy-dokku-back.sh "${SSH_HOST}" "${DOMAIN}" "${REPO_NAME}" "master" "production"
+            ./.circleci/deploy-dokku-back.sh "${SSH_HOST}" "${DOMAIN}" "${REPO_NAME}" "${BRANCH_NAME}" "production"
+            echo "Open https://${REPO_NAME}.${DOMAIN}"
 
 workflows:
   version: 2
@@ -106,6 +109,7 @@ workflows:
     jobs:
       - build
       - deploy-staging:
+          context: staging
           requires:
             - build
       - staging-ok:
@@ -116,6 +120,7 @@ workflows:
             branches:
               only: master
       - deploy-prod:
+          context: production
           requires:
             - staging-ok
           filters:

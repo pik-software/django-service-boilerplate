@@ -11,7 +11,7 @@ from .serializers import get_history_serializer_class
 
 class HistoryViewSetBase(ListModelMixin, GenericViewSet):
     pagination_class = StandardizedCursorPagination
-    ordering = ('updated', )
+    ordering = ('-updated', )
     ordering_fields = ('updated', 'uid', )
 
     serializer_class = None
