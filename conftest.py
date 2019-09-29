@@ -1,14 +1,11 @@
-from contextlib import contextmanager
 import os
+from contextlib import contextmanager
 
-from selenium import webdriver
 import pytest
-
-import django
+from django import setup as django_setup
 from django.core.cache import caches
 from django.test import TransactionTestCase
-
-from celery.contrib.testing import worker, tasks  # noqa: pylint=unused-import
+from selenium import webdriver
 
 from _project_ import celery_app as django_celery_app
 
@@ -44,7 +41,7 @@ def api_client(api_user):
 
 def pytest_configure():
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "_project_.settings")
-    django.setup()
+    django_setup()
 
 
 @pytest.fixture(scope='session')
@@ -64,18 +61,6 @@ def clear_caches():
 def celery_session_app(request):
     """Session Fixture: Return app for session fixtures."""
     yield django_celery_app
-
-
-@pytest.fixture(scope='session')
-def celery_session_worker(request,
-                          celery_session_app,
-                          celery_worker_pool,
-                          celery_worker_parameters):
-    """Session Fixture: Start worker that lives throughout test suite."""
-    with worker.start_worker(celery_session_app,
-                             pool=celery_worker_pool,
-                             **celery_worker_parameters) as worker_context:
-        yield worker_context
 
 
 # CELENIUM

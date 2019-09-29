@@ -1,14 +1,20 @@
 import coreapi
-from django.db.models import DateTimeField
-from rest_framework_filters import RelatedFilter, AutoFilter, FilterSet, \
-    IsoDateTimeFilter
+import rest_framework_filters as rest_filters
 from rest_framework_filters.backends import RestFrameworkFilterBackend
+from rest_framework_filters import FilterSet, RelatedFilter, BaseCSVFilter, \
+    AutoFilter, IsoDateTimeFilter
+# https://github.com/philipn/django-rest-framework-filters/
+# commit/379e36359b90658fe10e319c5f3cb232556d8a87
 from rest_framework.filters import SearchFilter, OrderingFilter
 
 
-UID_LOOKUPS = ('exact', 'in')
-DATE_LOOKUPS = ('exact', 'lt', 'gt', 'lte', 'gte')
-
+UID_LOOKUPS = ('exact', 'in', 'isnull')
+STRING_LOOKUPS = (
+    'exact', 'iexact', 'in', 'startswith', 'endswith', 'contains', 'contains',
+    'isnull')
+DATE_LOOKUPS = ('exact', 'lt', 'gt', 'lte', 'gte', 'isnull')
+BOOLEAN_LOOKUPS = ('exact', 'in', 'isnull')
+ARRAY_LOOKUPS = ['contains', 'contained_by', 'overlap', 'len', 'isnull']
 
 
 class StandardizedFieldFilters(RestFrameworkFilterBackend):
@@ -53,16 +59,3 @@ class StandardizedSearchFilter(SearchFilter):
 
 class StandardizedOrderingFilter(OrderingFilter):
     pass
-
-
-class StandardizedModelFilter(FilterSet):
-    uid = AutoFilter(lookups=UID_LOOKUPS)
-    updated = AutoFilter(lookups=DATE_LOOKUPS)
-    created = AutoFilter(lookups=DATE_LOOKUPS)
-
-    class Meta:
-        model = None
-        fields = {}
-        filter_overrides = {
-            DateTimeField: {'filter_class': IsoDateTimeFilter}
-        }

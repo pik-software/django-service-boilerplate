@@ -1,19 +1,9 @@
 # python utils
-Pillow==5.3.0
+Pillow==6.1.0
 requests==2.22.0
-urllib3==1.24.2
 deprecated==1.2.6
-beautifulsoup4==4.7.1
-cucco==2.2.1
-openpyxl==2.6.2
-ddtrace==0.29.0
-datadog==0.30.0
-elastic-apm==5.1.2
-pik-django-utils==1.0.19
-google_cloud==0.34.0
-google-cloud-resource-manager==0.28.3
-google-cloud-runtimeconfig==0.28.3
-google-cloud-translate==1.4.0
+beautifulsoup4==4.8.0
+openpyxl==3.0.0
 python-dateutil==2.8.0
 
 Django==2.2.5
@@ -24,7 +14,7 @@ django-bootstrap-form==3.4
 django-sql-explorer==1.1.3
 dj_database_url==0.5.0
 django-storages==1.7.2
-django-health-check==3.11.0
+pik-django-utils==2.0.1
 
 # HISTORY
 django-simple-history==2.7.3
@@ -32,22 +22,21 @@ django-simple-history==2.7.3
 # API
 djangorestframework==3.9.2
 djangorestframework-filters==1.0.0.dev0
-django-filter==2.1.0
+django-filter==2.2.0
 django-crispy-forms==1.7.2
-markdown==2.6.11
+markdown==3.1.1
 # API SCHEMA
 coreapi==2.3.3
 drf-yasg==1.15.0
 
 # db
-redis==2.10.6
+redis==3.3.8
 psycopg2==2.8.3
 django-redis==4.10.0
 
 # celery
-kombu==4.2.1
-celery==4.2.2
-django_celery_results==1.0.4
+celery==4.3.0
+django_celery_results==1.1.2
 
 # sentry
 raven==6.10.0
@@ -61,19 +50,20 @@ django_extensions==2.2.1
 werkzeug==0.16.0
 
 # tests
-prospector==1.1.2
-pylint==2.1.1
-factory_boy==2.11.1
+factory_boy==2.12.0
 freezegun==0.3.12
 pdbpp==0.10.0
-pytest==3.4.2
-pytest-mock==1.10.4
-pytest-cov==2.5.1
-pytest-django==3.1.2
-pytest-selenium==1.13.0
+pytest==5.2.0
+pytest-mock==1.11.0
+pytest-cov==2.7.1
+pytest-django==3.5.1
+pytest-selenium==1.17.0
 pytest-base-url==1.4.1
-pytest-benchmark==3.1.1
-pytest-html==1.22.0
+pytest-benchmark==3.2.2
+pytest-html==2.0.0
+# tests/style
+prospector==1.1.2
+pylint==2.1.1
 flake8<3.6.0
 pep8-naming==0.8.2
 
@@ -87,3 +77,9 @@ social_auth_core>=1.7.0,<2.0.0
 
 # lib/codegen
 swagger-parser==1.0.1
+
+# metrics/monitoring
+ddtrace==0.29.0
+datadog==0.30.0
+elastic-apm==5.1.2
+django-health-check==3.11.0
