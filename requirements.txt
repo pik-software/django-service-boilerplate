@@ -1,10 +1,8 @@
 # python utils
 Pillow==6.1.0
 requests==2.22.0
-urllib3==1.24.2
 deprecated==1.2.6
 beautifulsoup4==4.7.1
-cucco==2.2.1
 openpyxl==2.6.2
 ddtrace==0.29.0
 datadog==0.30.0
