@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 from dataclasses import dataclass
 
 from django.core.mail import EmailMultiAlternatives
@@ -7,7 +7,7 @@ from django.core.mail import EmailMultiAlternatives
 @dataclass
 class EmailFileWrapper:
 
-    content: str
+    content: Union[str, bytes]
     filename: str = None
     mimetype: str = None
 
