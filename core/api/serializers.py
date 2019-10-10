@@ -5,10 +5,9 @@ from uuid import UUID
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Model
-from drf_yasg.utils import swagger_serializer_method
 from rest_framework import serializers
 from rest_framework.fields import empty
-from rest_framework.serializers import ListSerializer
+from rest_framework.serializers import ListSerializer, ModelSerializer
 
 from core.permitted_fields.api import PermittedFieldsSerializerMixIn
 
@@ -62,7 +61,6 @@ class StandardizedProtocolSerializer(serializers.ModelSerializer):
     _type = serializers.SerializerMethodField()
     _version = serializers.SerializerMethodField()
 
-    @swagger_serializer_method(serializer_or_field=serializers.UUIDField)
     def get__uid(self, obj) -> Optional[Union[str, UUID]]:
         if not hasattr(obj, 'uid'):
             if not hasattr(obj, 'pk'):
@@ -81,7 +79,60 @@ class StandardizedProtocolSerializer(serializers.ModelSerializer):
         return obj.version
 
 
-class StandardizedModelSerializer(SettableNestedSerializerMixIn,
+class LabeledModelSerializerMixIn:
+    """ Default DRF ModelSerializer has different nature than DRF Field
+
+        1. DRF ModelSerializer does't handle labels and help_texts as expected.
+        2. DRF ModelSerializer has 2 different behaviours:
+            - initialized for direct use within viewset,
+            - initialized and binded for use within other serializer as field.
+        3. So label and help_text handling should provided on two stages:
+            - `__init__()` for using within viewset,
+            - `bind()` for use as field withing other serializer.
+
+        This MixIn:
+            - on `__init__()`:
+                - sets label and help_text to model values if not provided,
+                - saves `is_set`=True if provided;
+            - on `bind()`:
+                - sets label and help_text to parent model field values if
+                `is_set`=`False`.
+    """
+
+    _label_is_set = False
+    _help_text_is_set = False
+
+    def __init__(self, *args, **kwargs):
+        opts = self.Meta.model._meta  # noqa: protected-access
+
+        if 'label' not in kwargs:
+            kwargs['label'] = opts.verbose_name
+        else:
+            self._label_is_set = True
+
+        if 'help_text' not in kwargs:
+            kwargs['help_text'] = getattr(self.Meta.model, 'help_text', None)
+        else:
+            self._help_text_is_set = True
+
+        self.label_plural = opts.verbose_name_plural
+        if 'label_plural' in kwargs:
+            self.label_plural = kwargs.pop('label_plural')
+
+        super().__init__(*args, **kwargs)
+
+    def bind(self, field_name, parent):
+        super().bind(field_name, parent)
+        if isinstance(parent, ModelSerializer):
+            opts = parent.Meta.model._meta  # noqa: protected-access
+            if not self._label_is_set:
+                self.label = opts.get_field(self.source).verbose_name
+            if not self._help_text_is_set:
+                self.help_text = opts.get_field(self.source).help_text
+
+
+class StandardizedModelSerializer(LabeledModelSerializerMixIn,
+                                  SettableNestedSerializerMixIn,
                                   PermittedFieldsSerializerMixIn,
                                   StandardizedProtocolSerializer):
     pass

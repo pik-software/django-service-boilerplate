@@ -14,6 +14,7 @@ DATA_DIR = os.path.join(BASE_DIR, '__data__')
 SERVICE_NAME = os.environ.get('SERVICE_NAME', BASE_DIR_NAME)
 
 SERVICE_TITLE = 'Сервис'
+SERVICE_DESCRIPTION = 'Тестовый сервис. Предоставляет инструменты для управления контактами и комментариями.'
 
 REDIS_URL = os.environ.get(
     'REDIS_URL',
@@ -327,6 +328,7 @@ ALLOWED_APPS_FOR_PERMISSIONS_VIEW = {'auth', 'contacts'}
 
 # DRF
 REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'core.api.openapi.StandardizedAutoSchema',
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
@@ -362,49 +364,6 @@ REST_FRAMEWORK = {
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',
 }
 
-# SCHEMA
-SWAGGER_SETTINGS = {
-    'DEFAULT_GENERATOR_CLASS': 'core.api.schema.StandardizedSchemaGenerator',
-    'DEFAULT_AUTO_SCHEMA_CLASS': 'core.api.schema.StandardizedAutoSchema',
-    'DEFAULT_FIELD_INSPECTORS': [
-        'drf_yasg.inspectors.CamelCaseJSONFilter',
-        'drf_yasg.inspectors.RecursiveFieldInspector',
-        'drf_yasg.inspectors.ReferencingSerializerInspector',
-        'drf_yasg.inspectors.ChoiceFieldInspector',
-        'drf_yasg.inspectors.FileFieldInspector',
-        'drf_yasg.inspectors.DictFieldInspector',
-        'drf_yasg.inspectors.HiddenFieldInspector',
-        'drf_yasg.inspectors.RelatedFieldInspector',
-        'drf_yasg.inspectors.SerializerMethodFieldInspector',
-        'drf_yasg.inspectors.SimpleFieldInspector',
-        'drf_yasg.inspectors.StringDefaultFieldInspector',
-    ],
-    'DEFAULT_FILTER_INSPECTORS': [
-        'drf_yasg.inspectors.CoreAPICompatInspector',
-    ],
-    'DEFAULT_PAGINATOR_INSPECTORS': [
-        'core.api.inspectors.StandardizedPaginationInspector',
-        'drf_yasg.inspectors.DjangoRestResponsePagination',
-        'drf_yasg.inspectors.CoreAPICompatInspector',
-    ],
-    'DEFAULT_API_URL': None,
-    'DEFAULT_INFO': '_project_.swagger.INFO',
-    'USE_SESSION_AUTH': True,
-    'SECURITY_DEFINITIONS': {
-        'Basic': {
-            'type': 'basic'
-        }
-    },
-    'SECURITY_REQUIREMENTS': None,
-    'SUPPORTED_SUBMIT_METHODS': [
-        'get',
-        'post',
-        'patch',
-        'delete',
-        'options',
-    ],
-    'DISPLAY_OPERATION_ID': False,
-}
 
 # storage
 FILE_STORAGE_BACKEND = os.environ.get('FILE_STORAGE_BACKEND', 'local')

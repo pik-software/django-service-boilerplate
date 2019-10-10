@@ -75,7 +75,7 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (),
 
     # Schema
-    'DEFAULT_SCHEMA_CLASS': 'core.api.inspectors.StandardizedAutoSchema',
+    'DEFAULT_SCHEMA_CLASS': 'core.api.openapi.StandardizedAutoSchema',
     'EXCEPTION_HANDLER': 'core.api.exception_handler.standardized_handler',
 
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',

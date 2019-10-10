@@ -7,7 +7,7 @@ from django.urls import path, include
 from core.api.auth import OBTAIN_AUTH_TOKEN
 from core.api.router import StandardizedRouter
 from core.views.permissions import permissions_view
-from core.api.schema import get_standardized_schema_view
+from core.api.openapi import get_standardized_schema_view
 from core.api.user import USER_API_VIEW
 from core.views import task_result_api_view
 from contacts.api import ContactViewSet, CommentViewSet
@@ -41,7 +41,12 @@ urlpatterns = api_urlpatterns + [  # noqa: pylint=invalid-name
     path('api-token-auth/', OBTAIN_AUTH_TOKEN),
     path('api-user/', USER_API_VIEW),
     path('api/v1/permissions/', permissions_view),
-    path('api/v1/schema/', get_standardized_schema_view(api_urlpatterns),
+    path('api/v1/schema/',
+         get_standardized_schema_view(
+             title=f'{settings.SERVICE_TITLE} API',
+             description=getattr(settings, 'SERVICE_DESCRIPTION'),
+             patterns=api_urlpatterns
+         ),
          name='api_schema'),
 ]
 
