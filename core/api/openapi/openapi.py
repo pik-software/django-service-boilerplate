@@ -2,6 +2,7 @@ import inspect
 
 from rest_framework.fields import (
     ChoiceField, MultipleChoiceField, SerializerMethodField)
+from rest_framework.serializers import ModelSerializer
 from rest_framework.schemas.openapi import AutoSchema
 # TODO: klimenkoas: Drop `drf_yasg` dependency
 from drf_yasg.inspectors.field import get_basic_type_info_from_hint
@@ -22,6 +23,25 @@ FIELD_MAPPING = (
 SERIALIZER_FIELD_MAPPING = FIELD_MAPPING + (
     ('x-title-plural', 'label_plural', force_real_str),
 )
+
+
+class TypedSerializerAutoSchema(AutoSchema):
+    """Adds enum for `serializer._type`"""
+
+    TYPE_FIELD = '_type'
+
+    def _map_serializer(self, serializer):
+        schema = super()._map_serializer(serializer)
+        properties = schema['properties']
+        type_field = serializer.fields.get(self.TYPE_FIELD)
+        has_typefield = (isinstance(serializer, ModelSerializer)
+                         and isinstance(type_field, SerializerMethodField)
+                         and self.TYPE_FIELD in properties)
+        if has_typefield:
+            type_name = type_field.to_representation(serializer.Meta.model())
+            if type_name:
+                properties[self.TYPE_FIELD]['enum'] = [type_name.lower()]
+        return schema
 
 
 class ModelSerializerFieldsAutoSchema(AutoSchema):
@@ -122,7 +142,9 @@ class SerializerMethodFieldAuthSchema(AutoSchema):
 
 
 # TODO: klimenkoas add view deprecation status handling
+# TODO: klimenkoas add schema overriding mechanism
 class StandardizedAutoSchema(ReferenceAutoSchema,
+                             TypedSerializerAutoSchema,
                              EnumNamesAutoSchema,
                              DeprecatedFieldAutoSchema,
                              DeprecatedSerializerAutoSchema,
