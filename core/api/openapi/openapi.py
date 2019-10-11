@@ -148,6 +148,7 @@ class StandardizedAutoSchema(ReferenceAutoSchema,
                              EnumNamesAutoSchema,
                              DeprecatedFieldAutoSchema,
                              DeprecatedSerializerAutoSchema,
+                             ModelSerializerFieldsAutoSchema,
                              FieldMappingAutoSchema,
                              SerializerMethodFieldAuthSchema):
     pass
