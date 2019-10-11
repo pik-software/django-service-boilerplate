@@ -20,6 +20,8 @@ class Category(BasePHistorical):
 
 
 class Contact(BaseHistorical):
+    help_text = 'Модель контакта'
+
     permitted_fields = {
         '{app_label}.change_{model_name}': [
             'name', 'phones', 'emails', 'order_index']
@@ -53,6 +55,8 @@ class Contact(BaseHistorical):
 
 
 class Comment(BasePHistorical, Owned):
+    help_text = 'Модель комментария'
+
     permitted_fields = {
         '{app_label}.change_{model_name}': ['message', 'contact'],
         '{app_label}.change_user_{model_name}': ['user_id']
