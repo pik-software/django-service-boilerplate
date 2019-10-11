@@ -14,7 +14,8 @@ DATA_DIR = os.path.join(BASE_DIR, '__data__')
 SERVICE_NAME = os.environ.get('SERVICE_NAME', BASE_DIR_NAME)
 
 SERVICE_TITLE = 'Сервис'
-SERVICE_DESCRIPTION = 'Тестовый сервис. Предоставляет инструменты для управления контактами и комментариями.'
+SERVICE_DESCRIPTION = ('Тестовый сервис. Предоставляет инструменты для '
+                       'управления контактами и комментариями.')
 
 REDIS_URL = os.environ.get(
     'REDIS_URL',

@@ -13,7 +13,8 @@ class RedocSchemaViewMixIn(TemplateResponseMixin, ContextMixin):
     def get(self, request, *args, **kwargs):
         openapi_format = self.request.GET.get('format')
         if not openapi_format or openapi_format == 'redoc':
-            context = self.get_context_data(url=f'{request.path}?format=openapi-json', **kwargs)
+            context = self.get_context_data(
+                url=f'{request.path}?format=openapi-json', **kwargs)
             return self.render_to_response(context)
         return super().get(request, *args, **kwargs)
 

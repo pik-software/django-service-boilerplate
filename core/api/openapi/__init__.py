@@ -1,2 +1,2 @@
-from .openapi import StandardizedAutoSchema, StandardizedSchemaGenerator
-from .views import get_standardized_schema_view
+from .openapi import StandardizedAutoSchema, StandardizedSchemaGenerator  # noqa: unused-import
+from .views import get_standardized_schema_view  # noqa: unused-import
