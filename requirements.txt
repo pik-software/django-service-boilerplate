@@ -79,7 +79,7 @@ social_auth_core>=1.7.0,<2.0.0
 swagger-parser==1.0.1
 
 # metrics/monitoring
-ddtrace==0.29.0
+ddtrace==0.30.1
 datadog==0.30.0
 elastic-apm==5.1.2
 django-health-check==3.11.0
