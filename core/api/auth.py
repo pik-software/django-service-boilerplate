@@ -43,7 +43,7 @@ class AuthTokenSerializer(serializers.Serializer):
 class StandardizedObtainAuthToken(ObtainAuthToken):
     serializer_class = AuthTokenSerializer
 
-    # `schema` is ManualSchema by default
+    # `ObtainAuthToken.schema` is ManualSchema by default
     # DRF ManualSchema doesn't support openapi inspection
     schema = None
 
