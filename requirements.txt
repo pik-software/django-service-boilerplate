@@ -30,7 +30,7 @@ markdown==3.1.1
 -e git+https://github.com/pik-software/drf-yasg.git@master#egg=drf-yasg
 
 # db
-redis==3.3.8
+redis==3.3.10
 psycopg2==2.8.3
 django-redis==4.10.0
 
