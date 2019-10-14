@@ -1,0 +1,3158 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+        "title": "\u0421\u0435\u0440\u0432\u0438\u0441 API",
+        "version": "1.0.0",
+        "description": "\u0422\u0435\u0441\u0442\u043e\u0432\u044b\u0439 \u0441\u0435\u0440\u0432\u0438\u0441. \u041f\u0440\u0435\u0434\u043e\u0441\u0442\u0430\u0432\u043b\u044f\u0435\u0442 \u0438\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442\u044b \u0434\u043b\u044f \u0443\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u044f \u043a\u043e\u043d\u0442\u0430\u043a\u0442\u0430\u043c\u0438 \u0438 \u043a\u043e\u043c\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u044f\u043c\u0438."
+    },
+    "paths": {
+        "/api/v1/contact-list/history/": {
+            "get": {
+                "operationId": "listHistoricalContacts",
+                "parameters": [
+                    {
+                        "name": "cursor",
+                        "required": false,
+                        "in": "query",
+                        "description": "The pagination cursor value.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "history_id",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_id__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_id__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_id__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_id__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_id__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_id__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_id__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_id__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_id__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_id__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_type",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_type",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_type__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_type__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_user_id",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_user_id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_user_id__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_user_id__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_user_id__isnull",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_user_id__isnull",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_date",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_date",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_date__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_date__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_date__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_date__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_date__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_date__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_date__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_date__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_date__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_date__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "_uid",
+                        "required": false,
+                        "in": "query",
+                        "description": "_uid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "_uid__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "_uid__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "_uid__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "_uid__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "_uid__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "_uid__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "_uid__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "_uid__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "_uid__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "_uid__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "_uid__isnull",
+                        "required": false,
+                        "in": "query",
+                        "description": "_uid__isnull",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "required": false,
+                        "in": "query",
+                        "description": "A search term.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ordering",
+                        "required": false,
+                        "in": "query",
+                        "description": "Which field to use when ordering the results.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "next": {
+                                            "type": "string",
+                                            "nullable": true
+                                        },
+                                        "previous": {
+                                            "type": "string",
+                                            "nullable": true
+                                        },
+                                        "results": {
+                                            "type": "array",
+                                            "items": {
+                                                "anyOf": [
+                                                    {
+                                                        "$ref": "#/components/schemas/HistoricalContact"
+                                                    }
+                                                ],
+                                                "title": "historical \u043a\u043e\u043d\u0442\u0430\u043a\u0442"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/comment-list/history/": {
+            "get": {
+                "operationId": "listHistoricalComments",
+                "parameters": [
+                    {
+                        "name": "cursor",
+                        "required": false,
+                        "in": "query",
+                        "description": "The pagination cursor value.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "history_id",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_id__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_id__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_id__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_id__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_id__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_id__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_id__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_id__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_id__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_id__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_type",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_type",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_type__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_type__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_user_id",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_user_id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_user_id__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_user_id__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_user_id__isnull",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_user_id__isnull",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_date",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_date",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_date__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_date__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_date__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_date__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_date__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_date__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_date__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_date__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "history_date__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "history_date__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "_uid",
+                        "required": false,
+                        "in": "query",
+                        "description": "_uid",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "_uid__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "_uid__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "_uid__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "_uid__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "_uid__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "_uid__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "_uid__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "_uid__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "_uid__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "_uid__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "_uid__isnull",
+                        "required": false,
+                        "in": "query",
+                        "description": "_uid__isnull",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "required": false,
+                        "in": "query",
+                        "description": "A search term.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ordering",
+                        "required": false,
+                        "in": "query",
+                        "description": "Which field to use when ordering the results.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "next": {
+                                            "type": "string",
+                                            "nullable": true
+                                        },
+                                        "previous": {
+                                            "type": "string",
+                                            "nullable": true
+                                        },
+                                        "results": {
+                                            "type": "array",
+                                            "items": {
+                                                "anyOf": [
+                                                    {
+                                                        "$ref": "#/components/schemas/HistoricalComment"
+                                                    }
+                                                ],
+                                                "title": "historical \u043a\u043e\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u0439"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/contact-list/": {
+            "get": {
+                "operationId": "listContacts",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "required": false,
+                        "in": "query",
+                        "description": "A page number within the paginated result set.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "required": false,
+                        "in": "query",
+                        "description": "name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "name__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name__startswith",
+                        "required": false,
+                        "in": "query",
+                        "description": "name__startswith",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name__endswith",
+                        "required": false,
+                        "in": "query",
+                        "description": "name__endswith",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name__contains",
+                        "required": false,
+                        "in": "query",
+                        "description": "name__contains",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created",
+                        "required": false,
+                        "in": "query",
+                        "description": "created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "phones__contains",
+                        "required": false,
+                        "in": "query",
+                        "description": "phones__contains",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "emails__contains",
+                        "required": false,
+                        "in": "query",
+                        "description": "emails__contains",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "required": false,
+                        "in": "query",
+                        "description": "A search term.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ordering",
+                        "required": false,
+                        "in": "query",
+                        "description": "Which field to use when ordering the results.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "count": {
+                                            "type": "integer",
+                                            "example": 123
+                                        },
+                                        "page": {
+                                            "type": "integer"
+                                        },
+                                        "page_size": {
+                                            "type": "integer"
+                                        },
+                                        "pages": {
+                                            "type": "integer"
+                                        },
+                                        "page_next": {
+                                            "type": "integer",
+                                            "nullable": true
+                                        },
+                                        "page_previous": {
+                                            "type": "integer",
+                                            "nullable": true
+                                        },
+                                        "results": {
+                                            "type": "array",
+                                            "items": {
+                                                "anyOf": [
+                                                    {
+                                                        "$ref": "#/components/schemas/Contact"
+                                                    }
+                                                ],
+                                                "title": "\u043a\u043e\u043d\u0442\u0430\u043a\u0442",
+                                                "description": "\u041c\u043e\u0434\u0435\u043b\u044c \u043a\u043e\u043d\u0442\u0430\u043a\u0442\u0430"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "createContact",
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "anyOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Contact"
+                                    }
+                                ],
+                                "title": "\u043a\u043e\u043d\u0442\u0430\u043a\u0442",
+                                "description": "\u041c\u043e\u0434\u0435\u043b\u044c \u043a\u043e\u043d\u0442\u0430\u043a\u0442\u0430"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Contact"
+                                        }
+                                    ],
+                                    "title": "\u043a\u043e\u043d\u0442\u0430\u043a\u0442",
+                                    "description": "\u041c\u043e\u0434\u0435\u043b\u044c \u043a\u043e\u043d\u0442\u0430\u043a\u0442\u0430"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/contact-list/{_uid}/": {
+            "get": {
+                "operationId": "retrieveContact",
+                "parameters": [
+                    {
+                        "name": "_uid",
+                        "in": "path",
+                        "required": true,
+                        "description": "",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "required": false,
+                        "in": "query",
+                        "description": "name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "name__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name__startswith",
+                        "required": false,
+                        "in": "query",
+                        "description": "name__startswith",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name__endswith",
+                        "required": false,
+                        "in": "query",
+                        "description": "name__endswith",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name__contains",
+                        "required": false,
+                        "in": "query",
+                        "description": "name__contains",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created",
+                        "required": false,
+                        "in": "query",
+                        "description": "created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "phones__contains",
+                        "required": false,
+                        "in": "query",
+                        "description": "phones__contains",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "emails__contains",
+                        "required": false,
+                        "in": "query",
+                        "description": "emails__contains",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "required": false,
+                        "in": "query",
+                        "description": "A search term.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ordering",
+                        "required": false,
+                        "in": "query",
+                        "description": "Which field to use when ordering the results.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Contact"
+                                        }
+                                    ],
+                                    "title": "\u043a\u043e\u043d\u0442\u0430\u043a\u0442",
+                                    "description": "\u041c\u043e\u0434\u0435\u043b\u044c \u043a\u043e\u043d\u0442\u0430\u043a\u0442\u0430"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "put": {
+                "operationId": "updateContact",
+                "parameters": [
+                    {
+                        "name": "_uid",
+                        "in": "path",
+                        "required": true,
+                        "description": "",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "required": false,
+                        "in": "query",
+                        "description": "name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "name__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name__startswith",
+                        "required": false,
+                        "in": "query",
+                        "description": "name__startswith",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name__endswith",
+                        "required": false,
+                        "in": "query",
+                        "description": "name__endswith",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name__contains",
+                        "required": false,
+                        "in": "query",
+                        "description": "name__contains",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created",
+                        "required": false,
+                        "in": "query",
+                        "description": "created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "phones__contains",
+                        "required": false,
+                        "in": "query",
+                        "description": "phones__contains",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "emails__contains",
+                        "required": false,
+                        "in": "query",
+                        "description": "emails__contains",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "required": false,
+                        "in": "query",
+                        "description": "A search term.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ordering",
+                        "required": false,
+                        "in": "query",
+                        "description": "Which field to use when ordering the results.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "anyOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Contact"
+                                    }
+                                ],
+                                "title": "\u043a\u043e\u043d\u0442\u0430\u043a\u0442",
+                                "description": "\u041c\u043e\u0434\u0435\u043b\u044c \u043a\u043e\u043d\u0442\u0430\u043a\u0442\u0430"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Contact"
+                                        }
+                                    ],
+                                    "title": "\u043a\u043e\u043d\u0442\u0430\u043a\u0442",
+                                    "description": "\u041c\u043e\u0434\u0435\u043b\u044c \u043a\u043e\u043d\u0442\u0430\u043a\u0442\u0430"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "partial_updateContact",
+                "parameters": [
+                    {
+                        "name": "_uid",
+                        "in": "path",
+                        "required": true,
+                        "description": "",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "required": false,
+                        "in": "query",
+                        "description": "name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "name__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name__startswith",
+                        "required": false,
+                        "in": "query",
+                        "description": "name__startswith",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name__endswith",
+                        "required": false,
+                        "in": "query",
+                        "description": "name__endswith",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name__contains",
+                        "required": false,
+                        "in": "query",
+                        "description": "name__contains",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created",
+                        "required": false,
+                        "in": "query",
+                        "description": "created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "phones__contains",
+                        "required": false,
+                        "in": "query",
+                        "description": "phones__contains",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "emails__contains",
+                        "required": false,
+                        "in": "query",
+                        "description": "emails__contains",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "required": false,
+                        "in": "query",
+                        "description": "A search term.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ordering",
+                        "required": false,
+                        "in": "query",
+                        "description": "Which field to use when ordering the results.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "anyOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Contact"
+                                    }
+                                ],
+                                "title": "\u043a\u043e\u043d\u0442\u0430\u043a\u0442",
+                                "description": "\u041c\u043e\u0434\u0435\u043b\u044c \u043a\u043e\u043d\u0442\u0430\u043a\u0442\u0430"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Contact"
+                                        }
+                                    ],
+                                    "title": "\u043a\u043e\u043d\u0442\u0430\u043a\u0442",
+                                    "description": "\u041c\u043e\u0434\u0435\u043b\u044c \u043a\u043e\u043d\u0442\u0430\u043a\u0442\u0430"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "destroyContact",
+                "parameters": [
+                    {
+                        "name": "_uid",
+                        "in": "path",
+                        "required": true,
+                        "description": "",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "required": false,
+                        "in": "query",
+                        "description": "name",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "name__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name__startswith",
+                        "required": false,
+                        "in": "query",
+                        "description": "name__startswith",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name__endswith",
+                        "required": false,
+                        "in": "query",
+                        "description": "name__endswith",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name__contains",
+                        "required": false,
+                        "in": "query",
+                        "description": "name__contains",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created",
+                        "required": false,
+                        "in": "query",
+                        "description": "created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "phones__contains",
+                        "required": false,
+                        "in": "query",
+                        "description": "phones__contains",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "emails__contains",
+                        "required": false,
+                        "in": "query",
+                        "description": "emails__contains",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "required": false,
+                        "in": "query",
+                        "description": "A search term.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ordering",
+                        "required": false,
+                        "in": "query",
+                        "description": "Which field to use when ordering the results.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/comment-list/": {
+            "get": {
+                "operationId": "listComments",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "required": false,
+                        "in": "query",
+                        "description": "A page number within the paginated result set.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "required": false,
+                        "in": "query",
+                        "description": "Number of results to return per page.",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "message",
+                        "required": false,
+                        "in": "query",
+                        "description": "message",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "message__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message__startswith",
+                        "required": false,
+                        "in": "query",
+                        "description": "message__startswith",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message__endswith",
+                        "required": false,
+                        "in": "query",
+                        "description": "message__endswith",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message__contains",
+                        "required": false,
+                        "in": "query",
+                        "description": "message__contains",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "user",
+                        "required": false,
+                        "in": "query",
+                        "description": "user",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "user__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "user__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created",
+                        "required": false,
+                        "in": "query",
+                        "description": "created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "required": false,
+                        "in": "query",
+                        "description": "A search term.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ordering",
+                        "required": false,
+                        "in": "query",
+                        "description": "Which field to use when ordering the results.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "count": {
+                                            "type": "integer",
+                                            "example": 123
+                                        },
+                                        "page": {
+                                            "type": "integer"
+                                        },
+                                        "page_size": {
+                                            "type": "integer"
+                                        },
+                                        "pages": {
+                                            "type": "integer"
+                                        },
+                                        "page_next": {
+                                            "type": "integer",
+                                            "nullable": true
+                                        },
+                                        "page_previous": {
+                                            "type": "integer",
+                                            "nullable": true
+                                        },
+                                        "results": {
+                                            "type": "array",
+                                            "items": {
+                                                "anyOf": [
+                                                    {
+                                                        "$ref": "#/components/schemas/Comment"
+                                                    }
+                                                ],
+                                                "title": "\u043a\u043e\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u0439",
+                                                "description": "\u041c\u043e\u0434\u0435\u043b\u044c \u043a\u043e\u043c\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u044f"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "post": {
+                "operationId": "createComment",
+                "parameters": [],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "anyOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Comment"
+                                    }
+                                ],
+                                "title": "\u043a\u043e\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u0439",
+                                "description": "\u041c\u043e\u0434\u0435\u043b\u044c \u043a\u043e\u043c\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u044f"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Comment"
+                                        }
+                                    ],
+                                    "title": "\u043a\u043e\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u0439",
+                                    "description": "\u041c\u043e\u0434\u0435\u043b\u044c \u043a\u043e\u043c\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u044f"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/api/v1/comment-list/{_uid}/": {
+            "get": {
+                "operationId": "retrieveComment",
+                "parameters": [
+                    {
+                        "name": "_uid",
+                        "in": "path",
+                        "required": true,
+                        "description": "",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message",
+                        "required": false,
+                        "in": "query",
+                        "description": "message",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "message__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message__startswith",
+                        "required": false,
+                        "in": "query",
+                        "description": "message__startswith",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message__endswith",
+                        "required": false,
+                        "in": "query",
+                        "description": "message__endswith",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message__contains",
+                        "required": false,
+                        "in": "query",
+                        "description": "message__contains",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "user",
+                        "required": false,
+                        "in": "query",
+                        "description": "user",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "user__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "user__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created",
+                        "required": false,
+                        "in": "query",
+                        "description": "created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "required": false,
+                        "in": "query",
+                        "description": "A search term.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ordering",
+                        "required": false,
+                        "in": "query",
+                        "description": "Which field to use when ordering the results.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Comment"
+                                        }
+                                    ],
+                                    "title": "\u043a\u043e\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u0439",
+                                    "description": "\u041c\u043e\u0434\u0435\u043b\u044c \u043a\u043e\u043c\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u044f"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "put": {
+                "operationId": "updateComment",
+                "parameters": [
+                    {
+                        "name": "_uid",
+                        "in": "path",
+                        "required": true,
+                        "description": "",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message",
+                        "required": false,
+                        "in": "query",
+                        "description": "message",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "message__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message__startswith",
+                        "required": false,
+                        "in": "query",
+                        "description": "message__startswith",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message__endswith",
+                        "required": false,
+                        "in": "query",
+                        "description": "message__endswith",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message__contains",
+                        "required": false,
+                        "in": "query",
+                        "description": "message__contains",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "user",
+                        "required": false,
+                        "in": "query",
+                        "description": "user",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "user__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "user__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created",
+                        "required": false,
+                        "in": "query",
+                        "description": "created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "required": false,
+                        "in": "query",
+                        "description": "A search term.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ordering",
+                        "required": false,
+                        "in": "query",
+                        "description": "Which field to use when ordering the results.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "anyOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Comment"
+                                    }
+                                ],
+                                "title": "\u043a\u043e\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u0439",
+                                "description": "\u041c\u043e\u0434\u0435\u043b\u044c \u043a\u043e\u043c\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u044f"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Comment"
+                                        }
+                                    ],
+                                    "title": "\u043a\u043e\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u0439",
+                                    "description": "\u041c\u043e\u0434\u0435\u043b\u044c \u043a\u043e\u043c\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u044f"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "patch": {
+                "operationId": "partial_updateComment",
+                "parameters": [
+                    {
+                        "name": "_uid",
+                        "in": "path",
+                        "required": true,
+                        "description": "",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message",
+                        "required": false,
+                        "in": "query",
+                        "description": "message",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "message__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message__startswith",
+                        "required": false,
+                        "in": "query",
+                        "description": "message__startswith",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message__endswith",
+                        "required": false,
+                        "in": "query",
+                        "description": "message__endswith",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message__contains",
+                        "required": false,
+                        "in": "query",
+                        "description": "message__contains",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "user",
+                        "required": false,
+                        "in": "query",
+                        "description": "user",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "user__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "user__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created",
+                        "required": false,
+                        "in": "query",
+                        "description": "created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "required": false,
+                        "in": "query",
+                        "description": "A search term.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ordering",
+                        "required": false,
+                        "in": "query",
+                        "description": "Which field to use when ordering the results.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "anyOf": [
+                                    {
+                                        "$ref": "#/components/schemas/Comment"
+                                    }
+                                ],
+                                "title": "\u043a\u043e\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u0439",
+                                "description": "\u041c\u043e\u0434\u0435\u043b\u044c \u043a\u043e\u043c\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u044f"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "anyOf": [
+                                        {
+                                            "$ref": "#/components/schemas/Comment"
+                                        }
+                                    ],
+                                    "title": "\u043a\u043e\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u0439",
+                                    "description": "\u041c\u043e\u0434\u0435\u043b\u044c \u043a\u043e\u043c\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u044f"
+                                }
+                            }
+                        },
+                        "description": ""
+                    }
+                }
+            },
+            "delete": {
+                "operationId": "destroyComment",
+                "parameters": [
+                    {
+                        "name": "_uid",
+                        "in": "path",
+                        "required": true,
+                        "description": "",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message",
+                        "required": false,
+                        "in": "query",
+                        "description": "message",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "message__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message__startswith",
+                        "required": false,
+                        "in": "query",
+                        "description": "message__startswith",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message__endswith",
+                        "required": false,
+                        "in": "query",
+                        "description": "message__endswith",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "message__contains",
+                        "required": false,
+                        "in": "query",
+                        "description": "message__contains",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "user",
+                        "required": false,
+                        "in": "query",
+                        "description": "user",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "user__in",
+                        "required": false,
+                        "in": "query",
+                        "description": "user__in",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "updated__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "updated__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created",
+                        "required": false,
+                        "in": "query",
+                        "description": "created",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__gt",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__gt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__gte",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__gte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__lt",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__lt",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "created__lte",
+                        "required": false,
+                        "in": "query",
+                        "description": "created__lte",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "search",
+                        "required": false,
+                        "in": "query",
+                        "description": "A search term.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "ordering",
+                        "required": false,
+                        "in": "query",
+                        "description": "Which field to use when ordering the results.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "User": {
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "format": "email",
+                        "title": "Email"
+                    },
+                    "username": {
+                        "type": "string",
+                        "title": "Username",
+                        "maxLength": 200
+                    }
+                },
+                "required": [
+                    "email",
+                    "username"
+                ],
+                "title": "History user",
+                "type": "object"
+            },
+            "HistoricalContact": {
+                "properties": {
+                    "history_id": {
+                        "type": "integer",
+                        "title": "History id"
+                    },
+                    "history_date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "History date"
+                    },
+                    "history_change_reason": {
+                        "type": "string",
+                        "title": "History change reason"
+                    },
+                    "history_type": {
+                        "type": "string",
+                        "title": "History type"
+                    },
+                    "history_user_id": {
+                        "type": "integer",
+                        "title": "History user id"
+                    },
+                    "history_user": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        ],
+                        "title": "History user"
+                    },
+                    "_uid": {
+                        "type": "string",
+                        "title": " uid",
+                        "readOnly": true
+                    },
+                    "_type": {
+                        "type": "string",
+                        "title": " type",
+                        "readOnly": true,
+                        "enum": [
+                            "historicalcontact"
+                        ]
+                    },
+                    "_version": {
+                        "type": "string",
+                        "title": " version",
+                        "readOnly": true
+                    },
+                    "created": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "\u0421\u043e\u0437\u0434\u0430\u043d",
+                        "readOnly": true
+                    },
+                    "updated": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Updated",
+                        "readOnly": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "\u041d\u0430\u0438\u043c\u0435\u043d\u043e\u0432\u0430\u043d\u0438\u0435",
+                        "maxLength": 255
+                    },
+                    "phones": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "title": "\u041d\u043e\u043c\u0435\u0440\u0430 \u0442\u0435\u043b\u0435\u0444\u043e\u043d\u043e\u0432",
+                        "description": "\u041d\u043e\u043c\u0435\u0440\u0430 \u0442\u0435\u043b\u0435\u0444\u043e\u043d\u043e\u0432 \u0432\u0432\u043e\u0434\u044f\u0442\u0441\u044f \u0432 \u043f\u0440\u043e\u0438\u0437\u0432\u043e\u043b\u044c\u043d\u043e\u043c \u0444\u043e\u0440\u043c\u0430\u0442\u0435 \u0447\u0435\u0440\u0435\u0437 \u0437\u0430\u043f\u044f\u0442\u0443\u044e"
+                    },
+                    "emails": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "title": "E-mail \u0430\u0434\u0440\u0435\u0441\u0430",
+                        "description": "E-mail \u0430\u0434\u0440\u0435\u0441\u0430 \u0432\u0432\u043e\u0434\u044f\u0442\u0441\u044f \u0447\u0435\u0440\u0435\u0437 \u0437\u0430\u043f\u044f\u0442\u0443\u044e"
+                    },
+                    "order_index": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "title": "\u0418\u043d\u0434\u0435\u043a\u0441 \u0434\u043b\u044f \u0441\u043e\u0440\u0442\u0438\u0440\u043e\u0432\u043a\u0438"
+                    }
+                },
+                "required": [
+                    "history_id",
+                    "history_date",
+                    "history_change_reason",
+                    "history_type",
+                    "history_user_id",
+                    "history_user",
+                    "name"
+                ],
+                "title": "historical \u043a\u043e\u043d\u0442\u0430\u043a\u0442",
+                "x-title-plural": "historical \u043a\u043e\u043d\u0442\u0430\u043a\u0442s"
+            },
+            "Contact": {
+                "properties": {
+                    "_uid": {
+                        "type": "string",
+                        "title": " uid",
+                        "readOnly": true
+                    },
+                    "_type": {
+                        "type": "string",
+                        "title": " type",
+                        "readOnly": true,
+                        "enum": [
+                            "contact"
+                        ]
+                    },
+                    "_version": {
+                        "type": "string",
+                        "title": " version",
+                        "readOnly": true
+                    },
+                    "created": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "\u0421\u043e\u0437\u0434\u0430\u043d",
+                        "readOnly": true
+                    },
+                    "updated": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Updated",
+                        "readOnly": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "title": "\u041d\u0430\u0438\u043c\u0435\u043d\u043e\u0432\u0430\u043d\u0438\u0435",
+                        "maxLength": 255
+                    },
+                    "phones": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "title": "\u041d\u043e\u043c\u0435\u0440\u0430 \u0442\u0435\u043b\u0435\u0444\u043e\u043d\u043e\u0432",
+                        "description": "\u041d\u043e\u043c\u0435\u0440\u0430 \u0442\u0435\u043b\u0435\u0444\u043e\u043d\u043e\u0432 \u0432\u0432\u043e\u0434\u044f\u0442\u0441\u044f \u0432 \u043f\u0440\u043e\u0438\u0437\u0432\u043e\u043b\u044c\u043d\u043e\u043c \u0444\u043e\u0440\u043c\u0430\u0442\u0435 \u0447\u0435\u0440\u0435\u0437 \u0437\u0430\u043f\u044f\u0442\u0443\u044e"
+                    },
+                    "emails": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "title": "E-mail \u0430\u0434\u0440\u0435\u0441\u0430",
+                        "description": "E-mail \u0430\u0434\u0440\u0435\u0441\u0430 \u0432\u0432\u043e\u0434\u044f\u0442\u0441\u044f \u0447\u0435\u0440\u0435\u0437 \u0437\u0430\u043f\u044f\u0442\u0443\u044e"
+                    },
+                    "order_index": {
+                        "type": "integer",
+                        "maximum": 2147483647,
+                        "minimum": -2147483648,
+                        "title": "\u0418\u043d\u0434\u0435\u043a\u0441 \u0434\u043b\u044f \u0441\u043e\u0440\u0442\u0438\u0440\u043e\u0432\u043a\u0438"
+                    }
+                },
+                "required": [
+                    "name"
+                ],
+                "title": "\u043a\u043e\u043d\u0442\u0430\u043a\u0442",
+                "description": "\u041c\u043e\u0434\u0435\u043b\u044c \u043a\u043e\u043d\u0442\u0430\u043a\u0442\u0430",
+                "x-title-plural": "\u043a\u043e\u043d\u0442\u0430\u043a\u0442\u044b"
+            },
+            "HistoricalComment": {
+                "properties": {
+                    "history_id": {
+                        "type": "integer",
+                        "title": "History id"
+                    },
+                    "history_date": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "History date"
+                    },
+                    "history_change_reason": {
+                        "type": "string",
+                        "title": "History change reason"
+                    },
+                    "history_type": {
+                        "type": "string",
+                        "title": "History type"
+                    },
+                    "history_user_id": {
+                        "type": "integer",
+                        "title": "History user id"
+                    },
+                    "history_user": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/User"
+                            }
+                        ],
+                        "title": "History user"
+                    },
+                    "_uid": {
+                        "type": "string",
+                        "title": " uid",
+                        "readOnly": true
+                    },
+                    "_type": {
+                        "type": "string",
+                        "title": " type",
+                        "readOnly": true,
+                        "enum": [
+                            "historicalcomment"
+                        ]
+                    },
+                    "_version": {
+                        "type": "string",
+                        "title": " version",
+                        "readOnly": true
+                    },
+                    "created": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "\u0421\u043e\u0437\u0434\u0430\u043d",
+                        "readOnly": true
+                    },
+                    "updated": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Updated",
+                        "readOnly": true
+                    },
+                    "user": {
+                        "type": "integer",
+                        "title": "User"
+                    },
+                    "contact": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/Contact"
+                            }
+                        ],
+                        "title": "contact",
+                        "description": ""
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "\u0421\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435"
+                    }
+                },
+                "required": [
+                    "history_id",
+                    "history_date",
+                    "history_change_reason",
+                    "history_type",
+                    "history_user_id",
+                    "history_user",
+                    "contact",
+                    "message"
+                ],
+                "title": "historical \u043a\u043e\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u0439",
+                "x-title-plural": "historical \u043a\u043e\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u0439s"
+            },
+            "Comment": {
+                "properties": {
+                    "_uid": {
+                        "type": "string",
+                        "title": " uid",
+                        "readOnly": true
+                    },
+                    "_type": {
+                        "type": "string",
+                        "title": " type",
+                        "readOnly": true,
+                        "enum": [
+                            "comment"
+                        ]
+                    },
+                    "_version": {
+                        "type": "string",
+                        "title": " version",
+                        "readOnly": true
+                    },
+                    "created": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "\u0421\u043e\u0437\u0434\u0430\u043d",
+                        "readOnly": true
+                    },
+                    "updated": {
+                        "type": "string",
+                        "format": "date-time",
+                        "title": "Updated",
+                        "readOnly": true
+                    },
+                    "user": {
+                        "type": "integer",
+                        "title": "User"
+                    },
+                    "contact": {
+                        "anyOf": [
+                            {
+                                "$ref": "#/components/schemas/Contact"
+                            }
+                        ],
+                        "title": "contact",
+                        "description": ""
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "\u0421\u043e\u043e\u0431\u0449\u0435\u043d\u0438\u0435"
+                    }
+                },
+                "required": [
+                    "contact",
+                    "message"
+                ],
+                "title": "\u043a\u043e\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u0439",
+                "description": "\u041c\u043e\u0434\u0435\u043b\u044c \u043a\u043e\u043c\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u044f",
+                "x-title-plural": "\u043a\u043e\u043c\u0435\u043d\u0442\u0430\u0440\u0438\u0438"
+            }
+        }
+    }
+}

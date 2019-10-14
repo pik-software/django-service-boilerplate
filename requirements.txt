@@ -76,7 +76,8 @@ future>=0.16.0,<0.17.0
 social_auth_core>=1.7.0,<2.0.0
 
 # lib/codegen
-swagger-parser==1.0.1
+prance
+openapi-spec-validator
 
 # metrics/monitoring
 ddtrace==0.29.0
