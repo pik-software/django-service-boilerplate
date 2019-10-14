@@ -1,4 +1,6 @@
 from django.views.generic.base import TemplateResponseMixin, ContextMixin
+from django.conf import settings
+
 from rest_framework.schemas.views import SchemaView
 from rest_framework.settings import api_settings
 
@@ -24,12 +26,14 @@ class StandardizedSchemaView(RedocSchemaViewMixIn, SchemaView):
 
 
 def get_standardized_schema_view(
-        title=None, url=None, description=None, urlconf=None,
+        title=f'{settings.SERVICE_TITLE} API', url=None,
+        description=settings.SERVICE_DESCRIPTION, urlconf=None,
         renderer_classes=None, public=False, patterns=None,
         generator_class=StandardizedSchemaGenerator,
         authentication_classes=api_settings.DEFAULT_AUTHENTICATION_CLASSES,
         permission_classes=api_settings.DEFAULT_PERMISSION_CLASSES,
-        version=None, schema_view_class=StandardizedSchemaView):
+        version=settings.SERVICE_RELEASE,
+        schema_view_class=StandardizedSchemaView):
 
     generator = generator_class(
         title=title, url=url, description=description,

@@ -16,6 +16,7 @@ SERVICE_NAME = os.environ.get('SERVICE_NAME', BASE_DIR_NAME)
 SERVICE_TITLE = 'Сервис'
 SERVICE_DESCRIPTION = ('Тестовый сервис. Предоставляет инструменты для '
                        'управления контактами и комментариями.')
+SERVICE_RELEASE = os.environ.get('RELEASE', '1.0.0')
 
 REDIS_URL = os.environ.get(
     'REDIS_URL',

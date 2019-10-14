@@ -86,7 +86,7 @@ class LabeledModelSerializerMixIn:
         2. DRF ModelSerializer has 2 different behaviours:
             - initialized for direct use within viewset,
             - initialized and binded for use within other serializer as field.
-        3. So label and help_text handling should provided on two stages:
+        3. So label and help_text handling should be done during two stages:
             - `__init__()` for using within viewset,
             - `bind()` for use as field withing other serializer.
 
@@ -95,8 +95,8 @@ class LabeledModelSerializerMixIn:
                 - sets label and help_text to model values if not provided,
                 - saves `is_set`=True if provided;
             - on `bind()`:
-                - sets label and help_text to parent model field values if
-                `is_set`=`False`.
+                - sets parent model field fetched `label` and `help_text`
+                values if `is_set`=`False`.
     """
 
     _label_is_set = False

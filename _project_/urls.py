@@ -42,11 +42,7 @@ urlpatterns = api_urlpatterns + [  # noqa: pylint=invalid-name
     path('api-user/', USER_API_VIEW),
     path('api/v1/permissions/', permissions_view),
     path('api/v1/schema/',
-         get_standardized_schema_view(
-             title=f'{settings.SERVICE_TITLE} API',
-             description=getattr(settings, 'SERVICE_DESCRIPTION'),
-             patterns=api_urlpatterns
-         ),
+         get_standardized_schema_view(patterns=api_urlpatterns),
          name='api_schema'),
 ]
 
