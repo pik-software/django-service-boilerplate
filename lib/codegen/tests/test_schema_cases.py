@@ -9,15 +9,24 @@ TEMPLATES = os.path.join(
     'codegen_templates',
 )
 
-SCHEMA = os.path.join(
+SWAGGER_SCHEMA = os.path.join(
+    os.path.dirname(__file__),
+    'testcases', 'swagger2', 'swagger2.json'
+)
+
+OPENAPI_SCHEMA = os.path.join(
     ((os.path.dirname(__file__))),
     'testcases', 'openapi3', 'openapi3.json'
 )
 
 
 @pytest.fixture(params=[
-    (SCHEMA, 'models', f'{SCHEMA}.models.py'),
-    (SCHEMA, 'abstract_schema_models', f'{SCHEMA}.abstract_schema_models.py'),
+    (SWAGGER_SCHEMA, 'models', f'{SWAGGER_SCHEMA}.models.py'),
+    (SWAGGER_SCHEMA, 'abstract_schema_models',
+     f'{SWAGGER_SCHEMA}.abstract_schema_models.py'),
+    (OPENAPI_SCHEMA, 'models', f'{OPENAPI_SCHEMA}.models.py'),
+    (OPENAPI_SCHEMA, 'abstract_schema_models',
+     f'{OPENAPI_SCHEMA}.abstract_schema_models.py'),
 ])
 def cases(request):
     return request.param
