@@ -61,7 +61,7 @@ class StandardizedProtocolSerializer(serializers.ModelSerializer):
     _type = serializers.SerializerMethodField()
     _version = serializers.SerializerMethodField()
 
-    def get__uid(self, obj) -> Optional[Union[str, UUID]]:
+    def get__uid(self, obj) -> Optional[Union[UUID, str]]:
         if not hasattr(obj, 'uid'):
             if not hasattr(obj, 'pk'):
                 return None

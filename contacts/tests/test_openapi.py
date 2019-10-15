@@ -50,10 +50,11 @@ def test_api_contact_model_schema(permitted_api_client):
     data = response.json()
     contact = data['components']['schemas']['Contact']
     assert contact == {'properties': {
-        '_uid': {'type': 'string', 'title': ' uid', 'readOnly': True},
+        '_uid': {'type': 'string', 'title': ' uid', 'readOnly': True,
+                 'format': 'uuid'},
         '_type': {'type': 'string', 'title': ' type', 'readOnly': True,
                   'enum': ['contact']},
-        '_version': {'type': 'string', 'title': ' version', 'readOnly': True},
+        '_version': {'type': 'integer', 'title': ' version', 'readOnly': True},
         'created': {'type': 'string', 'format': 'date-time', 'title': 'Создан',
                     'readOnly': True},
         'updated': {'type': 'string', 'format': 'date-time',
@@ -98,10 +99,11 @@ def test_api_comment_model_schema(permitted_api_client):
     comment = data['components']['schemas']['Comment']
     assert comment == {
         'properties': {
-            '_uid': {'type': 'string', 'title': ' uid', 'readOnly': True},
+            '_uid': {'type': 'string', 'title': ' uid', 'readOnly': True,
+                     'format': 'uuid'},
             '_type': {'type': 'string', 'title': ' type', 'readOnly': True,
                       'enum': ['comment']},
-            '_version': {'type': 'string', 'title': ' version',
+            '_version': {'type': 'integer', 'title': ' version',
                          'readOnly': True},
             'created': {'type': 'string', 'format': 'date-time',
                         'title': 'Создан',

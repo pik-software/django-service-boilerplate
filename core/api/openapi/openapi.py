@@ -133,9 +133,11 @@ class SerializerMethodFieldAuthSchema(AutoSchema):
         if isinstance(field, SerializerMethodField) and supports_signing:
             method = getattr(field.parent, field.method_name)
             hint_class = inspect_signature(method).return_annotation
-            is_inspectable = (inspect.isclass(hint_class)
-                              and not issubclass(hint_class, inspect._empty))  # noqa: protected-access
-            if is_inspectable:
+            if (not inspect.isclass(hint_class)
+                    and hasattr(hint_class, '__args__')):
+                hint_class = hint_class.__args__[0]  # noqa: protected-access
+            if (inspect.isclass(hint_class)
+                    and not issubclass(hint_class, inspect._empty)):
                 type_info = get_basic_type_info_from_hint(hint_class)
                 schema.update(filter_none(type_info))
         return schema
