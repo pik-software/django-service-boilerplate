@@ -20,7 +20,7 @@ class Category(BasePHistorical):
 
 
 class Contact(BaseHistorical):
-    help_text = 'Модель контакта'
+    help_text = _('Модель контакта')
 
     permitted_fields = {
         '{app_label}.change_{model_name}': [
@@ -55,7 +55,7 @@ class Contact(BaseHistorical):
 
 
 class Comment(BasePHistorical, Owned):
-    help_text = 'Модель комментария'
+    help_text = _('Модель комментария')
 
     permitted_fields = {
         '{app_label}.change_{model_name}': ['message', 'contact'],
