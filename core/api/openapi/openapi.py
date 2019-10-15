@@ -141,6 +141,18 @@ class SerializerMethodFieldAuthSchema(AutoSchema):
         return schema
 
 
+class ListFiltersOnlyAuthSchema(AutoSchema):
+    """ Removes filters for non list view actions
+
+        Overriding default DRF
+    """
+
+    def _allows_filters(self, path, method):
+        if hasattr(self.view, 'action') and self.view.action not in ["list"]:
+            return False
+        return super()._allows_filters(path, method)
+
+
 # TODO: klimenkoas add view deprecation status handling
 # TODO: klimenkoas add schema overriding mechanism
 class StandardizedAutoSchema(ReferenceAutoSchema,
@@ -150,6 +162,7 @@ class StandardizedAutoSchema(ReferenceAutoSchema,
                              DeprecatedSerializerAutoSchema,
                              ModelSerializerFieldsAutoSchema,
                              FieldMappingAutoSchema,
+                             ListFiltersOnlyAuthSchema,
                              SerializerMethodFieldAuthSchema):
     pass
 
