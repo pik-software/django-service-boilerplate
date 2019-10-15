@@ -137,7 +137,7 @@ class SerializerMethodFieldAuthSchema(AutoSchema):
                     and hasattr(hint_class, '__args__')):
                 hint_class = hint_class.__args__[0]  # noqa: protected-access
             if (inspect.isclass(hint_class)
-                    and not issubclass(hint_class, inspect._empty)):
+                    and not issubclass(hint_class, inspect._empty)):  # noqa: protected-access
                 type_info = get_basic_type_info_from_hint(hint_class)
                 schema.update(filter_none(type_info))
         return schema
