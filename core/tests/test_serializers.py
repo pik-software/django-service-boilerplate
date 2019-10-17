@@ -25,8 +25,8 @@ def serializer_class(model_class):
 
 def test_root_serializer_default_labels(model_class, serializer_class):
     serializer = serializer_class()
-    assert serializer.label == 'model_label'
-    assert serializer.label_plural == 'model_plural'
+    assert serializer.label == 'Model_label'
+    assert serializer.label_plural == 'Model_plural'
     assert serializer.help_text == 'model_help'
 
 
@@ -43,8 +43,8 @@ def test_nested_serializer_default_labels(model_class, serializer_class):
     serializer = serializer_class()
     parent = serializer_class()
     serializer.bind('field_name', parent)
-    assert serializer.label == 'field_label'
-    assert serializer.label_plural == 'model_plural'
+    assert serializer.label == 'Field_label'
+    assert serializer.label_plural == 'Model_plural'
     assert serializer.help_text == 'field_help'
 
 

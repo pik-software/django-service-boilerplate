@@ -8,7 +8,8 @@ from core.fields import NormalizedCharField
 
 class Category(BasePHistorical):
     name = NormalizedCharField(_('Название'), max_length=255)
-    parent = models.ForeignKey('self', null=True, on_delete=models.CASCADE)
+    parent = models.ForeignKey('self', null=True, on_delete=models.CASCADE,
+                               verbose_name='Родительская категория')
 
     def __str__(self):
         return self.name
@@ -27,7 +28,9 @@ class Contact(BaseHistorical):
             'name', 'phones', 'emails', 'order_index']
     }
 
-    category = models.ForeignKey(Category, null=True, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, null=True, on_delete=models.CASCADE,
+                                 verbose_name=_('Категория'),
+                                 help_text=_('Категория контакта'))
     name = NormalizedCharField(_('Наименование'), max_length=255)
     phones = ArrayField(
         models.CharField(max_length=30), blank=True, default=list,

@@ -1,24 +1,30 @@
 from rest_framework.fields import IntegerField
 
+from core.api.lazy_field import LazySerializer
 from core.api.serializers import StandardizedModelSerializer
-from ..models import Contact, Comment
+from ..models import Contact, Comment, Category
 
 
 class CategorySerializer(StandardizedModelSerializer):
+    parent = LazySerializer('contacts.api.serializers.CategorySerializer',
+                            required=False)
+
     class Meta:
-        model = Contact
+        model = Category
         fields = (
             '_uid', '_type', '_version', 'created', 'updated',
             'name', 'parent')
 
 
 class ContactSerializer(StandardizedModelSerializer):
+    category = CategorySerializer(required=False)
+
     class Meta:
         model = Contact
         fields = (
             '_uid', '_type', '_version', 'created', 'updated',
             'name', 'phones', 'emails',
-            'order_index')
+            'order_index', 'category')
 
 
 class CommentSerializer(StandardizedModelSerializer):

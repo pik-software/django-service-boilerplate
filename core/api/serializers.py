@@ -9,7 +9,14 @@ from rest_framework import serializers
 from rest_framework.fields import empty
 from rest_framework.serializers import ListSerializer, ModelSerializer
 
+from core.api.lazy_field import LazySerializerHandlerMixIn
 from core.permitted_fields.api import PermittedFieldsSerializerMixIn
+
+
+def _normalize_label(label):
+    if label:
+        return label.capitalize()
+    return label
 
 
 class SettableNestedSerializerMixIn:
@@ -106,7 +113,7 @@ class LabeledModelSerializerMixIn:
         opts = self.Meta.model._meta  # noqa: protected-access
 
         if 'label' not in kwargs:
-            kwargs['label'] = opts.verbose_name
+            kwargs['label'] = _normalize_label(opts.verbose_name)
         else:
             self._label_is_set = True
 
@@ -115,7 +122,7 @@ class LabeledModelSerializerMixIn:
         else:
             self._help_text_is_set = True
 
-        self.label_plural = opts.verbose_name_plural
+        self.label_plural = _normalize_label(opts.verbose_name_plural)
         if 'label_plural' in kwargs:
             self.label_plural = kwargs.pop('label_plural')
 
@@ -126,13 +133,16 @@ class LabeledModelSerializerMixIn:
         if isinstance(parent, ModelSerializer):
             opts = parent.Meta.model._meta  # noqa: protected-access
             if not self._label_is_set:
-                self.label = opts.get_field(self.source).verbose_name
+                self.label = _normalize_label(opts.get_field(self.source)
+                                              .verbose_name)
             if not self._help_text_is_set:
                 self.help_text = opts.get_field(self.source).help_text
 
 
-class StandardizedModelSerializer(LabeledModelSerializerMixIn,
-                                  SettableNestedSerializerMixIn,
-                                  PermittedFieldsSerializerMixIn,
-                                  StandardizedProtocolSerializer):
+class StandardizedModelSerializer(
+    LazySerializerHandlerMixIn,
+    LabeledModelSerializerMixIn,
+    SettableNestedSerializerMixIn,
+    PermittedFieldsSerializerMixIn,
+    StandardizedProtocolSerializer):
     pass

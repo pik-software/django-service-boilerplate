@@ -15,7 +15,7 @@ from core.api.openapi.reference import (
 
 
 FIELD_MAPPING = (
-    ('title', 'label', force_real_str),
+    ('title', 'label', lambda x: force_real_str(x).strip().capitalize()),
     ('description', 'help_text', force_real_str)
 )
 
@@ -87,7 +87,8 @@ class DeprecatedFieldAutoSchema(AutoSchema):
         deprecated = getattr(parent_meta, 'deprecated_fields', {})
         is_deprecated_as_field = deprecated.get(serializer.field_name, False)
 
-        is_deprecated = getattr(serializer.Meta, 'deprecated', False)
+        is_deprecated = getattr(getattr(serializer, 'Meta', None),
+                                'deprecated', False)
 
         if is_deprecated_as_field or is_deprecated:
             schema['deprecated'] = True
@@ -122,7 +123,7 @@ class FieldMappingAutoSchema(AutoSchema):
         return schema
 
 
-class SerializerMethodFieldAuthSchema(AutoSchema):
+class SerializerMethodFieldAutoSchema(AutoSchema):
     """ Provides `SerializerMethodField` property types by
     python typing introspection """
 
@@ -143,7 +144,7 @@ class SerializerMethodFieldAuthSchema(AutoSchema):
         return schema
 
 
-class ListFiltersOnlyAuthSchema(AutoSchema):
+class ListFiltersOnlyAutoSchema(AutoSchema):
     """ Removes filters for non list view actions
 
         Overriding default DRF
@@ -164,8 +165,8 @@ class StandardizedAutoSchema(ReferenceAutoSchema,
                              DeprecatedSerializerAutoSchema,
                              ModelSerializerFieldsAutoSchema,
                              FieldMappingAutoSchema,
-                             ListFiltersOnlyAuthSchema,
-                             SerializerMethodFieldAuthSchema):
+                             ListFiltersOnlyAutoSchema,
+                             SerializerMethodFieldAutoSchema):
     pass
 
 

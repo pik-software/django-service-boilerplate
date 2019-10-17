@@ -25,7 +25,7 @@ class ContactViewSet(StandardizedModelViewSet):
     ordering_fields = ('created', 'updated', 'name', 'order_index')
 
     def get_queryset(self):
-        return Contact.objects.all()
+        return Contact.objects.select_related('category').all()
 
 
 class CommentViewSet(StandardizedModelViewSet):
@@ -45,7 +45,8 @@ class CommentViewSet(StandardizedModelViewSet):
     ordering_fields = ('created', 'updated')
 
     def get_queryset(self):
-        return Comment.objects.all().select_related('contact')
+        return Comment.objects.all().select_related(
+            'contact', 'contact__category')
 
 
 class CategoryViewSet(StandardizedModelViewSet):

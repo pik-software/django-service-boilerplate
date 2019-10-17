@@ -10,6 +10,8 @@ from core.views.permissions import permissions_view
 from core.api.openapi import get_standardized_schema_view
 from core.api.user import USER_API_VIEW
 from core.views import task_result_api_view
+
+from contacts.api.viewsets import CategoryViewSet
 from contacts.api import ContactViewSet, CommentViewSet
 
 
@@ -18,6 +20,8 @@ router.register(
     'contact-list', ContactViewSet, 'contact')
 router.register(
     'comment-list', CommentViewSet, 'comment')
+router.register(
+    'category-list', CategoryViewSet, 'category')
 
 
 @login_required

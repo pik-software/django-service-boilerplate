@@ -50,11 +50,11 @@ def test_api_contact_model_schema(permitted_api_client):
     data = response.json()
     contact = data['components']['schemas']['Contact']
     assert contact == {'properties': {
-        '_uid': {'type': 'string', 'title': ' uid', 'readOnly': True,
+        '_uid': {'type': 'string', 'title': 'Uid', 'readOnly': True,
                  'format': 'uuid'},
-        '_type': {'type': 'string', 'title': ' type', 'readOnly': True,
+        '_type': {'type': 'string', 'title': 'Type', 'readOnly': True,
                   'enum': ['contact']},
-        '_version': {'type': 'integer', 'title': ' version', 'readOnly': True},
+        '_version': {'type': 'integer', 'title': 'Version', 'readOnly': True},
         'created': {'type': 'string', 'format': 'date-time', 'title': 'Создан',
                     'readOnly': True},
         'updated': {'type': 'string', 'format': 'date-time',
@@ -69,9 +69,12 @@ def test_api_contact_model_schema(permitted_api_client):
                    'description': 'E-mail адреса вводятся через запятую'},
         'order_index': {'type': 'integer', 'maximum': 2147483647,
                         'minimum': -2147483648,
-                        'title': 'Индекс для сортировки'}},
-        'required': ['name'], 'title': 'контакт',
-        'x-title-plural': 'контакты', 'description': 'Модель контакта'}
+                        'title': 'Индекс для сортировки'},
+        'category': {'anyOf': [{'$ref': '#/components/schemas/Category'}],
+                     'title': 'Категория',
+                     'description': 'Категория контакта'}},
+        'required': ['name'], 'title': 'Контакт',
+        'x-title-plural': 'Контакты', 'description': 'Модель контакта'}
 
 
 def test_api_contact_list_schema(permitted_api_client):
@@ -89,7 +92,7 @@ def test_api_contact_list_schema(permitted_api_client):
         'page_previous': {'type': 'integer', 'nullable': True},
         'results': {'type': 'array', 'items': {
             'anyOf': [{'$ref': '#/components/schemas/Contact'}],
-            'title': 'контакт', 'description': 'Модель контакта'}}}}
+            'title': 'Контакт', 'description': 'Модель контакта'}}}}
 
 
 def test_api_comment_model_schema(permitted_api_client):
@@ -99,11 +102,11 @@ def test_api_comment_model_schema(permitted_api_client):
     comment = data['components']['schemas']['Comment']
     assert comment == {
         'properties': {
-            '_uid': {'type': 'string', 'title': ' uid', 'readOnly': True,
+            '_uid': {'type': 'string', 'title': 'Uid', 'readOnly': True,
                      'format': 'uuid'},
-            '_type': {'type': 'string', 'title': ' type', 'readOnly': True,
+            '_type': {'type': 'string', 'title': 'Type', 'readOnly': True,
                       'enum': ['comment']},
-            '_version': {'type': 'integer', 'title': ' version',
+            '_version': {'type': 'integer', 'title': 'Version',
                          'readOnly': True},
             'created': {'type': 'string', 'format': 'date-time',
                         'title': 'Создан',
@@ -112,10 +115,10 @@ def test_api_comment_model_schema(permitted_api_client):
                         'title': 'Updated', 'readOnly': True},
             'user': {'type': 'integer', 'title': 'User'},
             'contact': {'anyOf': [{'$ref': '#/components/schemas/Contact'}],
-                        'title': 'contact', 'description': ''},
+                        'title': 'Contact', 'description': ''},
             'message': {'type': 'string', 'title': 'Сообщение'}},
         'required': ['contact', 'message'],
-        'title': 'коментарий', 'x-title-plural': 'коментарии',
+        'title': 'Коментарий', 'x-title-plural': 'Коментарии',
         'description': 'Модель комментария'}
 
 
@@ -141,4 +144,4 @@ def test_api_comment_list_schema(permitted_api_client):
                 'anyOf': [{
                     '$ref': '#/components/schemas/Comment'}],
                 'description': 'Модель комментария',
-                'title': 'коментарий'}}}}
+                'title': 'Коментарий'}}}}

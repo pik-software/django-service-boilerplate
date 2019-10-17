@@ -33,8 +33,13 @@ def test_api_list_contact(api_user, api_client):  # noqa: pylint=invalid-name
             'updated': obj.updated.isoformat(),
             'emails': obj.emails,
             'name': obj.name,
-            'order_index': obj.order_index,
             'phones': obj.phones,
+            'order_index': obj.order_index,
+            'category': {'_uid': str(obj.category.uid),
+                         '_type': 'category', '_version': 1,
+                         'created': obj.category.created.isoformat(),
+                         'updated': obj.category.updated.isoformat(),
+                         'name': obj.category.name, 'parent': None}
         }
     ])
 
@@ -52,8 +57,13 @@ def test_api_retrieve_contact(api_user, api_client):
         'updated': obj.updated.isoformat(),
         'emails': obj.emails,
         'name': obj.name,
-        'order_index': obj.order_index,
         'phones': obj.phones,
+        'order_index': obj.order_index,
+        'category': {'_uid': str(obj.category.uid),
+                     '_type': 'category', '_version': 1,
+                     'created': obj.category.created.isoformat(),
+                     'updated': obj.category.updated.isoformat(),
+                     'name': obj.category.name, 'parent': None}
     })
 
 
@@ -73,6 +83,8 @@ def test_api_contact_history(api_user, api_client):
         'name': obj.name,
         'order_index': obj.order_index,
         'phones': obj.phones,
+        'category': {'_uid': str(obj.category.uid),
+                     '_type': 'category'},
         'history_change_reason': None,
         'history_date': hist_obj.history_date.isoformat(),
         'history_id': hist_obj.history_id,
@@ -104,6 +116,12 @@ def test_api_list_comment(api_user, api_client):  # noqa: pylint=invalid-name
                 'name': obj.contact.name,
                 'order_index': obj.contact.order_index,
                 'phones': obj.contact.phones,
+                'category': {
+                    '_uid': str(obj.contact.category.uid),
+                    '_type': 'category', '_version': 1,
+                    'created': obj.contact.category.created.isoformat(),
+                    'updated': obj.contact.category.updated.isoformat(),
+                    'name': obj.contact.category.name, 'parent': None}
             },
             'message': obj.message,
             'user': obj.user.pk,
@@ -132,6 +150,12 @@ def test_api_retrieve_comment(api_user, api_client):
             'name': obj.contact.name,
             'order_index': obj.contact.order_index,
             'phones': obj.contact.phones,
+            'category': {
+                '_uid': str(obj.contact.category.uid),
+                '_type': 'category', '_version': 1,
+                'created': obj.contact.category.created.isoformat(),
+                'updated': obj.contact.category.updated.isoformat(),
+                'name': obj.contact.category.name, 'parent': None}
         },
         'message': obj.message,
         'user': obj.user.pk,
@@ -152,8 +176,7 @@ def test_api_comment_history(api_user, api_client):
         'updated': obj.updated.isoformat(),
         'contact': {
             '_uid': str(obj.contact.uid),
-            '_type': 'contact',
-        },
+            '_type': 'contact'},
         'message': obj.message,
         'user': obj.user.pk,
         'history_change_reason': None,
@@ -161,5 +184,4 @@ def test_api_comment_history(api_user, api_client):
         'history_id': hist_obj.history_id,
         'history_type': '+',
         'history_user_id': None,
-        'history_user': None,
-    }])
+        'history_user': None}])
