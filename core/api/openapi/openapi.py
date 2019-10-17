@@ -1,14 +1,18 @@
 import inspect
+from urllib.parse import urljoin
 
+from django.utils.translation import ugettext as _
 from rest_framework.fields import (
     ChoiceField, MultipleChoiceField, SerializerMethodField)
 from rest_framework.serializers import ModelSerializer
-from rest_framework.schemas.openapi import AutoSchema
+from rest_framework.schemas.openapi import AutoSchema, SchemaGenerator
 # TODO: klimenkoas: Drop `drf_yasg` dependency
 from drf_yasg.inspectors.field import get_basic_type_info_from_hint
 from drf_yasg.utils import (
-    force_real_str, field_value_to_representation, filter_none)
+    force_real_str, field_value_to_representation, filter_none,
+    get_serializer_ref_name)
 from drf_yasg.inspectors.field import typing, inspect_signature
+from ddtrace.utils.merge import deepmerge
 
 from core.api.openapi.reference import (
     ReferenceAutoSchema, ReferenceSchemaGenerator)
@@ -156,8 +160,36 @@ class ListFiltersOnlyAutoSchema(AutoSchema):
         return super()._allows_filters(path, method)
 
 
-# TODO: klimenkoas add view deprecation status handling
-# TODO: klimenkoas add schema overriding mechanism
+class CustomizableSerializerAutoSchema(AutoSchema):
+    def _map_serializer(self, serializer):
+        result = super()._map_serializer(serializer)
+        if hasattr(serializer.Meta, 'update_schema'):
+            result = deepmerge(result, serializer.Meta.update_schema)
+        return result
+
+
+class OperationSummaryAutoSchema(AutoSchema):
+    def get_operation(self, path, method):
+        operation = super().get_operation(path, method)
+        serializer = self.view.get_serializer(method, path)
+        summary = None
+        if operation['operationId'].startswith('list'):
+            summary = _('Список объектов {serializer.label_plural}')
+        if operation['operationId'].startswith('retrieve'):
+            summary = _('Получить объект {serializer.label}')
+        if operation['operationId'].startswith('create'):
+            summary = _('Заменить объект {serializer.label}')
+        if operation['operationId'].startswith('update'):
+            summary = _('Изменить объект {serializer.label}')
+        if operation['operationId'].startswith('partial_update'):
+            summary = _('Создать объект {serializer.label}')
+        if operation['operationId'].startswith('destroy'):
+            summary = _('Удалить объект {serializer.label}')
+        if summary:
+            operation['summary'] = summary.format(serializer=serializer)
+        return operation
+
+
 class StandardizedAutoSchema(ReferenceAutoSchema,
                              TypedSerializerAutoSchema,
                              EnumNamesAutoSchema,
@@ -166,9 +198,87 @@ class StandardizedAutoSchema(ReferenceAutoSchema,
                              ModelSerializerFieldsAutoSchema,
                              FieldMappingAutoSchema,
                              ListFiltersOnlyAutoSchema,
+                             CustomizableSerializerAutoSchema,
+                             OperationSummaryAutoSchema,
                              SerializerMethodFieldAutoSchema):
     pass
 
 
-class StandardizedSchemaGenerator(ReferenceSchemaGenerator):
+class CustomizableViewSchemaGenerator(SchemaGenerator):
+    def __init__(self, *args, **kwargs):
+        self.history_tags = set()
+        self.methods_tags = set()
+        self.entities_tags = set()
+        super().__init__(*args, **kwargs)
+
+    def _add_operation_tags(self, operation, path, view, method):
+        serializer = view.schema._get_serializer(path, method)
+        self.methods_tags.add(method)
+        ref_name = get_serializer_ref_name(serializer)
+        tag = ref_name
+        if 'historical' in ref_name.lower():
+            tag = 'history'
+            self.history_tags.add(tag)
+        else:
+            self.entities_tags.add(ref_name)
+        operation['tags'] = [tag, method]
+
+    def _check_view_schema_update(self, view, schema):
+        """Checking neighbour view schema patching
+
+        Different view operations are provided on the same level,
+        so this method checks weather missing key got patched."""
+        for key, value in view.update_schema.items():
+            if key not in schema:
+                raise Exception(f'View {view} `update_schema`'
+                                f' contains redundant key {key}')
+
+    def get_paths(self, request=None):
+        result = {}
+
+        paths, view_endpoints = self._get_paths_and_endpoints(request)
+
+        # Only generate the path prefix for paths that will be included
+        if not paths:
+            return None
+
+        prev_view = None
+        view_result = {}
+        for path, method, view in view_endpoints:
+            if view and view != prev_view and hasattr(view, 'update_schema'):
+                self._check_view_schema_update(view, result)
+                result.update(deepmerge(view_result, view.update_schema))
+                view_result = {}
+                prev_view = view
+
+            if not self.has_view_permissions(path, method, view):
+                continue
+            operation = view.schema.get_operation(path, method)
+            self._add_operation_tags(operation, path, view, method)
+
+            # Normalise path for any provided mount url.
+            if path.startswith('/'):
+                path = path[1:]
+            path = urljoin(self.url or '/', path)
+
+            view_result.setdefault(path, {})
+            view_result[path][method.lower()] = operation
+
+        if view_result:
+            result.update(view_result)
+
+        return result
+
+    def get_schema(self, request=None, public=False):
+        schema = super().get_schema(request, public)
+        schema['x-tagGroups'] = [
+            {'name': _('Сущности'), 'tags': list(self.entities_tags)},
+            {'name': _('Методы'), 'tags': list(self.methods_tags)},
+            {'name': _('История'), 'tags': list(self.history_tags)},
+        ]
+        return schema
+
+
+class StandardizedSchemaGenerator(CustomizableViewSchemaGenerator,
+                                  ReferenceSchemaGenerator):
     pass

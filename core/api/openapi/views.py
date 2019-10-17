@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.views.generic.base import TemplateResponseMixin, ContextMixin
 from django.conf import settings
 
@@ -12,13 +14,18 @@ class RedocSchemaViewMixIn(TemplateResponseMixin, ContextMixin):
 
     template_name = 'redoc.html'
 
-    def get(self, request, *args, **kwargs):
-        openapi_format = self.request.GET.get('format')
-        if not openapi_format or openapi_format == 'redoc':
-            context = self.get_context_data(
-                url=f'{request.path}?format=openapi-json', **kwargs)
-            return self.render_to_response(context)
-        return super().get(request, *args, **kwargs)
+    @method_decorator(login_required)
+    def get_redoc(self, request, **kwargs):
+        context = self.get_context_data(
+            url=f'{request.path}?format=openapi-json', **kwargs)
+        return self.render_to_response(context)
+
+    def dispatch(self, request, *args, **kwargs):
+        """Initiating auth on anon redoc request"""
+        openapi_format = self.request.GET.get('format', '')
+        if openapi_format in('', 'redoc') and request.method.lower() == 'get':
+            return self.get_redoc(request, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
 
 class StandardizedSchemaView(RedocSchemaViewMixIn, SchemaView):
