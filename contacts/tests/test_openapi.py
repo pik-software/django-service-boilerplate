@@ -13,7 +13,7 @@ def permitted_api_client(api_user, api_client):
 
 
 def test_api_schema_unauthorized(anon_api_client):
-    res = anon_api_client.get('/api/v1/schema/')
+    res = anon_api_client.get('/api/v1/schema/?format=openapi-json')
     assert res.status_code in (
         status.HTTP_401_UNAUTHORIZED,
         status.HTTP_403_FORBIDDEN,
