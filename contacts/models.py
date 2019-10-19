@@ -9,7 +9,7 @@ from core.fields import NormalizedCharField
 class Category(BasePHistorical):
     name = NormalizedCharField(_('Название'), max_length=255)
     parent = models.ForeignKey('self', null=True, on_delete=models.CASCADE,
-                               verbose_name='Родительская категория')
+                               verbose_name=_('Родительская категория'))
 
     def __str__(self):
         return self.name
