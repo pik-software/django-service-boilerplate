@@ -230,18 +230,6 @@ class CustomizableViewSchemaGenerator(SchemaGenerator):
             self.entities_tags.add(ref_name)
         operation['tags'] = [tag, method]
 
-    def _check_view_schema_update(self, view, schema):
-        """Checks neighbour view schema patching
-
-        Different view operations are provided on the same level,
-        so this method checks weather missing key got patched."""
-        redundant_keys = [key for key in view.update_schema.keys()
-                          if key not in schema]
-        if redundant_keys:
-            raise RedundantSchemaKeys(
-                f'View {view} `update_schema` contains redundant key(s) '
-                f'{", ".join(redundant_keys)}')
-
     def get_paths(self, request=None):
         result = {}
         paths, view_endpoints = self._get_paths_and_endpoints(request)
@@ -267,17 +255,30 @@ class CustomizableViewSchemaGenerator(SchemaGenerator):
                 view_result[path][method.lower()] = operation
 
             if hasattr(view, 'update_schema'):
-                if callable(view.update_schema):
-                    view_result = view.update_schema(view_result)
-                else:
-                    self._check_view_schema_update(view, view_result)
-                    view_result.update(
-                        deepmerge(view_result, view.update_schema))
+                self._update_view_schema(view, view.update_schema)
 
             if view_result:
                 result.update(view_result)
 
         return result
+
+    def _check_view_schema_update(self, view, schema):
+        """Checks neighbour view schema patching
+
+        Different view operations are provided on the same level,
+        so this method checks weather missing key got patched."""
+        redundant_keys = [key for key in view.update_schema.keys()
+                          if key not in schema]
+        if redundant_keys:
+            raise RedundantSchemaKeys(
+                f'View {view} `update_schema` contains redundant key(s) '
+                f'{", ".join(redundant_keys)}')
+
+    def _update_view_schema(self, view, schema):
+        if callable(view.update_schema):
+            return view.update_schema(schema)
+        self._check_view_schema_update(view, schema)
+        return view.update(deepmerge(schema, view.update_schema))
 
     def get_schema(self, request=None, public=False):
         schema = super().get_schema(request, public)
