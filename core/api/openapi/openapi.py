@@ -255,7 +255,7 @@ class CustomizableViewSchemaGenerator(SchemaGenerator):
                 view_result[path][method.lower()] = operation
 
             if hasattr(view, 'update_schema'):
-                self._update_view_schema(view, view.update_schema)
+                self._update_view_schema(view, view_result)
 
             if view_result:
                 result.update(view_result)
@@ -278,7 +278,7 @@ class CustomizableViewSchemaGenerator(SchemaGenerator):
         if callable(view.update_schema):
             return view.update_schema(schema)
         self._check_view_schema_update(view, schema)
-        return view.update(deepmerge(schema, view.update_schema))
+        return deepmerge(schema, view.update_schema)
 
     def get_schema(self, request=None, public=False):
         schema = super().get_schema(request, public)

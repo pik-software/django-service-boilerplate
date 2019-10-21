@@ -1,3 +1,5 @@
+from django.utils.translation import ugettext_lazy as _
+
 from contacts.models import Contact, Comment, Category
 from core.api.filters import StandardizedFieldFilters, \
     StandardizedSearchFilter, StandardizedOrderingFilter
@@ -24,6 +26,12 @@ class ContactViewSet(StandardizedModelViewSet):
         'name', 'phones', 'emails')
     ordering_fields = ('created', 'updated', 'name', 'order_index')
 
+    @staticmethod
+    def update_schema(schema):
+        schema['/api/v1/contact-list/']['get']['summary'] = _(
+            'Список контактов')
+        return schema
+
     def get_queryset(self):
         return Contact.objects.select_related('category').all()
 
@@ -43,6 +51,10 @@ class CommentViewSet(StandardizedModelViewSet):
     search_fields = (
         'message', 'user')
     ordering_fields = ('created', 'updated')
+
+    update_schema = {
+        '/api/v1/comment-list/': {
+            'get': {'summary': _('Список комментариев')}}}
 
     def get_queryset(self):
         return Comment.objects.all().select_related(

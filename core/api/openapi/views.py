@@ -3,10 +3,12 @@ from django.utils.decorators import method_decorator
 from django.views.generic.base import TemplateResponseMixin, ContextMixin
 from django.conf import settings
 
+from rest_framework.renderers import OpenAPIRenderer
 from rest_framework.schemas.views import SchemaView
 from rest_framework.settings import api_settings
 
 from core.api.openapi import StandardizedSchemaGenerator
+from core.api.openapi.renders import JSONOpenAPILazyObjRenderer
 
 
 class RedocSchemaViewMixIn(TemplateResponseMixin, ContextMixin):
@@ -28,14 +30,16 @@ class RedocSchemaViewMixIn(TemplateResponseMixin, ContextMixin):
         return super().dispatch(request, *args, **kwargs)
 
 
-class StandardizedSchemaView(RedocSchemaViewMixIn, SchemaView):
+class StandardizedSchemaView(RedocSchemaViewMixIn,
+                             SchemaView):
     pass
 
 
 def get_standardized_schema_view(
         title=f'{settings.SERVICE_TITLE} API', url=None,
         description=settings.SERVICE_DESCRIPTION, urlconf=None,
-        renderer_classes=None, public=False, patterns=None,
+        renderer_classes=(OpenAPIRenderer, JSONOpenAPILazyObjRenderer),
+        public=False, patterns=None,
         generator_class=StandardizedSchemaGenerator,
         authentication_classes=api_settings.DEFAULT_AUTHENTICATION_CLASSES,
         permission_classes=api_settings.DEFAULT_PERMISSION_CLASSES,

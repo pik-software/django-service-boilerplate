@@ -3,6 +3,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from pik.core.models import BaseHistorical, BasePHistorical, Owned
 
+from contacts.constants import CONTACT_TYPE_CHOICES, CONTACT_TYPE_UNKNOWN
 from core.fields import NormalizedCharField
 
 
@@ -42,6 +43,10 @@ class Contact(BaseHistorical):
         models.EmailField(), blank=True, default=list,
         verbose_name=_('E-mail адреса'),
         help_text=_('E-mail адреса вводятся через запятую'))
+
+    contact_type = models.IntegerField(
+        _('Тип контакта'), default=CONTACT_TYPE_UNKNOWN,
+        choices=CONTACT_TYPE_CHOICES)
 
     order_index = models.IntegerField(_('Индекс для сортировки'), default=100)
 

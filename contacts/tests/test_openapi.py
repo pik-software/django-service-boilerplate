@@ -51,7 +51,7 @@ def test_api_contact_model_schema(permitted_api_client):
     contact = data['components']['schemas']['Contact']
     assert contact == {'properties': {
         '_uid': {'type': 'string', 'title': 'Uid', 'readOnly': True,
-                 'format': 'uuid'},
+                 'format': 'uuid', 'description': 'Идентификатор Контакта'},
         '_type': {'type': 'string', 'title': 'Type', 'readOnly': True,
                   'enum': ['contact']},
         '_version': {'type': 'integer', 'title': 'Version', 'readOnly': True},
@@ -72,7 +72,13 @@ def test_api_contact_model_schema(permitted_api_client):
                         'title': 'Индекс для сортировки'},
         'category': {'anyOf': [{'$ref': '#/components/schemas/Category'}],
                      'title': 'Категория',
-                     'description': 'Категория контакта'}},
+                     'description': 'Категория контакта'},
+        'contact_type': {'enum': [0, 1, 2, 3],
+                         'maximum': 2147483647,
+                         'minimum': -2147483648,
+                         'title': 'Тип контакта',
+                         'x-enumNames': ['Неизвестный', 'Сотрудник',
+                                         'Подрядчик', 'Клиент']}},
         'required': ['name'], 'title': 'Контакт',
         'x-title-plural': 'Контакты', 'description': 'Модель контакта'}
 
@@ -103,7 +109,8 @@ def test_api_comment_model_schema(permitted_api_client):
     assert comment == {
         'properties': {
             '_uid': {'type': 'string', 'title': 'Uid', 'readOnly': True,
-                     'format': 'uuid'},
+                     'format': 'uuid',
+                     'description': 'Идентификатор Комментария'},
             '_type': {'type': 'string', 'title': 'Type', 'readOnly': True,
                       'enum': ['comment']},
             '_version': {'type': 'integer', 'title': 'Version',
