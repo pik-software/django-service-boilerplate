@@ -184,6 +184,8 @@ class OperationSummaryAutoSchema(AutoSchema):
 
     def get_operation(self, path, method):
         operation = super().get_operation(path, method)
+        if not hasattr(self.view, 'get_serializer'):
+            return operation
         serializer = self.view.get_serializer(method, path)
         for prefix, summary in self.SUMMARY_FORMATS:
             if operation['operationId'].startswith(prefix):
