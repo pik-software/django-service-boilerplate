@@ -357,9 +357,11 @@ REST_FRAMEWORK = {
 
     # Generic view behavior
     'DEFAULT_PAGINATION_CLASS': 'core.api.pagination.StandardizedPagination',
-    # TODO: use: StandardizedFieldFilters, StandardizedSearchFilter,
-    # StandardizedOrderingFilter as default filter backends
-    'DEFAULT_FILTER_BACKENDS': (),
+    'DEFAULT_FILTER_BACKENDS': (
+        'core.api.filters.StandardizedFieldFilters',
+        'core.api.filters.StandardizedSearchFilter',
+        'core.api.filters.StandardizedOrderingFilter',
+    ),
 
     'EXCEPTION_HANDLER': 'core.api.exception_handler.standardized_handler',
 

@@ -18,9 +18,6 @@ class ContactViewSet(StandardizedModelViewSet):
     allow_bulk_create = True
     allow_history = True
 
-    filter_backends = (
-        StandardizedFieldFilters, StandardizedSearchFilter,
-        StandardizedOrderingFilter)
     filter_class = ContactFilter
     search_fields = (
         'name', 'phones', 'emails')
@@ -44,9 +41,6 @@ class CommentViewSet(StandardizedModelViewSet):
     allow_bulk_create = True
     allow_history = True
 
-    filter_backends = (
-        StandardizedFieldFilters, StandardizedSearchFilter,
-        StandardizedOrderingFilter)
     filter_class = CommentFilter
     search_fields = (
         'message', 'user')
@@ -69,9 +63,6 @@ class CategoryViewSet(StandardizedModelViewSet):
     allow_bulk_create = True
     allow_history = True
 
-    filter_backends = (
-        StandardizedFieldFilters, StandardizedSearchFilter,
-        StandardizedOrderingFilter)
     filter_class = CategoryFilter
     search_fields = (
         'name')

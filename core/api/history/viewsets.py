@@ -17,10 +17,6 @@ class HistoryViewSetBase(ListModelMixin, GenericViewSet):
     serializer_class = None
     filter_class = None
 
-    filter_backends = (
-        StandardizedFieldFilters, StandardizedSearchFilter,
-        StandardizedOrderingFilter)
-
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.select_related_fields:
