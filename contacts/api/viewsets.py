@@ -1,8 +1,6 @@
 from django.utils.translation import ugettext_lazy as _
 
 from contacts.models import Contact, Comment, Category
-from core.api.filters import StandardizedFieldFilters, \
-    StandardizedSearchFilter, StandardizedOrderingFilter
 from core.api.viewsets import StandardizedModelViewSet
 
 from .filters import ContactFilter, CommentFilter, CategoryFilter
