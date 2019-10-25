@@ -1,4 +1,7 @@
+import os
+
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views.generic.base import TemplateResponseMixin, ContextMixin
 from django.conf import settings
@@ -7,8 +10,8 @@ from rest_framework.renderers import OpenAPIRenderer
 from rest_framework.schemas.views import SchemaView
 from rest_framework.settings import api_settings
 
-from core.api.openapi import StandardizedSchemaGenerator
-from core.api.openapi.renders import JSONOpenAPILazyObjRenderer
+from .openapi import StandardizedSchemaGenerator
+from .renders import JSONOpenAPILazyObjRenderer
 
 
 class RedocSchemaViewMixIn(TemplateResponseMixin, ContextMixin):
@@ -27,6 +30,11 @@ class RedocSchemaViewMixIn(TemplateResponseMixin, ContextMixin):
         openapi_format = self.request.GET.get('format', '')
         if openapi_format in('', 'redoc') and request.method.lower() == 'get':
             return self.get_redoc(request, **kwargs)
+        filename = (
+            f'{request.resolver_match.url_name}_{openapi_format}.txt')
+        path = os.path.join(settings.STATIC_ROOT, filename)
+        if os.path.isfile(path):
+            return HttpResponse(open(path).read())
         return super().dispatch(request, *args, **kwargs)
 
 

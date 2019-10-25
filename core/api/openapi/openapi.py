@@ -179,7 +179,7 @@ class OperationSummaryAutoSchema(AutoSchema):
         ('create', 'Создать объект {serializer.label}'),
         ('update', 'Заменить объект {serializer.label}'),
         ('partial_update', 'Частично изменить объект {serializer.label}'),
-        ('destroy', 'Удалить изменить объект {serializer.label}'),
+        ('destroy', 'Удалить объект {serializer.label}'),
     )
 
     def get_operation(self, path, method):
@@ -193,6 +193,18 @@ class OperationSummaryAutoSchema(AutoSchema):
         return operation
 
 
+class OperationSerializerDescriptionAutoSchema(AutoSchema):
+    """Fetches operation description from serializer help_text if missing"""
+
+    def get_operation(self, path, method):
+        operation = super().get_operation(path, method)
+        serializer = self.view.get_serializer(method, path)
+        if (not operation.get('description')
+                and serializer and serializer.help_text):
+            operation['description'] = serializer.help_text
+        return operation
+
+
 class StandardizedAutoSchema(CustomizableSerializerAutoSchema,
                              ReferenceAutoSchema,
                              TypedSerializerAutoSchema,
@@ -203,6 +215,7 @@ class StandardizedAutoSchema(CustomizableSerializerAutoSchema,
                              FieldMappingAutoSchema,
                              ListFiltersOnlyAutoSchema,
                              OperationSummaryAutoSchema,
+                             OperationSerializerDescriptionAutoSchema,
                              SerializerMethodFieldAutoSchema):
     pass
 
@@ -212,7 +225,7 @@ class RedundantSchemaKeys(Exception):
 
 
 class CustomizableViewSchemaGenerator(SchemaGenerator):
-    VIEW = 2
+    VIEW_POSITION = 2
 
     def __init__(self, *args, **kwargs):
         self.history_tags = set()
@@ -240,7 +253,7 @@ class CustomizableViewSchemaGenerator(SchemaGenerator):
             return None
 
         def key(schema):
-            return schema[self.VIEW].__class__.__name__
+            return schema[self.VIEW_POSITION].__class__.__name__
 
         view_endpoints = groupby(sorted(view_endpoints, key=key), key=key)
         for _, endpoints in view_endpoints:
@@ -264,7 +277,8 @@ class CustomizableViewSchemaGenerator(SchemaGenerator):
 
         return result
 
-    def _check_view_schema_update(self, view, schema):
+    @staticmethod
+    def _check_view_schema_update(view, schema):
         """Checks neighbour view schema patching
 
         Different view operations are provided on the same level,
@@ -280,12 +294,12 @@ class CustomizableViewSchemaGenerator(SchemaGenerator):
         if callable(view.update_schema):
             return view.update_schema(schema)
         self._check_view_schema_update(view, schema)
-        return deepmerge(schema, view.update_schema)
+        return deepmerge(view.update_schema, schema)
 
     def get_schema(self, request=None, public=False):
         schema = super().get_schema(request, public)
         schema['x-tagGroups'] = [
-            {'name': ugettext('Сущности'), 'tags': list(self.entities_tags)},
+            {'name': ugettext('Сущности'), 'tags': sorted(self.entities_tags)},
             {'name': ugettext('Методы'), 'tags': list(self.methods_tags)},
             {'name': ugettext('История'), 'tags': list(self.history_tags)},
         ]
