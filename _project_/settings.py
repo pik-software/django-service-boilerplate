@@ -117,6 +117,7 @@ INSTALLED_APPS = [
     'django.contrib.gis',
 
     '_project_',
+    'core.api.openapi',
 
     # APPS
     'contacts',
@@ -330,7 +331,7 @@ ALLOWED_APPS_FOR_PERMISSIONS_VIEW = {'auth', 'contacts'}
 
 # DRF
 REST_FRAMEWORK = {
-    'DEFAULT_SCHEMA_CLASS': 'core.api.openapi.StandardizedAutoSchema',
+    'DEFAULT_SCHEMA_CLASS': 'core.api.openapi.openapi.StandardizedAutoSchema',
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
@@ -407,7 +408,6 @@ LOGGING = {
         'console': {
             'level': 'INFO',
             'class': 'logging.StreamHandler',
-            'stream': sys.stdout,
             'formatter': 'verbose'
         },
         'sentry': {

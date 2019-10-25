@@ -7,7 +7,7 @@ from django.urls import path, include
 from core.api.auth import OBTAIN_AUTH_TOKEN
 from core.api.router import StandardizedRouter
 from core.views.permissions import permissions_view
-from core.api.openapi import get_standardized_schema_view
+from core.api.openapi.views import get_standardized_schema_view
 from core.api.user import USER_API_VIEW
 from core.views import task_result_api_view
 
