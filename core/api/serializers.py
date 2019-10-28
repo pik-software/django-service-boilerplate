@@ -76,9 +76,7 @@ class StandardizedProtocolSerializer(serializers.ModelSerializer):
         return obj.uid
 
     def get__type(self, obj) -> Optional[str]:
-        if not isinstance(obj, Model):
-            return None
-        return ContentType.objects.get_for_model(type(obj)).model
+        return obj._meta.model_name
 
     def get__version(self, obj) -> Optional[int]:
         if not hasattr(obj, 'version'):
