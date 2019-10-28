@@ -2,7 +2,6 @@ import base64
 import json
 import logging
 import os
-import sys
 from datetime import timedelta
 
 import dj_database_url
