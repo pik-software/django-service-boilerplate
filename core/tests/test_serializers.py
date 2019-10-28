@@ -12,7 +12,8 @@ def model_class():
     _meta = Mock(verbose_name='model_label',
                  verbose_name_plural='model_plural',
                  get_field=Mock('get_field', return_value=field))
-    return Mock('Model', _meta=_meta, help_text='model_help')
+    return Mock('Model', _meta=_meta,
+                return_value=Mock('Model', _help_text='model_help'))
 
 
 @pytest.fixture

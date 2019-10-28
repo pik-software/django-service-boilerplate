@@ -116,7 +116,8 @@ class LabeledModelSerializerMixIn:
             self._label_is_set = True
 
         if 'help_text' not in kwargs:
-            kwargs['help_text'] = getattr(self.Meta.model, 'help_text', None)
+            kwargs['help_text'] = getattr(self.Meta.model(),
+                                          '_help_text', None)
         else:
             self._help_text_is_set = True
 
