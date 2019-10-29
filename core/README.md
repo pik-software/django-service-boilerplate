@@ -79,7 +79,7 @@ REST_FRAMEWORK = {
     ),
 
     # Schema
-    'DEFAULT_SCHEMA_CLASS': 'core.api.openapi.StandardizedAutoSchema',
+    'DEFAULT_SCHEMA_CLASS': 'core.api.openapi.openapi.StandardizedAutoSchema',
     'EXCEPTION_HANDLER': 'core.api.exception_handler.standardized_handler',
 
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',

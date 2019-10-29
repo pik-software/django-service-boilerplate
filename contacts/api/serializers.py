@@ -1,14 +1,14 @@
 from django.utils.translation import ugettext, ugettext_lazy as _
 from rest_framework.fields import IntegerField
 
-from core.api.lazy_field import LazySerializer
+from core.api.lazy_field import LazyField
 from core.api.serializers import StandardizedModelSerializer
 from ..models import Contact, Comment, Category
 
 
 class CategorySerializer(StandardizedModelSerializer):
-    parent = LazySerializer('contacts.api.serializers.CategorySerializer',
-                            required=False)
+    parent = LazyField('contacts.api.serializers.CategorySerializer',
+                       required=False)
 
     class Meta:
         model = Category

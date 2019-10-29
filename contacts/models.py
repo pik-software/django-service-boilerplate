@@ -8,6 +8,8 @@ from core.fields import NormalizedCharField
 
 
 class Category(BasePHistorical):
+    _help_text = _('Модель категории')
+
     name = NormalizedCharField(_('Название'), max_length=255)
     parent = models.ForeignKey('self', null=True, on_delete=models.CASCADE,
                                verbose_name=_('Родительская категория'))
@@ -22,7 +24,7 @@ class Category(BasePHistorical):
 
 
 class Contact(BaseHistorical):
-    help_text = _('Модель контакта')
+    _help_text = _('Модель контакта')
 
     permitted_fields = {
         '{app_label}.change_{model_name}': [
@@ -63,7 +65,7 @@ class Contact(BaseHistorical):
 
 
 class Comment(BasePHistorical, Owned):
-    help_text = _('Модель комментария')
+    _help_text = _('Модель комментария')
 
     permitted_fields = {
         '{app_label}.change_{model_name}': ['message', 'contact'],

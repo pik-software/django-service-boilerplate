@@ -3,17 +3,16 @@ from operator import or_
 
 from django.utils.functional import cached_property
 from django.utils.module_loading import import_string
-from rest_framework.serializers import Serializer
+from rest_framework.serializers import Field
 
 
-class LazySerializer(Serializer):
+class LazyField(Field):
     source = None
 
     def __init__(self, path, ref_name=None, *args, **kwargs):  # noqa: super-init-not-called
         self.path = path
         self.args = args
         self.kwargs = kwargs
-        super().__init__(path, *args, **kwargs)
         self._process_ref_name(ref_name)
 
     @cached_property
@@ -27,7 +26,7 @@ class LazySerializer(Serializer):
     def to_internal_value(self, data):
         pass
 
-    def to_representation(self, instance):
+    def to_representation(self, value):
         pass
 
     def _process_ref_name(self, ref_name):
@@ -40,7 +39,7 @@ class LazySerializer(Serializer):
         self.Meta = type('Meta', (), {'ref_name': ref_name})  # noqa: invalid-name
 
 
-class LazySerializerHandlerMixIn:
+class LazyFieldHandlerMixIn:
     def get_fields(self, *args, **kwargs):
         parents = []
         parent = self.parent
@@ -51,13 +50,12 @@ class LazySerializerHandlerMixIn:
         fields = super().get_fields(*args, **kwargs)
 
         for name, field in list(fields.items()):
-            if not isinstance(field, LazySerializer):
+            if not isinstance(field, LazyField):
                 continue
-            is_subclass = (
-                    parents and (
-                    issubclass(field.field_class, tuple(parents))
-                    or reduce(or_, [isinstance(parent, field.field_class)
-                                    for parent in parents])))
+            is_subclass = (parents and (
+                issubclass(field.field_class, tuple(parents))
+                or reduce(or_, [isinstance(parent, field.field_class)
+                                for parent in parents])))
             if is_subclass:
                 if name in fields:
                     del fields[name]

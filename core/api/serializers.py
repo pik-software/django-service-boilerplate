@@ -4,12 +4,11 @@ from uuid import UUID
 
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
-from django.db.models import Model
 from rest_framework import serializers
 from rest_framework.fields import empty
 from rest_framework.serializers import ListSerializer, ModelSerializer
 
-from core.api.lazy_field import LazySerializerHandlerMixIn
+from core.api.lazy_field import LazyFieldHandlerMixIn
 from core.permitted_fields.api import PermittedFieldsSerializerMixIn
 
 
@@ -76,7 +75,7 @@ class StandardizedProtocolSerializer(serializers.ModelSerializer):
         return obj.uid
 
     def get__type(self, obj) -> Optional[str]:
-        return obj._meta.model_name
+        return obj._meta.model_name  # noqa: protected-access
 
     def get__version(self, obj) -> Optional[int]:
         if not hasattr(obj, 'version'):
@@ -139,7 +138,7 @@ class LabeledModelSerializerMixIn:
 
 
 class StandardizedModelSerializer(
-    LazySerializerHandlerMixIn,
+    LazyFieldHandlerMixIn,
     LabeledModelSerializerMixIn,
     SettableNestedSerializerMixIn,
     PermittedFieldsSerializerMixIn,
