@@ -34,7 +34,7 @@ class RedocSchemaViewMixIn(TemplateResponseMixin, ContextMixin):
             f'{request.resolver_match.url_name}_{openapi_format}.txt')
         path = os.path.join(settings.STATIC_ROOT, filename)
         if os.path.isfile(path):
-            return HttpResponse(open(path).read())
+            return HttpResponse(open(path, 'rb'))
         return super().dispatch(request, *args, **kwargs)
 
 

@@ -4,17 +4,26 @@ from django.conf import settings
 from rest_framework.management.commands.generateschema import (
     Command as DRFCommand)
 from rest_framework.renderers import JSONOpenAPIRenderer
+from rest_framework.settings import perform_import
 
-from _project_.urls import api_urlpatterns
 from core.api.openapi.openapi import StandardizedSchemaGenerator
 from core.api.openapi.renders import JSONOpenAPILazyObjRenderer
 
 
 class Command(DRFCommand):
+    urlpatterns = None
+
+    def add_arguments(self, parser):
+        super().add_arguments(parser)
+        parser.add_argument('--urlpatterns', dest="urlpatterns",
+                            default='_project_.urls.api_urlpatterns', type=str)
+
     def handle(self, *args, **options):
         options['title'] = options['title'] or f'{settings.SERVICE_TITLE} API'
         options['description'] = (options['description']
                                   or settings.SERVICE_DESCRIPTION)
+        self.urlpatterns = perform_import(
+            options['urlpatterns'], '--urlpatterns')
         return super().handle(*args, **options)
 
     def get_renderer(self, format):  # noqa: redefined-builtin
@@ -28,4 +37,4 @@ class Command(DRFCommand):
         version = settings.SERVICE_RELEASE
 
         return partial(
-            generator_class, version=version, patterns=api_urlpatterns)
+            generator_class, version=version, patterns=self.urlpatterns)
