@@ -3,8 +3,10 @@ from itertools import groupby
 from urllib.parse import urljoin
 
 from django.utils.translation import ugettext
+from rest_framework import serializers
 from rest_framework.fields import (
-    ChoiceField, MultipleChoiceField, SerializerMethodField)
+    ChoiceField, MultipleChoiceField, SerializerMethodField, NullBooleanField,
+    _UnvalidatedField)
 from rest_framework.serializers import ModelSerializer
 from rest_framework.schemas.openapi import AutoSchema, SchemaGenerator
 from ddtrace.utils.merge import deepmerge
@@ -61,6 +63,24 @@ class ModelSerializerFieldsAutoSchema(AutoSchema):
         return schema
 
 
+class ListFieldAutoSchema(AutoSchema):
+    """Provides correct choices limited list handling
+
+    DRF BUG workaround
+    https://github.com/encode/django-rest-framework/issues/7023
+    """
+    def _map_field(self, field):
+        if isinstance(field, serializers.ListField):
+            mapping = {
+                'type': 'array',
+                'items': {},
+            }
+            if not isinstance(field.child, _UnvalidatedField):
+                mapping['items'] = self._map_field(field.child)
+            return mapping
+        return super()._map_field(field)
+
+
 class EnumNamesAutoSchema(AutoSchema):
     """ Adds enumNames for choice fields """
 
@@ -98,6 +118,15 @@ class DeprecatedFieldAutoSchema(AutoSchema):
         if is_deprecated_as_field or is_deprecated:
             schema['deprecated'] = True
         return schema
+
+
+class BooleanFieldAutoSchema(AutoSchema):
+    """ Adds NullBooleanField schema support """
+
+    def _map_field(self, field):
+        if isinstance(field, NullBooleanField):
+            return {'type': 'boolean'}
+        return super()._map_field(field)
 
 
 class DeprecatedSerializerAutoSchema(AutoSchema):
@@ -208,6 +237,8 @@ class OperationSerializerDescriptionAutoSchema(AutoSchema):
 
 
 class StandardizedAutoSchema(CustomizableSerializerAutoSchema,
+                             ListFieldAutoSchema,
+                             BooleanFieldAutoSchema,
                              ReferenceAutoSchema,
                              TypedSerializerAutoSchema,
                              EnumNamesAutoSchema,
