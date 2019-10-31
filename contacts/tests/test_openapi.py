@@ -60,11 +60,14 @@ def test_api_contact_model_schema(permitted_api_client):
         'updated': {'type': 'string', 'format': 'date-time',
                     'title': 'Updated', 'readOnly': True},
         'name': {'type': 'string', 'title': 'Наименование', 'maxLength': 255},
-        'phones': {'type': 'array', 'items': {'type': 'string'},
+        'phones': {'type': 'array', 'items': {
+            'type': 'string', 'title': 'Phones'},
                    'title': 'Номера телефонов',
                    'description': 'Номера телефонов вводятся в произвольном '
                                   'формате через запятую'},
-        'emails': {'type': 'array', 'items': {'type': 'string'},
+        'emails': {'type': 'array', 'items': {'format': 'email',
+                                              'title': 'Emails',
+                                              'type': 'string'},
                    'title': 'E-mail адреса',
                    'description': 'E-mail адреса вводятся через запятую'},
         'order_index': {'type': 'integer', 'maximum': 2147483647,

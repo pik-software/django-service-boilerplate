@@ -237,15 +237,17 @@ class OperationSerializerDescriptionAutoSchema(AutoSchema):
 
 
 class StandardizedAutoSchema(CustomizableSerializerAutoSchema,
+                             FieldMappingAutoSchema,
+                             DeprecatedFieldAutoSchema,
+                             DeprecatedSerializerAutoSchema,
+                             # Above MixIns should be defined first,
+                             # because they postprocessing other results
                              ListFieldAutoSchema,
                              BooleanFieldAutoSchema,
                              ReferenceAutoSchema,
                              TypedSerializerAutoSchema,
                              EnumNamesAutoSchema,
-                             DeprecatedFieldAutoSchema,
-                             DeprecatedSerializerAutoSchema,
                              ModelSerializerFieldsAutoSchema,
-                             FieldMappingAutoSchema,
                              ListFiltersOnlyAutoSchema,
                              OperationSummaryAutoSchema,
                              OperationSerializerDescriptionAutoSchema,
