@@ -23,7 +23,7 @@ django-simple-history==2.7.3
 djangorestframework==3.10.3
 djangorestframework-filters==1.0.0.dev0
 django-filter==2.2.0
-django-crispy-forms==1.7.2
+django-crispy-forms==1.8.1
 markdown==3.1.1
 # API SCHEMA
 #drf-yasg==1.16.1 ( wait PR https://github.com/axnsan12/drf-yasg/pull/428 )
