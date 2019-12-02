@@ -17,7 +17,7 @@ django-storages==1.7.2
 pik-django-utils==2.0.1
 
 # HISTORY
-django-simple-history==2.7.3
+django-simple-history==2.8.0
 
 # API
 djangorestframework==3.10.3
