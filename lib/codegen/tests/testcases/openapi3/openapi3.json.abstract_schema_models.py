@@ -21,7 +21,7 @@ class BaseHistoricalContact(models.Model):
     history_change_reason = models.CharField(verbose_name='History change reason', editable=False, null=True, max_length=255)
     history_type = models.CharField(verbose_name='History type', editable=False, null=True, max_length=255)
     history_user_id = models.IntegerField(verbose_name='History user id', editable=False, null=True)
-    history_user = JSONField(verbose_name='History user', editable=False, default=dict)
+    history_user = models.ForeignKey('User', editable=False, null=True, on_delete=models.CASCADE)
     uid = models.CharField(verbose_name='uid', primary_key=True, max_length=255)
     type = models.CharField(verbose_name='type', editable=False, null=True, max_length=255)
     version = models.CharField(verbose_name='version', editable=False, null=True, max_length=255)
@@ -57,14 +57,14 @@ class BaseHistoricalComment(models.Model):
     history_change_reason = models.CharField(verbose_name='History change reason', editable=False, null=True, max_length=255)
     history_type = models.CharField(verbose_name='History type', editable=False, null=True, max_length=255)
     history_user_id = models.IntegerField(verbose_name='History user id', editable=False, null=True)
-    history_user = JSONField(verbose_name='History user', editable=False, default=dict)
+    history_user = models.ForeignKey('User', editable=False, null=True, on_delete=models.CASCADE)
     uid = models.CharField(verbose_name='uid', primary_key=True, max_length=255)
     type = models.CharField(verbose_name='type', editable=False, null=True, max_length=255)
     version = models.CharField(verbose_name='version', editable=False, null=True, max_length=255)
     created = models.DateTimeField(verbose_name='Создан', editable=False, null=True)
     updated = models.DateTimeField(verbose_name='Updated', editable=False, null=True)
     user = models.IntegerField(verbose_name='User', editable=False, null=True)
-    contact = JSONField(verbose_name='contact', editable=False, default=dict)
+    contact = models.ForeignKey('Contact', editable=False, null=True, on_delete=models.CASCADE)
     message = models.CharField(verbose_name='Сообщение', editable=False, null=True, max_length=255)
 
     class Meta:
@@ -78,7 +78,7 @@ class BaseComment(models.Model):
     created = models.DateTimeField(verbose_name='Создан', editable=False, null=True)
     updated = models.DateTimeField(verbose_name='Updated', editable=False, null=True)
     user = models.IntegerField(verbose_name='User', editable=False, null=True)
-    contact = JSONField(verbose_name='contact', editable=False, default=dict)
+    contact = models.ForeignKey('Contact', editable=False, null=True, on_delete=models.CASCADE)
     message = models.CharField(verbose_name='Сообщение', editable=False, null=True, max_length=255)
 
     class Meta:
