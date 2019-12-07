@@ -133,6 +133,7 @@ INSTALLED_APPS = [
     # LIB
     'lib.codegen',
     'lib.integra',
+    'lib.backendless',
 
     # CELERY
     'django_celery_results',

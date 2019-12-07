@@ -11,9 +11,13 @@ from core.api.schema import get_standardized_schema_view
 from core.api.user import USER_API_VIEW
 from core.views import task_result_api_view
 from contacts.api import ContactViewSet, CommentViewSet
+from lib.backendless.injects import inject_backendless_routes, \
+    inject_backendless_schema
 
 
 router = StandardizedRouter()  # noqa: pylint=invalid-name
+inject_backendless_routes(router)
+inject_backendless_schema()
 router.register(
     'contact-list', ContactViewSet, 'contact')
 router.register(
