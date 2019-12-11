@@ -67,11 +67,11 @@ echo "SSH: ${SSH_HOST}"
 INIT_LETSENCRYPT=false
 FIX_MEDIA_ROOT_PERMISSIONS=false
 
-echo "Check SSH access 'ssh ${SSH_HOST} dokku help'"
+echo "Check SSH access 'ssh ${SSH_HOST} -o ConnectTimeout=10 dokku help'"
 ssh ${SSH_HOST} -C dokku help > /dev/null
-echo "Check SSH access 'ssh ${SSH_HOST} docker ps'"
+echo "Check SSH access 'ssh ${SSH_HOST} -o ConnectTimeout=10 docker ps'"
 ssh ${SSH_HOST} -C docker ps > /dev/null
-echo "Check SSH access 'ssh dokku@${SSH_HOST} help'"
+echo "Check SSH access 'ssh dokku@${SSH_HOST} -o ConnectTimeout=10 help'"
 ssh dokku@${SSH_HOST} -C help > /dev/null
 
 if ! ssh dokku@${SSH_HOST} -C apps:list | grep -qFx ${SERVICE_NAME}; then
