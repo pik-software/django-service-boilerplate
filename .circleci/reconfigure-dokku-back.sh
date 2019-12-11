@@ -10,6 +10,7 @@ SERVICE_HOST=$2
 SERVICE_NAME=$3
 BRANCH=$4
 ENVIRONMENT=$5
+CELERYBEAT_SCHEDULER_DIR=/tmp/CELERYBEAT_SCHEDULER/
 
 if [[ -z "${SSH_HOST}" ]] || [[ -z "${SERVICE_HOST}" ]] || [[ -z "${SERVICE_NAME}" ]] || [[ -z "${BRANCH}" ]] || [[ -z "${ENVIRONMENT}" ]]; then
     echo "Use: $0 <SSH_HOST> <SERVICE_HOST> <SERVICE_NAME> <BRANCH> <ENVIRONMENT>"
@@ -39,4 +40,17 @@ if [[ -n "${SENTRY_URL}" && -n "${SENTRY_TEAM}" && -n "${SENTRY_API_KEY}" ]]; th
     ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} SENTRY_DSN=${SENTRY_DSN}
 else
     echo "No SENTRY DSN discovery settings (skip)"
+fi
+
+if [ ! -d "$CELERYBEAT_SCHEDULER_DIR" ]; then
+  echo "Create CELERYBEAT Schedule dir"
+
+  echo "mkdir"
+  ssh ${SSH_HOST} -C mkdir -p ${CELERYBEAT_SCHEDULER_DIR}
+
+#  echo "chown"
+#  ssh ${SSH_HOST} -C chown -R dokku:dokku ${CELERYBEAT_SCHEDULER_DIR}
+
+  echo "dokku mount"
+  ssh dokku@${SSH_HOST} -C storage:mount ${SERVICE_NAME} "${CELERYBEAT_SCHEDULER_DIR}:/tmp"
 fi

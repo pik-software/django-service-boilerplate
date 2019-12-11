@@ -37,9 +37,9 @@ ssh dokku@${SSH_HOST} -C redis:create ${SERVICE_NAME}
 ssh dokku@${SSH_HOST} -C redis:link ${SERVICE_NAME} ${SERVICE_NAME}
 
 # celery beat schedule
-ssh ${SSH_HOST} -C sudo mkdir -p "${CELERYBEAT_SCHEDULER_DIR}"
+ssh ${SSH_HOST} -C mkdir -p "${CELERYBEAT_SCHEDULER_DIR}"
 ssh ${SSH_HOST} -C chown -R dokku:dokku "${CELERYBEAT_SCHEDULER_DIR}"
-ssh dokku${SSH_HOST} -C storage:mount ${SERVICE_NAME} "${CELERYBEAT_SCHEDULER_DIR}:/tmp"
+ssh dokku@${SSH_HOST} -C storage:mount ${SERVICE_NAME} "${CELERYBEAT_SCHEDULER_DIR}:/tmp"
 
 # dd-agent
 if ssh ${SSH_HOST} -C docker ps | grep -q dd-agent; then
