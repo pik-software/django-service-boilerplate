@@ -52,5 +52,7 @@ if [ ! -d "$CELERYBEAT_SCHEDULER_DIR" ]; then
 #  ssh ${SSH_HOST} -C chown -R dokku:dokku ${CELERYBEAT_SCHEDULER_DIR}
 
   echo "dokku mount"
-  ssh dokku@${SSH_HOST} -C storage:mount ${SERVICE_NAME} "${CELERYBEAT_SCHEDULER_DIR}:/tmp"
+  if ! dokku@${SSH_HOST} -C storage:list ${SERVICE_NAME} | grep ${CELERYBEAT_SCHEDULER_DIR}; then
+      ssh dokku@${SSH_HOST} -C storage:mount ${SERVICE_NAME} "${CELERYBEAT_SCHEDULER_DIR}:/tmp"
+  fi
 fi
