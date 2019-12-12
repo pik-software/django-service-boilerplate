@@ -43,13 +43,7 @@ else
 fi
 
 if [ ! -d "$CELERYBEAT_SCHEDULER_DIR" ]; then
-  echo "Create CELERYBEAT Schedule dir"
-
-  echo "mkdir"
   ssh ${SSH_HOST} -C mkdir -p ${CELERYBEAT_SCHEDULER_DIR}
-
-
-  echo "dokku mount"
   if ! ssh dokku@${SSH_HOST} -C storage:list ${SERVICE_NAME} | grep ${CELERYBEAT_SCHEDULER_DIR}; then
       ssh dokku@${SSH_HOST} -C storage:mount ${SERVICE_NAME} "${CELERYBEAT_SCHEDULER_DIR}:/tmp"
   fi
