@@ -48,8 +48,6 @@ if [ ! -d "$CELERYBEAT_SCHEDULER_DIR" ]; then
   echo "mkdir"
   ssh ${SSH_HOST} -C mkdir -p ${CELERYBEAT_SCHEDULER_DIR}
 
-#  echo "chown"
-#  ssh ${SSH_HOST} -C chown -R dokku:dokku ${CELERYBEAT_SCHEDULER_DIR}
 
   echo "dokku mount"
   if ! ssh dokku@${SSH_HOST} -C storage:list ${SERVICE_NAME} | grep ${CELERYBEAT_SCHEDULER_DIR}; then
