@@ -77,7 +77,6 @@ ssh dokku@${SSH_HOST} -C help > /dev/null
 if ! ssh dokku@${SSH_HOST} -C apps:list | grep -qFx ${SERVICE_NAME}; then
     echo "!!! ===> Init <=== !!!"
     ./init-dokku-back.sh "${SSH_HOST}" "${SERVICE_HOST}" "${SERVICE_NAME}" "${ENVIRONMENT}"
-    FIX_MEDIA_ROOT_PERMISSIONS=true
     [[ -n "${LETSENCRYPT}" ]] && export INIT_LETSENCRYPT=true
 fi
 
@@ -94,11 +93,5 @@ fi
 
 echo "!!! ===> Run migrations <=== !!!"
 ssh dokku@${SSH_HOST} -C run ${SERVICE_NAME} python manage.py migrate
-
-if ${FIX_MEDIA_ROOT_PERMISSIONS}; then
-    echo "!!! ===> Fix MEDIA_ROOT permissions <=== !!!"
-    MEDIA_ROOT=/DATA/${SERVICE_NAME}
-    ssh ${SSH_HOST} "docker exec ${SERVICE_NAME}.web.1 chown -R unprivileged:unprivileged ${MEDIA_ROOT}"
-fi
 
 echo "!!! ===> http://${SERVICE_HOST}/ <=== !!!"

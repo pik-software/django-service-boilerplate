@@ -1,0 +1,7 @@
+{
+  "scripts": {
+    "dokku": {
+      "predeploy": "chown -R unprivileged:unprivileged ${MEDIA_ROOT}"
+    }
+  }
+}
