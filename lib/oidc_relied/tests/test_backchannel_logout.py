@@ -44,6 +44,8 @@ def test_success(backchannel_logout_url, session_store):
     assert not client.session.exists(client.session.session_key)
 
 
+@patch('lib.oidc_relied.backends.PIKOpenIdConnectAuth.'
+       'get_jwks_keys', Mock(return_value={}))
 @patch('social_core.backends.open_id_connect.JWS.verify_compact',
        Mock(side_effect=JWKESTException('Signature verification failed')))
 def test_wrong_sign(backchannel_logout_url):
@@ -69,6 +71,9 @@ def test_wrong_client(backchannel_logout_url):
     assert cache.get('oidc_userdata_test_token') == 'testuserinfo'
 
 
+@pytest.mark.django_db
+@patch('lib.oidc_relied.backends.PIKOpenIdConnectAuth.'
+       'get_jwks_keys', Mock(return_value={}))
 def test_missing_token(backchannel_logout_url):
     cache.set('oidc_userdata_test_token', 'testuserinfo')
     client = django.test.Client()
