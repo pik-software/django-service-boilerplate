@@ -29,7 +29,7 @@ case "$ENVIRONMENT" in
         ;;
     staging)
         ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} EXAMPLE=2
-        ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_§NAME} BRANCH=${BRANCH}
+        ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} BRANCH=${BRANCH}
         ;;
 esac
 
