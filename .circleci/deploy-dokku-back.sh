@@ -65,7 +65,6 @@ echo "SERVICE_HOST=${SERVICE_HOST}"
 echo "SSH: ${SSH_HOST}"
 
 INIT_LETSENCRYPT=false
-FIX_MEDIA_ROOT_PERMISSIONS=false
 
 echo "Check SSH access 'ssh ${SSH_HOST} -o ConnectTimeout=10 dokku help'"
 ssh ${SSH_HOST} -C dokku help > /dev/null
