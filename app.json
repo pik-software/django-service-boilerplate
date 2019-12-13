@@ -1,7 +1,0 @@
-{
-  "scripts": {
-    "dokku": {
-      "predeploy": "sudo chown -R unprivileged:unprivileged ${MEDIA_ROOT}"
-    }
-  }
-}
