@@ -62,7 +62,7 @@ pytest-base-url==1.4.1
 pytest-benchmark==3.2.2
 pytest-html==2.0.0
 # tests/style
-prospector==1.1.2
+prospector==1.2.0
 pylint==2.1.1
 flake8<3.6.0
 pep8-naming==0.8.2
