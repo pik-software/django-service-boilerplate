@@ -10,6 +10,7 @@ SERVICE_HOST=$2
 SERVICE_NAME=$3
 ENVIRONMENT=$4
 MEDIA_ROOT=/DATA/${SERVICE_NAME}
+PRIVATE_STORAGE_ROOT=/DATA/${SERVICE_NAME}_private
 
 if [[ -z "${SSH_HOST}" ]] || [[ -z "${SERVICE_HOST}" ]] || [[ -z "${SERVICE_NAME}" ]] || [[ -z "${ENVIRONMENT}" ]]; then
     echo "Use: $0 <SSH_HOST> <SERVICE_HOST> <SERVICE_NAME> <ENVIRONMENT>"
@@ -26,6 +27,9 @@ ssh ${SSH_HOST} -C dokku events:on
 ssh ${SSH_HOST} -C dokku apps:create ${SERVICE_NAME}
 ssh dokku@${SSH_HOST} -C storage:mount ${SERVICE_NAME} "${MEDIA_ROOT}:${MEDIA_ROOT}"
 ssh dokku@${SSH_HOST} -C domains:set ${SERVICE_NAME} ${SERVICE_HOST}
+
+# private storage
+ssh dokku@${SSH_HOST} -C storage:mount ${SERVICE_NAME} "${PRIVATE_STORAGE_ROOT}:${PRIVATE_STORAGE_ROOT}"
 
 # postgres (root required!)
 ssh ${SSH_HOST} -C POSTGRES_IMAGE="mdillon/postgis" POSTGRES_IMAGE_VERSION="9.6" dokku postgres:create ${SERVICE_NAME}
