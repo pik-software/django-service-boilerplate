@@ -6,6 +6,7 @@ import sys
 from datetime import timedelta
 
 import dj_database_url
+from django.core.files.storage import FileSystemStorage
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
@@ -296,6 +297,9 @@ MEDIA_URL = '/media/'
 # to share the storage with all services without collisions
 MEDIA_ROOT_PROJECT_PATH_PREFIX = os.environ.get('SERVICE_NAME', 'boilerplate')
 MEDIA_ROOT = os.environ.get('MEDIA_ROOT', os.path.join(DATA_DIR, 'media'))
+
+PRIVATE_STORAGE_ROOT = os.path.join(DATA_DIR, f'{SERVICE_NAME}_private')
+PRIVATE_STORAGE = FileSystemStorage(location=PRIVATE_STORAGE_ROOT)
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 SESSION_CACHE_ALIAS = 'sessions'
