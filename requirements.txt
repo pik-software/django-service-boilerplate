@@ -32,7 +32,7 @@ markdown==3.1.1
 # db
 redis==3.3.8
 psycopg2==2.8.3
-django-redis==4.10.0
+django-redis==4.11.0
 
 # celery
 celery==4.3.0
