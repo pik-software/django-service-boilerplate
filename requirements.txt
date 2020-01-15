@@ -82,4 +82,4 @@ swagger-parser==1.0.1
 ddtrace==0.29.0
 datadog==0.30.0
 elastic-apm==5.1.2
-django-health-check==3.11.0
+django-health-check==3.12.1
