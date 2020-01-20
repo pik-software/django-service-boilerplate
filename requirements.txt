@@ -37,6 +37,7 @@ django-redis==4.10.0
 # celery
 celery==4.3.0
 django_celery_results==1.1.2
+celery-redbeat==0.13.0
 
 # sentry
 raven==6.10.0
