@@ -1,6 +1,6 @@
 import logging
 
-from raven.contrib.django.models import client
+import sentry_sdk
 
 
 def alert(message: str, **kwargs) -> None:
@@ -13,9 +13,6 @@ def alert(message: str, **kwargs) -> None:
               data=webhook_data)
 
     """
-    tags = {k: v for k, v in kwargs.items() if f'{{{k}}}' in message}
-    extra = {k: v for k, v in kwargs.items() if f'{{{k}}}' not in message}
     text = message.format(**kwargs)
-    client.captureMessage(
-        message=text, extra=extra, tags=tags,
-        level=logging.ERROR)
+    sentry_sdk.capture_message(
+        message=text, level=logging.ERROR)

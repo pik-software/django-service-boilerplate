@@ -63,8 +63,6 @@ fi
 #ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} FILE_STORAGE_PROJECT_ID=
 #ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} FILE_STORAGE_BACKEND_CREDENTIALS=
 
-# sentry
-#ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} RAVEN_DSN=
 
 # OPTIONS
 ssh dokku@${SSH_HOST} -C ps:set-restart-policy ${SERVICE_NAME} always
