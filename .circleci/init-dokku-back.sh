@@ -67,6 +67,9 @@ fi
 # OPTIONS
 ssh dokku@${SSH_HOST} -C ps:set-restart-policy ${SERVICE_NAME} always
 
+# sentry
+#ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} SENTRY_DSN=
+
 # SCALE
 ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} DOKKU_DEFAULT_CHECKS_WAIT=0
 ssh dokku@${SSH_HOST} -C ps:scale ${SERVICE_NAME} web=1 worker=1 beat=1
