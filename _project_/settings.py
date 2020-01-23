@@ -42,8 +42,9 @@ INTERNAL_IPS = ['127.0.0.1']
 
 # SENTRY
 sentry_sdk.init(
-    os.environ.get('SENTRY_DSN', ''),
-    integrations=[DjangoIntegration()]
+    dsn=os.environ.get('SENTRY_DSN', ''),
+    integrations=[DjangoIntegration()],
+    send_default_pii=True
 )
 
 # APM
