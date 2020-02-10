@@ -81,6 +81,6 @@ swagger-parser==1.0.1
 
 # metrics/monitoring
 ddtrace==0.29.0
-datadog==0.30.0
+datadog==0.34.1
 elastic-apm==5.1.2
 django-health-check==3.11.0
