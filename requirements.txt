@@ -70,7 +70,7 @@ pep8-naming==0.8.2
 
 # OIDC
 django_cors_headers==2.5.2
-django-oauth-toolkit<1.1.0
+django-oauth-toolkit==1.3.0
 django-rest-framework-social-oauth2==1.1.0
 pyjwkest==1.4.0
 future>=0.16.0,<0.17.0
