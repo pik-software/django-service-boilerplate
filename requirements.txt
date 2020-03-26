@@ -40,7 +40,7 @@ django_celery_results==1.1.2
 celery-redbeat==0.13.0
 
 # sentry
-sentry-sdk==0.14.1
+sentry-sdk==0.14.3
 
 # prod
 uwsgi==2.0.18
