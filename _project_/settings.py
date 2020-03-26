@@ -5,6 +5,9 @@ import os
 import sys
 from datetime import timedelta
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 import dj_database_url
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -38,10 +41,11 @@ INTERNAL_IPS = ['127.0.0.1']
 # --- <SERVICES> --- #
 
 # SENTRY
-RAVEN_CONFIG = {
-    'dsn': os.environ.get('RAVEN_DSN', ''),
-    'CELERY_LOGLEVEL': logging.WARNING,
-}
+sentry_sdk.init(
+    dsn=os.environ.get('SENTRY_DSN', ''),
+    integrations=[DjangoIntegration()],
+    send_default_pii=True
+)
 
 # APM
 DD_STATSD_ADDR = os.environ.get('DD_AGENT_PORT_8125_UDP_ADDR', 'dd-agent')
@@ -136,9 +140,6 @@ INSTALLED_APPS = [
 
     # CELERY
     'django_celery_results',
-
-    # SENTRY
-    'raven.contrib.django.raven_compat',
 
     # Django health check
     'health_check',  # required
@@ -319,8 +320,14 @@ CELERY_TASK_RESULT_EXPIRES = 3600
 CELERY_IMPORTS = [
     'core.tasks',
 ]
-CELERYBEAT_SCHEDULE_FILENAME = os.path.join(DATA_DIR, 'celerybeat.db')
 CELERYBEAT_SCHEDULE = {}
+
+
+# RedBeat
+DEFAULT_REDBEAT_KEY_PREFIX = 'redbeat'
+CELERY_REDBEAT_REDIS_URL = REDIS_URL
+CELERY_REDBEAT_KEY_PREFIX = f'{DEFAULT_REDBEAT_KEY_PREFIX}:{SERVICE_NAME}:'
+
 
 # API
 ALLOWED_APPS_FOR_PERMISSIONS_VIEW = {'auth', 'contacts'}
@@ -431,10 +438,6 @@ SOFT_DELETE_SAFE_MODE = False
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
-    'root': {
-        'level': 'WARNING',
-        'handlers': ['sentry'],
-    },
     'formatters': {
         'verbose': {
             'format': '[django] %(levelname)s %(asctime)s %(name)s/%(module)s %(process)d/%(thread)d: %(message)s'  # noqa
@@ -447,27 +450,12 @@ LOGGING = {
             'stream': sys.stdout,
             'formatter': 'verbose'
         },
-        'sentry': {
-            'level': 'WARNING',
-            'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',  # noqa
-            'tags': {'environment': ENVIRONMENT},
-        },
     },
     'loggers': {
         'django': {
             'level': 'INFO',
             'handlers': ['console'],
             'propagate': True,
-        },
-        'raven': {
-            'level': 'INFO',
-            'handlers': ['console'],
-            'propagate': False,
-        },
-        'sentry.errors': {
-            'level': 'INFO',
-            'handlers': ['console'],
-            'propagate': False,
         },
     },
 }

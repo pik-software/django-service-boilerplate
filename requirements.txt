@@ -6,7 +6,7 @@ beautifulsoup4==4.8.0
 openpyxl==3.0.0
 python-dateutil==2.8.0
 
-Django==2.2.5
+Django==2.2.10
 
 # django utils
 django_widget_tweaks==1.4.5
@@ -37,15 +37,16 @@ django-redis==4.10.0
 # celery
 celery==4.3.0
 django_celery_results==1.1.2
+celery-redbeat==0.13.0
 
 # sentry
-raven==6.10.0
+sentry-sdk==0.14.1
 
 # prod
 uwsgi==2.0.18
 
 # dev
-django_debug_toolbar==2.0
+django_debug_toolbar==2.2
 django_extensions==2.2.1
 werkzeug==0.16.0
 
