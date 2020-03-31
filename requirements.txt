@@ -55,7 +55,7 @@ factory_boy==2.12.0
 freezegun==0.3.12
 pdbpp==0.10.0
 pytest==5.2.0
-pytest-mock==1.11.0
+pytest-mock==3.0.0
 pytest-cov==2.7.1
 pytest-django==3.5.1
 pytest-selenium==1.17.0
