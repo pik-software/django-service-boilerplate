@@ -35,7 +35,7 @@ psycopg2==2.8.3
 django-redis==4.10.0
 
 # celery
-celery==4.3.0
+celery==4.4.2
 django_celery_results==1.1.2
 celery-redbeat==0.13.0
 
