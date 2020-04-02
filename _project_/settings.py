@@ -7,6 +7,7 @@ from datetime import timedelta
 
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+from sentry_sdk.integrations.celery import CeleryIntegration
 
 import dj_database_url
 
@@ -43,7 +44,7 @@ INTERNAL_IPS = ['127.0.0.1']
 # SENTRY
 sentry_sdk.init(
     dsn=os.environ.get('SENTRY_DSN', ''),
-    integrations=[DjangoIntegration()],
+    integrations=[DjangoIntegration(), CeleryIntegration()],
     send_default_pii=True
 )
 
