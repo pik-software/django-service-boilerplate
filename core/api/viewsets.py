@@ -1,3 +1,4 @@
+from django_restql.mixins import EagerLoadingMixin
 from rest_framework import generics, mixins
 from rest_framework.viewsets import ViewSetMixin
 
@@ -20,6 +21,7 @@ class StandardizedGenericViewSet(ViewSetMixin, generics.GenericAPIView):
 
 
 class StandardizedReadOnlyModelViewSet(
+    EagerLoadingMixin,
     mixins.RetrieveModelMixin,
     mixins.ListModelMixin,
     StandardizedGenericViewSet
@@ -31,6 +33,7 @@ class StandardizedReadOnlyModelViewSet(
 
 
 class StandardizedModelViewSet(
+    EagerLoadingMixin,
     BulkCreateModelMixin,
     mixins.RetrieveModelMixin,
     mixins.UpdateModelMixin,

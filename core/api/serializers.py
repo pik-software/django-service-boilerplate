@@ -5,6 +5,7 @@ from uuid import UUID
 from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import Model
+from django_restql.mixins import DynamicFieldsMixin
 from drf_yasg.utils import swagger_serializer_method
 from rest_framework import serializers
 from rest_framework.fields import empty
@@ -81,7 +82,8 @@ class StandardizedProtocolSerializer(serializers.ModelSerializer):
         return obj.version
 
 
-class StandardizedModelSerializer(SettableNestedSerializerMixIn,
+class StandardizedModelSerializer(DynamicFieldsMixin,
+                                  SettableNestedSerializerMixIn,
                                   PermittedFieldsSerializerMixIn,
                                   StandardizedProtocolSerializer):
     pass
