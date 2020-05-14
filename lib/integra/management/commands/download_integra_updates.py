@@ -36,18 +36,17 @@ class Command(BaseCommand):
         parser.add_argument('app', type=str)
         parser.add_argument('model', type=str)
         parser.add_argument('--clear-state', type=bool, default=False)
-        parser.add_argument('--ignore-version', type=bool, default=False)
 
     def handle(self, *args, **options):
         app_name = options['app'].lower()
         model_name = options['model'].lower()
         config = self._get_integra_config(app_name, model_name)
-        integrator = Integra(config, ignore_version=options['ignore_version'])
+        integrator = Integra(config)
 
         with transaction.atomic():
             if options['clear_state'] is True:
                 key = f'{app_name}:{model_name}'
                 UpdateState.objects.set_last_updated(key, None)
 
-            processed, updated, errors = integrator.run()
-            LOGGER.info(f'ok:{processed}/{updated}:errors:{errors}')
+            processed = integrator.run()
+            LOGGER.info(f'ok:{processed}')
