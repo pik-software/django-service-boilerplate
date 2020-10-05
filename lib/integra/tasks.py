@@ -2,6 +2,7 @@ from celery import shared_task
 from celery.utils.log import get_task_logger
 from django.conf import settings
 
+from core.utils.redis import skip_locked
 from .utils import Loader, Updater
 
 LOGGER = get_task_logger(__name__)
@@ -40,6 +41,7 @@ class Integra:
 
 
 @shared_task
+@skip_locked('integra_task')
 def download_updates():
     processed, updated, errors = 0, 0, 0
     configs = getattr(settings, 'INTEGRA_CONFIGS', None)
