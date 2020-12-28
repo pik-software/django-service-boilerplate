@@ -57,7 +57,7 @@ jobs:
             python manage.py collectstatic
             python manage.py check
             pytest --cov .
-            prospector --profile-path . --profile .prospector.yaml .
+            prospector -x --profile-path . --profile .prospector.yaml .
 
   deploy-staging:
     docker:
