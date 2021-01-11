@@ -1,5 +1,5 @@
 # python utils
-Pillow==7.0.0
+Pillow==7.1.0
 requests==2.22.0
 deprecated==1.2.6
 beautifulsoup4==4.8.0
