@@ -23,9 +23,7 @@ class ContactViewSet(StandardizedModelViewSet):
     search_fields = (
         'name', 'phones', 'emails')
     ordering_fields = ('created', 'updated', 'name', 'order_index')
-
-    def get_queryset(self):
-        return Contact.objects.all()
+    queryset = Contact.objects.all()
 
 
 class CommentViewSet(StandardizedModelViewSet):
@@ -43,9 +41,11 @@ class CommentViewSet(StandardizedModelViewSet):
     search_fields = (
         'message', 'user')
     ordering_fields = ('created', 'updated')
+    queryset = Comment.objects.all()
 
-    def get_queryset(self):
-        return Comment.objects.all().select_related('contact')
+    select_related = {
+        'contact': 'contact'
+    }
 
 
 class CategoryViewSet(StandardizedModelViewSet):
@@ -63,6 +63,4 @@ class CategoryViewSet(StandardizedModelViewSet):
     search_fields = (
         'name')
     ordering_fields = ('created', 'updated')
-
-    def get_queryset(self):
-        return Category.objects.all()
+    queryset = Category.objects.all()

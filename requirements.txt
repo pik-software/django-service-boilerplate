@@ -28,6 +28,7 @@ markdown==3.1.1
 # API SCHEMA
 #drf-yasg==1.16.1 ( wait PR https://github.com/axnsan12/drf-yasg/pull/428 )
 -e git+https://github.com/pik-software/drf-yasg.git@master#egg=drf-yasg
+django-restql==0.8.3
 
 # db
 redis==3.3.8
