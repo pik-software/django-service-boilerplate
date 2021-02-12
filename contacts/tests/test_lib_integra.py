@@ -226,7 +226,7 @@ RESULT = [
 ]
 
 
-def _make_integra(ignore_version=False):
+def _make_integra():
     return Integra({
         'base_url': 'http://127.0.0.1:8000',
         'request': {'auth': 'api-reader:MyPass39dza2es'},
@@ -234,22 +234,21 @@ def _make_integra(ignore_version=False):
             {'url': '/api/v1/contact-list/',
              'app': 'contacts',
              'model': 'contact'},
-        ]}, ignore_version=ignore_version)
+        ]})
 
 
 @mock.patch('lib.integra.utils._fetch_data_from_api')
 def test_integra_run(fetch):
     fetch.return_value = deepcopy(RESULT)
     integra = _make_integra()
-
-    processed, updated, errors = integra.run()
+    processed = integra.run()
 
     fetch.assert_called_once_with(
         'http://127.0.0.1:8000/api/v1/contact-list/',
         ('api-reader', 'MyPass39dza2es'),
         {'ordering': 'updated'})
     assert Contact.objects.count() == 10
-    assert (processed, updated, errors) == (15, 14, 0)
+    assert processed == 15
 
     obj = Contact.objects.get(uid='0168243a-7048-de6f-20da-7f222a7f1087')
     assert obj.version == 9
@@ -262,8 +261,8 @@ def test_integra_run_on_the_same_result(fetch):
     fetch.return_value = deepcopy(RESULT)
     integra.run()
     fetch.return_value = deepcopy(RESULT)
-    processed, updated, errors = integra.run()
-    assert (processed, updated, errors) == (15, 0, 0)
+    processed = integra.run()
+    assert processed == 15
 
 
 @mock.patch('lib.integra.utils._fetch_data_from_api')
@@ -285,24 +284,5 @@ def test_integra_update(fetch):
         },
     ]
 
-    processed, updated, errors = integra.run()
-    assert (processed, updated, errors) == (1, 1, 0)
-
-
-@mock.patch('lib.integra.utils._fetch_data_from_api')
-def test_integra_with_ignore_version(fetch):
-    fetch.return_value = deepcopy(RESULT)
-    integra = _make_integra(ignore_version=True)
-
-    processed, updated, errors = integra.run()
-
-    fetch.assert_called_once_with(
-        'http://127.0.0.1:8000/api/v1/contact-list/',
-        ('api-reader', 'MyPass39dza2es'),
-        {'ordering': 'updated'})
-    assert Contact.objects.count() == 10
-    assert (processed, updated, errors) == (15, 15, 0)
-
-    obj = Contact.objects.get(uid='0168243a-7048-de6f-20da-7f222a7f1087')
-    assert obj.version == 2
-    assert obj.name == 'new-one!'
+    processed = integra.run()
+    assert processed == 1
