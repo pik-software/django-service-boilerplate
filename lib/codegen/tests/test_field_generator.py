@@ -79,6 +79,13 @@ class TestModelFieldGenerator:
             "models.ForeignKey('Contact', editable=False, null=True, "
             "on_delete=models.CASCADE)")
 
+    def test_openapi3_create_foreign_key_field(self):
+        schema = {"anyOf": [{"$ref": "#/components/schemas/Contact"}],
+                  "title": "contact", "description": ""}
+        assert self.generate(schema) == (
+            "models.ForeignKey('Contact', editable=False, null=True, "
+            "on_delete=models.CASCADE)")
+
     def test_create_json_field_for_array(self):
         schema = {
             'description': ('Номера телефонов в произвольном формате'),

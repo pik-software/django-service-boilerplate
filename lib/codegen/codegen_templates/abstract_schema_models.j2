@@ -7,7 +7,7 @@ from django.contrib.postgres.fields import JSONField
 from django.db import models
 
 
-{% for name, definition in schema.definitions.items() | skip_items_keys(options.skip_models) %}
+{% for name, definition in definitions.items() | skip_items_keys(options.skip_models) %}
 class Base{{name}}(models.Model):
     {% for prop_name, property in definition.properties.items() | skip_items_keys(options.skip_fields) %}
     {{ prop_name|to_model_field_name }} = {{ property|to_model_field(prop_name) }}

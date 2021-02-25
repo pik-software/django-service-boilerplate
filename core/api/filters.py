@@ -1,54 +1,40 @@
-import coreapi
-from django.contrib.postgres.fields import ArrayField
-from django.db.models import DateTimeField
-from rest_framework_filters import FilterSet, RelatedFilter, BaseCSVFilter, \
-    AutoFilter, IsoDateTimeFilter
-from rest_framework_filters.backends import RestFrameworkFilterBackend
+import warnings
+
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework_filters import RelatedFilter, BaseCSVFilter, AutoFilter
 from rest_framework.filters import SearchFilter, OrderingFilter
 
 
-UID_LOOKUPS = ('exact', 'gt', 'gte', 'lt', 'lte', 'in', 'isnull')
-STRING_LOOKUPS = (
-    'exact', 'iexact', 'in', 'startswith', 'endswith', 'contains', 'contains',
-    'isnull')
-DATE_LOOKUPS = ('exact', 'gt', 'gte', 'lt', 'lte', 'in', 'isnull')
-BOOLEAN_LOOKUPS = ('exact', 'in', 'isnull')
-ARRAY_LOOKUPS = ['contains', 'contained_by', 'overlap', 'len', 'isnull']
+class StandardizedFieldFilters(DjangoFilterBackend):
+    def get_schema_operation_parameters(self, view):
+        try:
+            queryset = view.get_queryset()
+        except Exception:  # noqa: broad-except
+            queryset = None
+            warnings.warn(
+                f'{view.__class__} is not compatible with schema generation')
 
+        filterset_class = self.get_filterset_class(view, queryset)
+        return self.get_flatten_schema_operation_parameters(filterset_class)
 
-class StandardizedFieldFilters(RestFrameworkFilterBackend):
-    def get_schema_fields(self, view):
-        # This is not compatible with widgets where the query param differs
-        # from the filter's attribute name. Notably, this includes
-        # `MultiWidget`, where query params will be of
-        # the format `<name>_0`, `<name>_1`, etc...
+    def get_flatten_schema_operation_parameters(self, filterset_class,
+                                                prefix=''):
+        if not filterset_class:
+            return []
+        filters = []
 
-        filter_class = getattr(view, 'filter_class', None)
-        if filter_class is None:
-            try:
-                filter_class = self.get_filter_class(view, view.get_queryset())
-            except Exception:  # noqa
-                raise RuntimeError(
-                    f"{view.__class__} is not compatible with "
-                    f"schema generation"
-                )
-
-        fields = []
-
-        return self.get_flatten_schema_fields('', fields, filter_class)
-
-    def get_flatten_schema_fields(self, prefix, filters: list, filter_class):
-        for field_name, field in filter_class.get_filters().items():
+        for field_name, field in filterset_class.base_filters.items():
             if isinstance(field, RelatedFilter):
-                self.get_flatten_schema_fields(
-                    prefix + field_name + '__', filters, field.filterset)
+                filters.extend(self.get_flatten_schema_operation_parameters(
+                    field.filterset, f'{prefix}{field_name}__'))
             else:
-                filters.append(coreapi.Field(
-                    name=prefix + field_name,
-                    required=False,
-                    location='query',
-                    schema=self.get_coreschema_field(field)
-                ))
+                filters.append({
+                    'name': f'{prefix}{field_name}',
+                    'required': field.extra['required'],
+                    'in': 'query',
+                    'description': str(field.extra.get('help_text', '')),
+                    'schema': {
+                        'type': 'string'}})
         return filters
 
 
@@ -61,21 +47,8 @@ class StandardizedOrderingFilter(OrderingFilter):
 
 
 class ArrayFilter(BaseCSVFilter, AutoFilter):
-    DEFAULT_LOOKUPS = ARRAY_LOOKUPS
+    DEFAULT_LOOKUPS = ['contains', 'contained_by', 'overlap', 'len']
 
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('lookups', self.DEFAULT_LOOKUPS)
         super().__init__(*args, **kwargs)
-
-
-class StandardizedFilterSet(FilterSet):
-    FILTER_DEFAULTS = {**FilterSet.FILTER_DEFAULTS, **{
-        ArrayField: {'filter_class': ArrayFilter},
-        DateTimeField: {'filter_class': IsoDateTimeFilter},
-    }}
-
-    class Meta:
-        model = None
-        fields = {
-            'uid': UID_LOOKUPS,
-        }

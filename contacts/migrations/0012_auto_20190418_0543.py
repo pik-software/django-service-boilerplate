@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('uid', models.UUIDField(default=pik.core.models.uided._new_uid, editable=False, primary_key=True, serialize=False)),
                 ('version', models.IntegerField(editable=False)),
                 ('name', core.fields.NormalizedCharField(max_length=255, verbose_name='Название')),
-                ('parent', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='contacts.Category')),
+                ('parent', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='contacts.Category', verbose_name='Родительская категория')),
             ],
             options={
                 'abstract': False,
@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
                 ('history_change_reason', models.CharField(max_length=100, null=True)),
                 ('history_type', models.CharField(choices=[('+', 'Created'), ('~', 'Changed'), ('-', 'Deleted')], max_length=1)),
                 ('history_user', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='+', to=settings.AUTH_USER_MODEL)),
-                ('parent', models.ForeignKey(blank=True, db_constraint=False, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='+', to='contacts.Category')),
+                ('parent', models.ForeignKey(blank=True, db_constraint=False, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='+', to='contacts.Category', verbose_name='Родительская категория')),
             ],
             options={
                 'verbose_name': 'historical category',
@@ -56,11 +56,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='contact',
             name='category',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='contacts.Category'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='contacts.Category', verbose_name='Категория', help_text='Категория контакта'),
         ),
         migrations.AddField(
             model_name='historicalcontact',
             name='category',
-            field=models.ForeignKey(blank=True, db_constraint=False, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='+', to='contacts.Category'),
+            field=models.ForeignKey(blank=True, db_constraint=False, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='+', to='contacts.Category', verbose_name='Категория', help_text='Категория контакта'),
         ),
     ]

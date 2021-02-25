@@ -26,8 +26,7 @@ django-filter==2.2.0
 django-crispy-forms==1.7.2
 markdown==3.1.1
 # API SCHEMA
-#drf-yasg==1.16.1 ( wait PR https://github.com/axnsan12/drf-yasg/pull/428 )
--e git+https://github.com/pik-software/drf-yasg.git@master#egg=drf-yasg
+drf-yasg==1.16.1
 
 # db
 redis==3.3.8
@@ -79,7 +78,8 @@ future>=0.16.0,<0.17.0
 social_auth_core>=1.7.0,<2.0.0
 
 # lib/codegen
-swagger-parser==1.0.1
+prance==0.16.1
+openapi-spec-validator==0.2.8
 
 # metrics/monitoring
 ddtrace==0.29.0

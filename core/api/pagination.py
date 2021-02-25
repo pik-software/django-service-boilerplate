@@ -51,5 +51,19 @@ class StandardizedPagination(PageNumberPagination):
             ('results', data),
         ]))
 
+    def get_paginated_response_schema(self, schema):
+        return {
+            'type': 'object',
+            'properties': {
+                'count': {'type': 'integer', 'example': 123},
+                'page': {'type': 'integer'},
+                'page_size': {'type': 'integer'},
+                'pages': {'type': 'integer'},
+                'page_next': {'type': 'integer', 'nullable': True},
+                'page_previous': {'type': 'integer', 'nullable': True},
+                'results': schema,
+            }
+        }
+
     def get_schema_fields(self, view):  # noqa: pylint=useless-super-delegation
         return super().get_schema_fields(view)

@@ -42,8 +42,7 @@ class ContactFactory(factory.django.DjangoModelFactory):
         lambda x: _get_random_internal_phones())
     emails = factory.LazyAttribute(
         lambda x: ['{0}@example.com'.format(x.name).lower()])
-    category = factory.LazyAttribute(
-        lambda x: _gen_if_probability(CategoryFactory, 20))
+    category = factory.SubFactory(CategoryFactory)
 
 
 class CommentFactory(factory.django.DjangoModelFactory):

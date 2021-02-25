@@ -18,9 +18,13 @@ fi
 
 RELEASE_DATE=$( date '+%Y-%m-%d-%H-%M-%S' )
 RELEASE=$(git describe --tags --match v[0-9]*)
-ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} RELEASE_DATE="'"${RELEASE_DATE}"'" SENTRY_RELEASE=${RELEASE}
 GIT_REV=$(git rev-parse ${BRANCH})
-ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} GIT_REV=${GIT_REV}
+
+ssh dokku@${SSH_HOST} -C config:set --no-restart ${SERVICE_NAME} \
+RELEASE_DATE="'"${RELEASE_DATE}"'" \
+RELEASE=${RELEASE} \
+SENTRY_RELEASE=${RELEASE} \
+GIT_REV=${GIT_REV}
 
 # CONFIGS
 case "$ENVIRONMENT" in

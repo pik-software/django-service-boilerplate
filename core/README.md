@@ -72,10 +72,14 @@ REST_FRAMEWORK = {
 
     # Generic view behavior
     'DEFAULT_PAGINATION_CLASS': 'core.api.pagination.StandardizedPagination',
-    'DEFAULT_FILTER_BACKENDS': (),
+    'DEFAULT_FILTER_BACKENDS': (
+        'core.api.filters.StandardizedFieldFilters',
+        'core.api.filters.StandardizedSearchFilter',
+        'core.api.filters.StandardizedOrderingFilter',
+    ),
 
     # Schema
-    'DEFAULT_SCHEMA_CLASS': 'core.api.inspectors.StandardizedAutoSchema',
+    'DEFAULT_SCHEMA_CLASS': 'core.api.openapi.openapi.StandardizedAutoSchema',
     'EXCEPTION_HANDLER': 'core.api.exception_handler.standardized_handler',
 
     'TEST_REQUEST_DEFAULT_FORMAT': 'json',

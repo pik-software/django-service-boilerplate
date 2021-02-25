@@ -19,7 +19,7 @@ class ModelFieldGenerator:
     STRING_FORMAT_TO_FIELD_NAME = {
         'uuid': UUID_MODEL_FIELD_NAME,
         'date': DATE_MODEL_FIELD_NAME,
-        'date-time': DATETIME_MODEL_FIELD_NAME,}
+        'date-time': DATETIME_MODEL_FIELD_NAME, }
 
     DEFAULT_FIELD_KWARGS = {
         'editable': False,
@@ -41,10 +41,22 @@ class ModelFieldGenerator:
         return self.STRING_FORMAT_TO_FIELD_NAME.get(
             field_format, self.CHAR_MODEL_FIELD_NAME)
 
+    @staticmethod
+    def get_field_refs(schema):
+        if '$ref' in schema:
+            return [schema['$ref']]
+
+        return [
+            item['$ref']
+            for keyword in ['anyOf', 'allOf', 'oneOf'] if keyword in schema
+            for item in schema[keyword] if '$ref' in item]
+
     def get_model_field_name(self, schema):
         property_type = schema.get('type')
 
-        if '$ref' in schema:
+        # TODO: asklimenko Add generic FK support
+        refs = self.get_field_refs(schema)
+        if refs:
             model_field_name = self.FOREIGN_KEY_MODEL_FIELD_NAME
         elif property_type == self.STRING_TYPE:
             field_format = schema.get('format', 'unknown')
@@ -58,8 +70,10 @@ class ModelFieldGenerator:
         return model_field_name
 
     def _get_field_args(self, schema, field_name):
+        # TODO: asklimenko Add generic foreign key support
         if field_name == self.FOREIGN_KEY_MODEL_FIELD_NAME:
-            model_ref = schema['$ref'].replace('#/definitions/', '')
+            refs = self.get_field_refs(schema)
+            model_ref = refs[0].split('/')[-1]
             return [f"'{model_ref}'"]
         return []
 

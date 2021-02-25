@@ -9,7 +9,7 @@ from core.utils.permissions import (
 
 
 BASE_API_URL = '/api/v1/'
-SCHEMA_API_URL = BASE_API_URL + 'schema/'
+SCHEMA_API_URL = BASE_API_URL + 'schema/?format=openapi-json'
 PERMISSIONS_API_URL = BASE_API_URL + 'permissions/'
 
 

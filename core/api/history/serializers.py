@@ -1,13 +1,13 @@
 from collections import OrderedDict
 
 from rest_framework import fields
-from rest_framework.serializers import Serializer
+from rest_framework.serializers import Serializer, ListSerializer
 
 from core.api.serializers import StandardizedModelSerializer
 from core.api.user import UserSerializer
 
 
-class HistorySerializerMixIn(Serializer):
+class HistoricalSerializerBase(Serializer):
     history_id = fields.IntegerField()
     history_date = fields.DateTimeField()
     history_change_reason = fields.CharField()
@@ -49,10 +49,17 @@ def simplify_nested_serializer(serializer):
 def get_history_serializer_class(model_name, serializer_class):
     name = f'{model_name}Serializer'
     _model = serializer_class.Meta.model.history.model
-    fields = HistorySerializerMixIn.Meta.fields + serializer_class.Meta.fields
+    serializer = serializer_class()
+
+    # Skipping not historical M2M and reverse (many=True) fields
+    non_m2m_fields = tuple(
+        field for field in serializer.Meta.fields
+        if not isinstance(serializer.fields[field], ListSerializer))
+
+    fields = (HistoricalSerializerBase.Meta.fields + non_m2m_fields)
     _meta = type(
-        'Meta', (HistorySerializerMixIn.Meta, serializer_class.Meta), {
+        'Meta', (HistoricalSerializerBase.Meta, serializer_class.Meta), {
             'model': _model,
             'fields': fields})
-    bases = HistorySerializerMixIn, serializer_class
+    bases = HistoricalSerializerBase, serializer_class
     return type(name, bases, {'Meta': _meta})

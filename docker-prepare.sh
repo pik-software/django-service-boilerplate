@@ -29,4 +29,9 @@ if [[ -f "gulpfile.js" ]]; then  # GULP
     gulp
 fi
 
+STATIC_ROOT=${STATIC_ROOT:-"`pwd`/__data__/static"}
+mkdir -p $STATIC_ROOT
 python manage.py collectstatic --noinput
+./manage.py collectstatic --noinput
+./manage.py generateopenapi --format=openapi-json > ${STATIC_ROOT}/api_schema_openapi-json.txt
+./manage.py generateopenapi --format=openapi > ${STATIC_ROOT}/api_schema_openapi.txt
