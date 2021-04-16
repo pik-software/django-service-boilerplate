@@ -47,7 +47,7 @@ sentry-sdk==0.14.1
 uwsgi==2.0.18
 
 # dev
-django_debug_toolbar==2.2
+django_debug_toolbar==2.2.1
 django_extensions==2.2.1
 werkzeug==0.16.0
 
