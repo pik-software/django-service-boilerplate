@@ -5,15 +5,15 @@ from rest_framework_filters import (
 
 class HistoryFilterBase(FilterSet):
     LOOKUP_FIELD_FILTERS = ('exact', 'gt', 'gte', 'lt', 'lte', 'in', 'isnull')
+    history_id = AutoFilter(lookups=('exact', 'gt', 'gte', 'lt', 'lte', 'in'))
+    history_type = AutoFilter(lookups=('exact', 'in'))
+    history_user_id = AutoFilter(lookups=('exact', 'in', 'isnull'))
+    history_date = AutoFilter(
+        lookups=('exact', 'gt', 'gte', 'lt', 'lte', 'in'))
 
     class Meta:
+        fields = {}
         model = None
-        fields = {
-            'history_id': ('exact', 'gt', 'gte', 'lt', 'lte', 'in'),
-            'history_type': ('exact', 'in'),
-            'history_user_id': ('exact', 'in', 'isnull'),
-            'history_date': ('exact', 'gt', 'gte', 'lt', 'lte', 'in'),
-        }
         filter_overrides = {
             DateTimeField: {'filter_class': IsoDateTimeFilter}}
 

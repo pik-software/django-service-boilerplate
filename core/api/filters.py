@@ -1,19 +1,16 @@
 import coreapi
-from django.contrib.postgres.fields import ArrayField
 from django.db.models import DateTimeField
-from rest_framework_filters import FilterSet, RelatedFilter, BaseCSVFilter, \
-    AutoFilter, IsoDateTimeFilter
-from rest_framework_filters.backends import RestFrameworkFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework_filters import RelatedFilter, AutoFilter, FilterSet, \
+    IsoDateTimeFilter
+from rest_framework_filters.backends import RestFrameworkFilterBackend
 
-
-UID_LOOKUPS = ('exact', 'gt', 'gte', 'lt', 'lte', 'in', 'isnull')
+UID_LOOKUPS = ('exact', 'in', 'isnull')
 STRING_LOOKUPS = (
-    'exact', 'iexact', 'in', 'startswith', 'endswith', 'contains', 'contains',
-    'isnull')
-DATE_LOOKUPS = ('exact', 'gt', 'gte', 'lt', 'lte', 'in', 'isnull')
+    'exact', 'in', 'isnull', 'startswith', 'endswith', 'contains')
+DATE_LOOKUPS = ('exact', 'in', 'isnull', 'lt', 'gt', 'lte', 'gte')
 BOOLEAN_LOOKUPS = ('exact', 'in', 'isnull')
-ARRAY_LOOKUPS = ['contains', 'contained_by', 'overlap', 'len', 'isnull']
+ARRAY_LOOKUPS = ('contains', 'contained_by', 'overlap', 'len', 'isnull')
 
 
 class StandardizedFieldFilters(RestFrameworkFilterBackend):
@@ -60,22 +57,14 @@ class StandardizedOrderingFilter(OrderingFilter):
     pass
 
 
-class ArrayFilter(BaseCSVFilter, AutoFilter):
-    DEFAULT_LOOKUPS = ARRAY_LOOKUPS
-
-    def __init__(self, *args, **kwargs):
-        kwargs.setdefault('lookups', self.DEFAULT_LOOKUPS)
-        super().__init__(*args, **kwargs)
-
-
-class StandardizedFilterSet(FilterSet):
-    FILTER_DEFAULTS = {**FilterSet.FILTER_DEFAULTS, **{
-        ArrayField: {'filter_class': ArrayFilter},
-        DateTimeField: {'filter_class': IsoDateTimeFilter},
-    }}
+class StandardizedModelFilter(FilterSet):
+    uid = AutoFilter(lookups=UID_LOOKUPS)
+    updated = AutoFilter(lookups=DATE_LOOKUPS)
+    created = AutoFilter(lookups=DATE_LOOKUPS)
 
     class Meta:
         model = None
-        fields = {
-            'uid': UID_LOOKUPS,
+        fields = {}
+        filter_overrides = {
+            DateTimeField: {'filter_class': IsoDateTimeFilter}
         }

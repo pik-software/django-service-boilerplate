@@ -179,13 +179,11 @@ from <module>.models import <Organization>
 NAME_FILTERS = ['exact', 'in', 'startswith', 'endswith', 'contains']
 
 
-class <Organization>Filter(filters.FilterSet):
-    class Meta:
+class <Organization>Filter(StandardizedModelFilter):
+    name = filters.AutoFilter(lookups=NAME_FILTERS)
+    
+    class Meta(StandardizedModelFilter.Meta):
         model = Organization
-        fields = {
-            'name': NAME_FILTERS,
-            ...
-        }
 ```
 
 1. create `api/viewsets.py`

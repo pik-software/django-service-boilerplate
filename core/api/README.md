@@ -34,12 +34,11 @@ class ModelViewSet(StandardizedModelViewSet):
  - [ ] api.filters.ModelFilter: (optional)
 
 ```
-class ModelFilter(filters.FilterSet):
-    class Meta:
+class ModelFilter(StandardizedModelFilter):
+    related = filters.RelatedFilter(lookups=['isnull'])
+
+    class Meta(StandardizedModelFilter.Meta):
         model = Model
-        fields = {
-            ...
-        }
 ```
 
 # SCHEMA #
